@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2015  <copyright holder> <email>
+ * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +16,17 @@
  *
  */
 
-#ifndef SERVERWIDGET_H
-#define SERVERWIDGET_H
+#ifndef SERVER_WIDGET_HPP
+#define SERVER_WIDGET_HPP
 
-#include <qt4/QtGui/qwidget.h>
+#include "ui_server_widget.h"
 
-namespace Ui
+class ServerWidget : public QWidget, private Ui_ServerWidget
 {
-class ServerWidget;
-}
+    Q_OBJECT
 
-class ServerWidget : public QWidget
-{
-        Q_OBJECT
-
-    private:
-        Ui::ServerWidget* ui;
+public:
+    ServerWidget(QWidget* parent = nullptr);
 };
 
-#endif // SERVERWIDGET_H
+#endif // SERVER_WIDGET_HPP

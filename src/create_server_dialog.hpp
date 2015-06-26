@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2015  <copyright holder> <email>
+ * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +16,17 @@
  *
  */
 
-#ifndef CREATESERVERDIALOG_H
-#define CREATESERVERDIALOG_H
+#ifndef CREATE_SERVER_DIALOG_HPP
+#define CREATE_SERVER_DIALOG_HPP
 
-namespace Ui
+#include "ui_create_server_dialog.h"
+
+class CreateServerDialog : public QDialog, private Ui::CreateServerDialog
 {
-class CreateServerDialog;
-}
+    Q_OBJECT
 
-class CreateServerDialog
-{
-        Q_OBJECT
-
-    private:
-        Ui::CreateServerDialog* ui;
+public:
+    CreateServerDialog(QWidget* parent = nullptr);
 };
 
-#endif // CREATESERVERDIALOG_H
+#endif // CREATE_SERVER_DIALOG_HPP

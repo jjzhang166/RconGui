@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2015  <copyright holder> <email>
+ * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,4 +17,9 @@
  */
 
 #include "server_widget.hpp"
-#include "ui_server_widget.h"
+
+ServerWidget::ServerWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    setupUi(this);
+}

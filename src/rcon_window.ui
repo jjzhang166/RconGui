@@ -105,5 +105,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_New_Tab</sender>
+   <signal>triggered()</signal>
+   <receiver>RconWindow</receiver>
+   <slot>new_tab()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>new_tab()</slot>
+ </slots>
 </ui>

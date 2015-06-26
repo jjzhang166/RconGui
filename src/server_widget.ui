@@ -156,7 +156,9 @@
             <string>&amp;Connection...</string>
            </property>
            <property name="icon">
-            <iconset theme="configure"/>
+            <iconset theme="configure">
+             <normaloff/>
+            </iconset>
            </property>
           </widget>
          </item>
@@ -190,6 +192,9 @@
        </item>
        <item>
         <widget class="QTextEdit" name="textEdit">
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: black;
 color: white;
@@ -218,6 +223,30 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <action name="action_Clear">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
+   <property name="text">
+    <string>%Clear</string>
+   </property>
+  </action>
+  <action name="action_Attach_Log">
+   <property name="icon">
+    <iconset theme="network-connect"/>
+   </property>
+   <property name="text">
+    <string>&amp;Attach Log</string>
+   </property>
+  </action>
+  <action name="action_Detach_Log">
+   <property name="icon">
+    <iconset theme="network-disconnect"/>
+   </property>
+   <property name="text">
+    <string>&amp;Detach Log</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

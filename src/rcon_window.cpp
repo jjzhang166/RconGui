@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2015  <copyright holder> <email>
+ * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,4 +17,21 @@
  */
 
 #include "rcon_window.hpp"
-#include "ui_rcon_window.h"
+#include "create_server_dialog.hpp"
+#include "server_widget.hpp"
+
+RconWindow::RconWindow(QWidget* parent)
+    : QMainWindow(parent)
+{
+    setupUi(this);
+}
+
+
+void RconWindow::new_tab()
+{
+    CreateServerDialog dlg(this);
+    if ( dlg.exec() )
+    {
+        tabWidget->addTab(new ServerWidget, "placeholder");
+    }
+}
