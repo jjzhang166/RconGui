@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 set(EXECUTABLE rcongui)
 project(${EXECUTABLE} CXX)
 
-find_package(Qt4 REQUIRED)
-# find_package(Qt5Widgets REQUIRED)
-
+# C++11
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # For some reason the above flags don't really work...
@@ -20,7 +18,16 @@ else()
     message(WARNING "Unrecognized compiler: ${CMAKE_CXX_COMPILER_ID}, make sure it supports C++${CMAKE_CXX_STANDARD}")
 endif()
 
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+# Debug
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Werror")
+# Enable Debug by default, can be changed with -D CMAKE_BUILD_TYPE=Release
+if(CMAKE_BUILD_TYPE STREQUAL "")
+    set(CMAKE_BUILD_TYPE Debug)
+    set(DEBUG 1)
+else()
+    set(DEBUG 0)
+endif()
+
 
 set(SOURCES
     src/main.cpp
@@ -29,14 +36,25 @@ set(SOURCES
     src/server_widget.cpp
 )
 
+# Enable extra Qt tools
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
-
 
 add_executable(${EXECUTABLE} ${SOURCES})
-# target_link_libraries(${EXECUTABLE} Qt5::Widgets Qt5::DBus)
-target_link_libraries(${EXECUTABLE} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
+# Libraries
+
+# Qt
+find_package(Qt5Widgets REQUIRED)
+target_link_libraries(${EXECUTABLE} Qt5::Widgets)
+# find_package(Qt4 REQUIRED)
+# target_link_libraries(${EXECUTABLE} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Boost
+find_package (Boost COMPONENTS system REQUIRED)
+target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
+include_directories (${Boost_INCLUDE_DIRS})
+
+# Install
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

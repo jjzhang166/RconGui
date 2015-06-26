@@ -17,6 +17,9 @@
  */
 
 #include "rcon_window.hpp"
+
+#include <QtWidgets/QApplication>
+
 #include "create_server_dialog.hpp"
 #include "server_widget.hpp"
 
@@ -24,6 +27,14 @@ RconWindow::RconWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setupUi(this);
+
+    connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
+        delete tabWidget->widget(index);
+        tabWidget->removeTab(index);
+    });
+    connect(tabWidget, &QTabWidget::currentChanged, [this](int index){
+        setWindowTitle(tabWidget->tabText(index));
+    });
 }
 
 
@@ -32,6 +43,12 @@ void RconWindow::new_tab()
     CreateServerDialog dlg(this);
     if ( dlg.exec() )
     {
-        tabWidget->addTab(new ServerWidget, "placeholder");
+        auto xonotic = dlg.connection_info();
+        QString name = QString::fromStdString(xonotic.name);
+        auto tab = new ServerWidget(std::move(xonotic));
+        tabWidget->addTab(tab, name);
+        connect(tab, &ServerWidget::nameChanged,[this,tab](const QString& string){
+            tabWidget->setTabText(tabWidget->indexOf(tab), string);
+        });
     }
 }

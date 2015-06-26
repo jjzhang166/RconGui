@@ -17,9 +17,22 @@
  */
 
 #include "server_widget.hpp"
+#include "create_server_dialog.hpp"
 
-ServerWidget::ServerWidget(QWidget* parent)
-    : QWidget(parent)
+ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
+    : QWidget(parent), xonotic(std::move(xonotic))
 {
     setupUi(this);
+}
+
+void ServerWidget::on_button_setup_clicked()
+{
+    CreateServerDialog dlg(xonotic, this);
+    if ( dlg.exec() )
+    {
+        std::string oldname = xonotic.name;
+        xonotic = dlg.connection_info();
+        if ( xonotic.name != oldname )
+            emit nameChanged(QString::fromStdString(xonotic.name));
+    }
 }

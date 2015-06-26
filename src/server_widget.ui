@@ -151,7 +151,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="button_setup">
            <property name="text">
             <string>&amp;Connection...</string>
            </property>
@@ -225,7 +225,9 @@ p, li { white-space: pre-wrap; }
   </layout>
   <action name="action_Clear">
    <property name="icon">
-    <iconset theme="edit-clear"/>
+    <iconset theme="edit-clear">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>%Clear</string>
@@ -233,7 +235,9 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="action_Attach_Log">
    <property name="icon">
-    <iconset theme="network-connect"/>
+    <iconset theme="network-connect">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Attach Log</string>
@@ -241,7 +245,9 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="action_Detach_Log">
    <property name="icon">
-    <iconset theme="network-disconnect"/>
+    <iconset theme="network-disconnect">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Detach Log</string>

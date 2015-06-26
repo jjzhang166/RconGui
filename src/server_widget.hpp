@@ -20,13 +20,30 @@
 #define SERVER_WIDGET_HPP
 
 #include "ui_server_widget.h"
+#include "xonotic.hpp"
+#include "udp_io.hpp"
 
+/**
+ * \brief Widget interfacing to rcon
+ */
 class ServerWidget : public QWidget, private Ui_ServerWidget
 {
     Q_OBJECT
 
 public:
-    ServerWidget(QWidget* parent = nullptr);
+    ServerWidget(network::Xonotic xonotic, QWidget* parent = nullptr);
+
+signals:
+    /**
+     * \brief Emitted when the name of the xonotic connection changes
+     */
+    void nameChanged(const QString& name);
+
+private slots:
+    void on_button_setup_clicked();
+
+private:
+    network::Xonotic xonotic;
 };
 
 #endif // SERVER_WIDGET_HPP

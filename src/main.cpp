@@ -16,13 +16,16 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "rcon_window.hpp"
 
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
+    QApplication::setApplicationName("rcongui");
+    QApplication::setApplicationDisplayName("Rcon Gui");
+
     RconWindow window;
     window.show();
     return app.exec();

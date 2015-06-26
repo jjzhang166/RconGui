@@ -20,13 +20,24 @@
 #define CREATE_SERVER_DIALOG_HPP
 
 #include "ui_create_server_dialog.h"
+#include "xonotic.hpp"
 
+/**
+ * \brief Form used to gather Xonotic connection information
+ */
 class CreateServerDialog : public QDialog, private Ui::CreateServerDialog
 {
     Q_OBJECT
 
 public:
     CreateServerDialog(QWidget* parent = nullptr);
+
+    CreateServerDialog(const network::Xonotic& xonotic, QWidget* parent = nullptr);
+
+    /**
+     * \brief Builds a Xonotic connection from the form contents
+     */
+    network::Xonotic connection_info() const;
 };
 
 #endif // CREATE_SERVER_DIALOG_HPP

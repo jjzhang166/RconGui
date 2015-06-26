@@ -24,3 +24,25 @@ CreateServerDialog::CreateServerDialog(QWidget* parent)
     setupUi(this);
 }
 
+CreateServerDialog::CreateServerDialog(const network::Xonotic& xonotic,
+                                       QWidget* parent)
+    : CreateServerDialog(parent)
+{
+    input_host->setText(QString::fromStdString(xonotic.server.host));
+    input_port->setValue(xonotic.server.port);
+    input_password->setText(QString::fromStdString(xonotic.rcon_password));
+    input_secure->setCurrentIndex(int(xonotic.rcon_secure));
+    input_name->setText(xonotic.name == xonotic.server.name() ? "" :
+        QString::fromStdString(xonotic.name));
+}
+
+
+network::Xonotic CreateServerDialog::connection_info() const
+{
+    return network::Xonotic(
+        network::Server(input_host->text().toStdString(), input_port->value()),
+        input_password->text().toStdString(),
+        network::Xonotic::Secure(input_secure->currentIndex()),
+        input_name->text().toStdString()
+    );
+}

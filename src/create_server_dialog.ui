@@ -10,6 +10,9 @@
     <height>366</height>
    </rect>
   </property>
+  <property name="windowTitle">
+   <string>Xonotic Server Details</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -58,7 +61,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="input_host">
         <property name="toolTip">
          <string>Server host or address</string>
         </property>
@@ -78,7 +81,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="spinBox">
+       <widget class="QSpinBox" name="input_port">
         <property name="toolTip">
          <string>Port Number</string>
         </property>
@@ -108,7 +111,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="input_secure">
         <property name="toolTip">
          <string>Rcon Secure Protocol</string>
         </property>
@@ -133,7 +136,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="input_password">
         <property name="toolTip">
          <string>Rcon Password</string>
         </property>
@@ -143,7 +146,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="lineEdit_3">
+       <widget class="QLineEdit" name="input_name">
         <property name="toolTip">
          <string>Name used to identify the server</string>
         </property>
@@ -226,32 +229,16 @@
  </widget>
  <tabstops>
   <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>spinBox</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>comboBox_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
+  <tabstop>input_host</tabstop>
+  <tabstop>input_port</tabstop>
+  <tabstop>input_password</tabstop>
+  <tabstop>input_secure</tabstop>
+  <tabstop>input_name</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>pushButton_2</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CreateServerDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>400</x>
-     <y>344</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>406</x>
-     <y>510</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
@@ -265,6 +252,22 @@
     <hint type="destinationlabel">
      <x>258</x>
      <y>497</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CreateServerDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>406</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>
