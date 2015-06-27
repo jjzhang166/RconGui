@@ -135,11 +135,14 @@ void ServerWidget::xonotic_read(const std::string& datagram)
     while (socket_stream)
     {
         std::getline(socket_stream,line);
-        if (socket_stream.eof() && !line.empty())
+        if (socket_stream.eof())
         {
-            lock.lock();
-            line_buffer = line;
-            lock.unlock();
+            if (!line.empty())
+            {
+                lock.lock();
+                line_buffer = line;
+                lock.unlock();
+            }
             break;
         }
         emit log_received(QString::fromStdString(line));
@@ -175,10 +178,10 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
 {
     QMenu* menu = output_console->createStandardContextMenu();
     menu->addSeparator();
-    menu->addAction(action_Clear);
+    menu->addAction(action_clear);
     menu->addSeparator();
-    menu->addAction(action_Attach_Log);
-    menu->addAction(action_Detach_Log);
+    menu->addAction(action_attach_log);
+    menu->addAction(action_detach_log);
     menu->exec(output_console->mapToGlobal(pos));
 }
 
@@ -188,9 +191,9 @@ void ServerWidget::on_button_send_clicked()
     input_console->clear();
 }
 
-void ServerWidget::rcon_command(const QString& command)
+void ServerWidget::rcon_command(const std::string& command)
 {
-    xonotic_write("rcon "+xonotic.rcon_password+' '+command.toStdString());
+    xonotic_write("rcon "+xonotic.rcon_password+' '+command);
 }
 
 void ServerWidget::xonotic_write(std::string line)
@@ -209,4 +212,14 @@ void ServerWidget::append_log(const QString& log)
     output_console->append(log);
     if ( scroll )
         scrollbar->setValue(scrollbar->maximum());
+}
+
+void ServerWidget::on_action_attach_log_triggered()
+{
+    rcon_command("log_dest_udp "+io.local_endpoint().name());
+}
+
+void ServerWidget::on_action_detach_log_triggered()
+{
+    rcon_command("log_dest_udp \"\"");
 }

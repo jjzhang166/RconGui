@@ -221,7 +221,7 @@
     </widget>
    </item>
   </layout>
-  <action name="action_Clear">
+  <action name="action_clear">
    <property name="icon">
     <iconset theme="edit-clear">
      <normaloff/>
@@ -231,7 +231,7 @@
     <string>&amp;Clear</string>
    </property>
   </action>
-  <action name="action_Attach_Log">
+  <action name="action_attach_log">
    <property name="icon">
     <iconset theme="network-connect">
      <normaloff/>
@@ -241,7 +241,7 @@
     <string>&amp;Attach Log</string>
    </property>
   </action>
-  <action name="action_Detach_Log">
+  <action name="action_detach_log">
    <property name="icon">
     <iconset theme="network-disconnect">
      <normaloff/>
@@ -271,7 +271,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_Clear</sender>
+   <sender>action_clear</sender>
    <signal>triggered()</signal>
    <receiver>output_console</receiver>
    <slot>clear()</slot>

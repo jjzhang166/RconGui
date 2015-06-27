@@ -65,6 +65,15 @@ public:
      */
     QString name() const;
 
+    /**
+     * \brief Runs a rcon command
+     */
+    void rcon_command(const std::string& command);
+    void rcon_command(const char* command)
+    {
+        rcon_command(std::string(command));
+    }
+
 signals:
     /**
      * \brief Emitted when the name of the xonotic connection changes
@@ -86,12 +95,17 @@ public slots:
     /**
      * \brief Runs a rcon command
      */
-    void rcon_command(const QString& command);
+    void rcon_command(const QString& command)
+    {
+        rcon_command(command.toStdString());
+    }
 
 private slots:
     void on_button_setup_clicked();
     void on_output_console_customContextMenuRequested(const QPoint &pos);
     void on_button_send_clicked();
+    void on_action_attach_log_triggered();
+    void on_action_detach_log_triggered();
 
     /**
      * \brief Appends log to the output console
@@ -104,7 +118,6 @@ private slots:
     void xonotic_request_status();
 
 private:
-
     /**
      * \brief Low level xonotic disconnection
      */
