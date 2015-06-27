@@ -50,7 +50,10 @@ void RconWindow::new_tab()
             tabWidget->setTabText(tabWidget->indexOf(tab), string);
         });
         connect(tab, &ServerWidget::network_error, [this, tab](const QString& msg){
-            statusbar->showMessage(tr("Error: %1: %2").arg(tab->name()).arg(msg));
+            statusbar->showMessage(
+                tr("Error: %1: %2").arg(tab->name()).arg(msg),
+                10*1000 // 10 seconds
+            );
         });
     }
 }

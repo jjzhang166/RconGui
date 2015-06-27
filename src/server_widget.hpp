@@ -76,6 +76,12 @@ signals:
      */
     void network_error(const QString& message);
 
+    /**
+     * \brief Emitted when a log message is received
+     * \note Not emitted from the main thread
+     */
+    void log_received(const QString& line);
+
 public slots:
     /**
      * \brief Runs a rcon command
@@ -86,6 +92,11 @@ private slots:
     void on_button_setup_clicked();
     void on_output_console_customContextMenuRequested(const QPoint &pos);
     void on_button_send_clicked();
+
+    /**
+     * \brief Appends log to the output console
+     */
+    void append_log(const QString& log);
 
     /**
      * \brief Requests xonotic status
@@ -109,8 +120,14 @@ private:
      */
     void xonotic_write(std::string line);
 
+    /**
+     * \brief Handles a Xonotic datagram
+     */
+    void xonotic_read(const std::string& datagram);
+
     std::mutex          mutex;
     std::string         header = "\xff\xff\xff\xff";    ///< Connection message header
+    std::string         line_buffer;                    ///< Buffer for overflowing messages from Xonotic
     network::Xonotic    xonotic;
     network::UdpIo      io;
     std::thread         thread_input;

@@ -19,6 +19,7 @@
 #include "server_widget.hpp"
 #include "create_server_dialog.hpp"
 #include <QMenu>
+#include <QScrollBar>
 
 ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
     : QWidget(parent), xonotic(std::move(xonotic))
@@ -33,7 +34,7 @@ ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
     };
     io.on_async_receive = [this](const std::string& datagram)
     {
-        output_console->append(QString::fromStdString(datagram));
+        xonotic_read(datagram);
     };
     io.on_failure = [this]()
     {
@@ -41,6 +42,9 @@ ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
     };
 
     xonotic_connect();
+
+    connect(this, &ServerWidget::log_received,
+            this, &ServerWidget::append_log, Qt::QueuedConnection);
 }
 
 ServerWidget::~ServerWidget()
@@ -107,6 +111,42 @@ bool ServerWidget::xonotic_connected()
     return io.connected();
 }
 
+void ServerWidget::xonotic_read(const std::string& datagram)
+{
+
+    if ( datagram.size() < 5 || datagram.substr(0,4) != "\xff\xff\xff\xff" )
+    {
+        network_error(tr("Invalid datagram: %1")
+            .arg(QString::fromStdString(datagram)));
+        return;
+    }
+
+    // discard non-log/rcon output
+    if ( datagram[4] != 'n' )
+        return;
+
+    Lock lock(mutex);
+    std::istringstream socket_stream(line_buffer+datagram.substr(5));
+    line_buffer.clear();
+    lock.unlock();
+
+    // convert the datagram into lines
+    std::string line;
+    while (socket_stream)
+    {
+        std::getline(socket_stream,line);
+        if (socket_stream.eof() && !line.empty())
+        {
+            lock.lock();
+            line_buffer = line;
+            lock.unlock();
+            break;
+        }
+        emit log_received(QString::fromStdString(line));
+    }
+}
+
+
 QString ServerWidget::name() const
 {
     return QString::fromStdString(xonotic.name);
@@ -145,6 +185,7 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
 void ServerWidget::on_button_send_clicked()
 {
     rcon_command(input_console->text());
+    input_console->clear();
 }
 
 void ServerWidget::rcon_command(const QString& command)
@@ -161,3 +202,11 @@ void ServerWidget::xonotic_write(std::string line)
     io.write(header+line);
 }
 
+void ServerWidget::append_log(const QString& log)
+{
+    auto scrollbar = output_console->verticalScrollBar();
+    bool scroll = scrollbar->value() == scrollbar->maximum();
+    output_console->append(log);
+    if ( scroll )
+        scrollbar->setValue(scrollbar->maximum());
+}
