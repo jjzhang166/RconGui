@@ -20,6 +20,8 @@
 
 #include <QSettings>
 #include <QHash>
+#include <QColor>
+#include <QFont>
 
 #include "xonotic.hpp"
 
@@ -41,11 +43,22 @@ public:
 
     void save();
 
-    QHash<QString, network::Xonotic> saved_servers;
+    QHash<QString, network::Xonotic> saved_servers; ///< Server presets
+
+    QColor console_foreground{192, 192, 192};   ///< Default text color for the console
+    QColor console_background{Qt::black};       ///< Background color for the console
+    int    console_brightness_max{255};         ///< Maximum brightness for console colors
+    int    console_brightness_min{80};          ///< Minimum brightness for console colors
+    QFont  console_font{"monospace", 10};       ///< Console text font
 
 private:
     Settings();
 
 };
+
+/**
+ * \brief Shorthand for Settings::instance()
+ */
+inline Settings& settings() { return Settings::instance(); }
 
 #endif // SETTINGS_HPP

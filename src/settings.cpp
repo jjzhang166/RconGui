@@ -30,6 +30,7 @@ Settings::~Settings()
 void Settings::load()
 {
     QSettings settings;
+
     settings.beginGroup("servers");
     for ( const QString& key : settings.childGroups() )
     {
@@ -46,6 +47,15 @@ void Settings::load()
         ));
         settings.endGroup();
     }
+    settings.endGroup();
+
+    settings.beginGroup("console");
+    console_foreground = settings.value("foreground",console_foreground.name()).toString();
+    console_background = settings.value("background",console_background.name()).toString();
+    console_brightness_max = qBound(0,settings.value("brightness_max",console_brightness_max).toInt(),255);
+    console_brightness_min = qBound(0,settings.value("brightness_min",console_brightness_min).toInt(),255);
+    console_font.fromString(settings.value("font",console_font.toString()).toString());
+    settings.endGroup();
 }
 
 void Settings::save()
@@ -61,4 +71,13 @@ void Settings::save()
         settings.setValue("secure",int(server.rcon_secure));
         settings.endGroup();
     }
+    settings.endGroup();
+
+    settings.beginGroup("console");
+    settings.setValue("foreground",console_foreground.name());
+    settings.setValue("background",console_background.name());
+    settings.setValue("brightness_max",console_brightness_max);
+    settings.setValue("brightness_min",console_brightness_min);
+    settings.setValue("font",console_font.toString());
+    settings.endGroup();
 }

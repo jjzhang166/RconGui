@@ -17,12 +17,15 @@
  */
 
 #include "server_widget.hpp"
-#include "create_server_dialog.hpp"
+
 #include <QMenu>
 #include <QScrollBar>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <qtextobject.h>
+#include <QTextObject>
+
+#include "create_server_dialog.hpp"
+#include "settings.hpp"
 
 ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
     : QWidget(parent), xonotic(std::move(xonotic))
@@ -66,10 +69,10 @@ void ServerWidget::clear_log()
 {
     output_console->clear();
     QTextFrameFormat fmt;
-    fmt.setBackground(Qt::black);
+    fmt.setBackground(settings().console_background);
     output_console->document()->rootFrame()->setFrameFormat(fmt);
-    output_console->document()->setDefaultFont(QFont("monospace", 10));
-    output_console->setTextColor(QColor(192, 192, 192));
+    output_console->document()->setDefaultFont(settings().console_font);
+    output_console->setTextColor(settings().console_foreground);
 }
 
 void ServerWidget::xonotic_close_connection()
@@ -275,7 +278,7 @@ void ServerWidget::append_log(const QString& log)
         QTextCharFormat format;
         QString text;
         static QRegExp regex_xoncolor("^([0-9]|x[0-9a-fA-F]{3})");
-        format.setForeground(output_console->textColor());
+        format.setForeground(settings().console_foreground);
         for ( int i = 0; i < log.size(); i++ )
         {
             if ( log[i] == '^' && i < log.size()-1 )
@@ -290,9 +293,13 @@ void ServerWidget::append_log(const QString& log)
                     cursor.insertText(text,format);
                     i += regex_xoncolor.matchedLength()-1;
                     auto color = xonotic_color(regex_xoncolor.cap());
-                    if ( color.lightness() < 80 )
-                        color = QColor::fromHsl(color.hue(), color.saturation(), 80);
-                    format.setForeground(color);
+                    format.setForeground(QColor::fromHsl(
+                        color.hue(),
+                        color.saturation(),
+                        qBound(settings().console_brightness_min,
+                               color.lightness(),
+                               settings().console_brightness_max)
+                    ));
                     text.clear();
                 }
                 else
@@ -308,7 +315,7 @@ void ServerWidget::append_log(const QString& log)
             }
         }
         cursor.insertText(text,format);
-        format.setForeground(output_console->textColor());
+        format.setForeground(settings().console_foreground);
         cursor.insertText("\n",format);
     }
 
