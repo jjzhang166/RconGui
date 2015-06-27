@@ -65,7 +65,7 @@ void ServerWidget::xonotic_close_connection()
 void ServerWidget::xonotic_disconnect()
 {
     // if ( io.connected() )
-        // clear log_dest_udp if needed
+        /// \todo clear log_dest_udp if needed
     xonotic_close_connection();
     xonotic_clear();
 }
@@ -95,6 +95,7 @@ bool ServerWidget::xonotic_connect()
 
 void ServerWidget::xonotic_clear()
 {
+    /// \todo
     // Lock lock(mutex);
     // clear rcon secure 2 buffer
     // clear status and cvars
@@ -145,7 +146,7 @@ void ServerWidget::xonotic_read(const std::string& datagram)
             }
             break;
         }
-        emit log_received(QString::fromStdString(line));
+        emit log_received(QString::fromUtf8(line.data(), line.size()));
     }
 }
 
@@ -177,11 +178,15 @@ void ServerWidget::on_button_setup_clicked()
 void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &pos)
 {
     QMenu* menu = output_console->createStandardContextMenu();
+
     menu->addSeparator();
     menu->addAction(action_clear);
+
     menu->addSeparator();
     menu->addAction(action_attach_log);
     menu->addAction(action_detach_log);
+    menu->addAction(action_parse_colors);
+
     menu->exec(output_console->mapToGlobal(pos));
 }
 
@@ -205,11 +210,89 @@ void ServerWidget::xonotic_write(std::string line)
     io.write(header+line);
 }
 
+QColor ServerWidget::xonotic_color ( const QString& s )
+{
+    if ( s.size() == 4 )
+    {
+        return QColor(
+            hex_to_int(s[1].unicode())*255/15,
+            hex_to_int(s[2].unicode())*255/15,
+            hex_to_int(s[3].unicode())*255/15
+        );
+    }
+
+    if ( s.size() != 1 )
+        return Qt::gray;
+
+    switch ( s[0].unicode() )
+    {
+        case '0': return Qt::black;
+        case '1': return Qt::red;
+        case '2': return Qt::green;
+        case '3': return Qt::yellow;
+        case '4': return Qt::blue;
+        case '5': return Qt::cyan;
+        case '6': return Qt::magenta;
+        case '7': return Qt::white;
+        case '8': return Qt::darkGray;
+        case '9': return Qt::gray;
+    }
+
+    return Qt::gray;
+}
+
 void ServerWidget::append_log(const QString& log)
 {
     auto scrollbar = output_console->verticalScrollBar();
     bool scroll = scrollbar->value() == scrollbar->maximum();
-    output_console->append(log);
+
+    if ( !action_parse_colors->isChecked() )
+    {
+        output_console->append(log);
+    }
+    else
+    {
+        QTextCursor cursor(output_console->document());
+        cursor.movePosition(QTextCursor::End);
+        QTextCharFormat format;
+        QString text;
+        static QRegExp regex_xoncolor("^([0-9]|x[0-9a-fA-F]{3})");
+        for ( int i = 0; i < log.size(); i++ )
+        {
+            if ( log[i] == '^' && i < log.size()-1 )
+            {
+                i++;
+                if ( log[i] == '^' )
+                {
+                    text += '^';
+                }
+                else if ( regex_xoncolor.indexIn(log, i, QRegExp::CaretAtOffset) != -1 )
+                {
+                    cursor.insertText(text,format);
+                    i += regex_xoncolor.matchedLength()-1;
+                    auto color = xonotic_color(regex_xoncolor.cap());
+                    if ( color.lightness() < 80 )
+                        color = QColor::fromHsl(color.hue(), color.saturation(), 80);
+                    format.setForeground(color);
+                    text.clear();
+                }
+                else
+                {
+                    text += '^';
+                    text += log[1];
+                }
+            }
+            /// \todo qfont
+            else
+            {
+                text += log[i];
+            }
+        }
+        cursor.insertText(text,format);
+        format.setForeground(Qt::gray);
+        cursor.insertText("\n",format);
+    }
+
     if ( scroll )
         scrollbar->setValue(scrollbar->maximum());
 }

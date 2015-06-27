@@ -138,6 +138,25 @@ private:
      */
     void xonotic_read(const std::string& datagram);
 
+    /**
+     * \brief Color from regex match
+     */
+    static QColor xonotic_color(const QString& s);
+
+    /**
+     * \brief Hex character to integer
+     */
+    static int hex_to_int(char c)
+    {
+        if ( c <= '9' && c >= '0' )
+            return c - '0';
+        if ( c <= 'f' && c >= 'a' )
+            return c - 'a' + 0xa;
+        if ( c <= 'F' && c >= 'A' )
+            return c - 'A' + 0xa;
+        return 0;
+    }
+
     std::mutex          mutex;
     std::string         header = "\xff\xff\xff\xff";    ///< Connection message header
     std::string         line_buffer;                    ///< Buffer for overflowing messages from Xonotic

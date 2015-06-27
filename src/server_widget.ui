@@ -251,6 +251,20 @@
     <string>&amp;Detach Log</string>
    </property>
   </action>
+  <action name="action_parse_colors">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="format-text-color"/>
+   </property>
+   <property name="text">
+    <string>&amp;Parse Colors</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
