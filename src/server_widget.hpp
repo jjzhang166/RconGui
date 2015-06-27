@@ -103,7 +103,6 @@ public slots:
 private slots:
     void on_button_setup_clicked();
     void on_output_console_customContextMenuRequested(const QPoint &pos);
-    void on_button_send_clicked();
     void on_action_attach_log_triggered();
     void on_action_detach_log_triggered();
 

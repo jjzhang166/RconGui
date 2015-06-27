@@ -202,7 +202,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="input_console"/>
+          <widget class="HistoryLineEdit" name="input_console"/>
          </item>
          <item>
           <widget class="QPushButton" name="button_send">
@@ -294,39 +294,53 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HistoryLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>history_line_edit.hpp</header>
+   <slots>
+    <signal>lineExecuted(QString)</signal>
+    <slot>execute()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>action_clear</sender>
-   <signal>triggered()</signal>
-   <receiver>output_console</receiver>
-   <slot>clear()</slot>
+   <sender>button_send</sender>
+   <signal>clicked()</signal>
+   <receiver>input_console</receiver>
+   <slot>execute()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>699</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>387</x>
-     <y>495</y>
+     <x>576</x>
+     <y>32</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>input_console</sender>
-   <signal>returnPressed()</signal>
-   <receiver>button_send</receiver>
-   <slot>click()</slot>
+   <signal>lineExecuted(QString)</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>rcon_command(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>529</x>
-     <y>371</y>
+     <x>514</x>
+     <y>35</y>
     </hint>
     <hint type="destinationlabel">
-     <x>708</x>
-     <y>371</y>
+     <x>819</x>
+     <y>200</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>rcon_command(QString)</slot>
+ </slots>
 </ui>

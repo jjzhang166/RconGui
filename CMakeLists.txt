@@ -28,17 +28,20 @@ else()
     set(DEBUG 0)
 endif()
 
+# Enable extra Qt tools
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 set(SOURCES
     src/main.cpp
     src/create_server_dialog.cpp
     src/rcon_window.cpp
     src/server_widget.cpp
+    src/history_line_edit.cpp
 )
 
-# Enable extra Qt tools
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
 
 add_executable(${EXECUTABLE} ${SOURCES})
 
@@ -54,7 +57,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Boost
 find_package (Boost COMPONENTS system thread REQUIRED)
 target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
-include_directories (${Boost_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 
 # Install
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

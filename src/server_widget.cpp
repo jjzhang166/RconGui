@@ -190,12 +190,6 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
     menu->exec(output_console->mapToGlobal(pos));
 }
 
-void ServerWidget::on_button_send_clicked()
-{
-    rcon_command(input_console->text());
-    input_console->clear();
-}
-
 void ServerWidget::rcon_command(const std::string& command)
 {
     xonotic_write("rcon "+xonotic.rcon_password+' '+command);
