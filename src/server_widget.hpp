@@ -105,6 +105,9 @@ private slots:
     void on_output_console_customContextMenuRequested(const QPoint &pos);
     void on_action_attach_log_triggered();
     void on_action_detach_log_triggered();
+    void on_action_save_log_triggered();
+
+    void clear_log();
 
     /**
      * \brief Appends log to the output console

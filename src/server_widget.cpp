@@ -20,11 +20,16 @@
 #include "create_server_dialog.hpp"
 #include <QMenu>
 #include <QScrollBar>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <qtextobject.h>
 
 ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
     : QWidget(parent), xonotic(std::move(xonotic))
 {
     setupUi(this);
+
+    clear_log();
 
     io.max_datagram_size(1400);
     io.on_error = [this](const std::string& msg)
@@ -45,11 +50,24 @@ ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
 
     connect(this, &ServerWidget::log_received,
             this, &ServerWidget::append_log, Qt::QueuedConnection);
+
+    connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
+
 }
 
 ServerWidget::~ServerWidget()
 {
     xonotic_disconnect();
+}
+
+void ServerWidget::clear_log()
+{
+    output_console->clear();
+    QTextFrameFormat fmt;
+    fmt.setBackground(Qt::black);
+    output_console->document()->rootFrame()->setFrameFormat(fmt);
+    output_console->document()->setDefaultFont(QFont("monospace", 10));
+    output_console->setTextColor(QColor(192, 192, 192));
 }
 
 void ServerWidget::xonotic_close_connection()
@@ -180,7 +198,8 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
     QMenu* menu = output_console->createStandardContextMenu();
 
     menu->addSeparator();
-    menu->addAction(action_clear);
+    menu->addAction(action_save_log);
+    menu->addAction(action_clear_log);
 
     menu->addSeparator();
     menu->addAction(action_attach_log);
@@ -251,6 +270,7 @@ void ServerWidget::append_log(const QString& log)
         QTextCharFormat format;
         QString text;
         static QRegExp regex_xoncolor("^([0-9]|x[0-9a-fA-F]{3})");
+        format.setForeground(output_console->textColor());
         for ( int i = 0; i < log.size(); i++ )
         {
             if ( log[i] == '^' && i < log.size()-1 )
@@ -283,7 +303,7 @@ void ServerWidget::append_log(const QString& log)
             }
         }
         cursor.insertText(text,format);
-        format.setForeground(Qt::gray);
+        format.setForeground(output_console->textColor());
         cursor.insertText("\n",format);
     }
 
@@ -299,4 +319,41 @@ void ServerWidget::on_action_attach_log_triggered()
 void ServerWidget::on_action_detach_log_triggered()
 {
     rcon_command("log_dest_udp \"\"");
+}
+
+void ServerWidget::on_action_save_log_triggered()
+{
+    QStringList filters = {
+        tr("Text files (*.log *.txt)"),
+        tr("HTML (*.htm *.html)"),
+        tr("All files (*)"),
+    };
+
+    // static so that evey instance points to the same
+    static QString directory;
+
+    QFileDialog dialog(this, tr("Save Log"), directory);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilters(filters);
+
+    if ( !dialog.exec() )
+        return;
+
+    QString filename = dialog.selectedFiles()[0];
+    directory = QFileInfo(filename).dir().path();
+
+    QFile file(filename);
+
+    if ( !file.open(QIODevice::WriteOnly|QIODevice::Text) )
+    {
+        QMessageBox::warning(this,tr("File Error"),
+            tr("Could not write to \"%1\".").arg(file.fileName()));
+        return;
+    }
+
+    if ( filters.indexOf(dialog.selectedNameFilter()) == 1 ) // html
+        file.write(output_console->document()->toHtml("utf-8").toUtf8());
+    else
+        file.write(output_console->toPlainText().toUtf8());
+
 }

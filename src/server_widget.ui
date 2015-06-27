@@ -21,7 +21,9 @@
      </property>
      <widget class="QWidget" name="tab_status">
       <attribute name="icon">
-       <iconset theme="utilities-system-monitor"/>
+       <iconset theme="utilities-system-monitor">
+        <normaloff/>
+       </iconset>
       </attribute>
       <attribute name="title">
        <string>Status</string>
@@ -193,7 +195,9 @@
      </widget>
      <widget class="QWidget" name="tab_console">
       <attribute name="icon">
-       <iconset theme="utilities-terminal"/>
+       <iconset theme="utilities-terminal">
+        <normaloff/>
+       </iconset>
       </attribute>
       <attribute name="title">
        <string>Console</string>
@@ -223,13 +227,6 @@
          <property name="contextMenuPolicy">
           <enum>Qt::CustomContextMenu</enum>
          </property>
-         <property name="styleSheet">
-          <string notr="true">QTextEdit {
-	background-color: black;
-	color: silver;
-	font-family: monospace;
-}</string>
-         </property>
          <property name="undoRedoEnabled">
           <bool>false</bool>
          </property>
@@ -249,7 +246,7 @@
     </widget>
    </item>
   </layout>
-  <action name="action_clear">
+  <action name="action_clear_log">
    <property name="icon">
     <iconset theme="edit-clear">
      <normaloff/>
@@ -287,10 +284,22 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-color"/>
+    <iconset theme="format-text-color">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Parse Colors</string>
+   </property>
+  </action>
+  <action name="action_save_log">
+   <property name="icon">
+    <iconset theme="document-save">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save...</string>
    </property>
   </action>
  </widget>
