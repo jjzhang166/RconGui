@@ -28,6 +28,9 @@ RconWindow::RconWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setupUi(this);
+    
+    action_new_tab->setShortcut(QKeySequence::New);
+    action_quit->setShortcut(QKeySequence::Quit);
 
     connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
         delete tabWidget->widget(index);

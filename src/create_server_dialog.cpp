@@ -23,6 +23,7 @@ CreateServerDialog::CreateServerDialog(QWidget* parent)
     : QDialog(parent)
 {
     setupUi(this);
+    button_save->setShortcut(QKeySequence::Save);
     update_presets();
 }
 

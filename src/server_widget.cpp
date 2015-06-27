@@ -29,6 +29,8 @@ ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
 {
     setupUi(this);
 
+    button_refresh->setShortcut(QKeySequence::Refresh);
+
     clear_log();
 
     io.max_datagram_size(1400);

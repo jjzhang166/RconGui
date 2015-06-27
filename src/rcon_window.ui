@@ -40,11 +40,10 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_Quit"/>
-   <addaction name="action_New_Tab"/>
-   <addaction name="action_Refresh"/>
+   <addaction name="action_quit"/>
+   <addaction name="action_new_tab"/>
   </widget>
-  <action name="action_Quit">
+  <action name="action_quit">
    <property name="icon">
     <iconset theme="application-exit">
      <normaloff/>
@@ -53,11 +52,8 @@
    <property name="text">
     <string>&amp;Quit</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
   </action>
-  <action name="action_New_Tab">
+  <action name="action_new_tab">
    <property name="icon">
     <iconset theme="tab-new">
      <normaloff/>
@@ -66,28 +62,12 @@
    <property name="text">
     <string>&amp;New Tab</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="action_Refresh">
-   <property name="icon">
-    <iconset theme="view-refresh">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Refresh</string>
-   </property>
-   <property name="shortcut">
-    <string>F5</string>
-   </property>
   </action>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>action_Quit</sender>
+   <sender>action_quit</sender>
    <signal>triggered()</signal>
    <receiver>RconWindow</receiver>
    <slot>close()</slot>
@@ -103,7 +83,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_New_Tab</sender>
+   <sender>action_new_tab</sender>
    <signal>triggered()</signal>
    <receiver>RconWindow</receiver>
    <slot>new_tab()</slot>
