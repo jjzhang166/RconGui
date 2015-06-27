@@ -52,7 +52,7 @@ target_link_libraries(${EXECUTABLE} Qt5::Widgets)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Boost
-find_package (Boost COMPONENTS system REQUIRED)
+find_package (Boost COMPONENTS system thread REQUIRED)
 target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
 include_directories (${Boost_INCLUDE_DIRS})
 
