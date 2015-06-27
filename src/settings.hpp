@@ -15,18 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef SETTINGS_HPP
+#define SETTINGS_HPP
 
-#include <QtWidgets/QApplication>
-#include "rcon_window.hpp"
+#include <QSettings>
+#include <QHash>
 
-int main(int argc, char** argv)
+#include "xonotic.hpp"
+
+/**
+ * \brief Settings singleton
+ */
+class Settings
 {
-    QApplication app(argc, argv);
-    QApplication::setApplicationName("rcongui");
-    QApplication::setApplicationDisplayName("Rcon Gui");
-    QApplication::setOrganizationName("rcongui");
+public:
+    static Settings& instance()
+    {
+        static Settings singleton;
+        return singleton;
+    }
 
-    RconWindow window;
-    window.show();
-    return app.exec();
-}
+    ~Settings();
+
+    void load();
+
+    void save();
+
+    QHash<QString, network::Xonotic> saved_servers;
+
+private:
+    Settings();
+
+};
+
+#endif // SETTINGS_HPP

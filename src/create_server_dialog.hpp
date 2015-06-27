@@ -38,6 +38,21 @@ public:
      * \brief Builds a Xonotic connection from the form contents
      */
     network::Xonotic connection_info() const;
+
+private slots:
+    void on_button_save_clicked();
+    void on_button_delete_clicked();
+    void on_input_preset_currentIndexChanged(const QString& text);
+
+private:
+    /**
+     * \brief Loads the saved servers in the preset combo box
+     */
+    void update_presets();
+    /**
+     * \brief Populates the form input fields from the server settings
+     */
+    void populate(const network::Xonotic& xonotic);
 };
 
 #endif // CREATE_SERVER_DIALOG_HPP

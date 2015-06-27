@@ -22,7 +22,6 @@
 #include <QMainWindow>
 #include "ui_rcon_window.h"
 
-
 /**
  * \brief Main window
  */
@@ -34,7 +33,6 @@ public:
     RconWindow(QWidget* parent = nullptr);
 
 public slots:
-
     /**
      * \brief Shows the server creation dialog and creates a new tab
      */

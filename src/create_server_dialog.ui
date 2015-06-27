@@ -24,18 +24,13 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="input_preset">
        <property name="toolTip">
         <string>Server Preset</string>
        </property>
        <property name="whatsThis">
         <string>Selects a saved server or &quot;Create New&quot; to create a new server</string>
        </property>
-       <item>
-        <property name="text">
-         <string>Create New</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>
@@ -158,7 +153,7 @@
       <item row="5" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="button_delete">
           <property name="whatsThis">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes the server with the given name&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -186,7 +181,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="button_save">
           <property name="whatsThis">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the current server setup under the given name&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -228,14 +223,14 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>comboBox</tabstop>
+  <tabstop>input_preset</tabstop>
   <tabstop>input_host</tabstop>
   <tabstop>input_port</tabstop>
   <tabstop>input_password</tabstop>
   <tabstop>input_secure</tabstop>
   <tabstop>input_name</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>button_save</tabstop>
+  <tabstop>button_delete</tabstop>
  </tabstops>
  <resources/>
  <connections>

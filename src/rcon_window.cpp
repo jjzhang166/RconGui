@@ -19,6 +19,7 @@
 #include "rcon_window.hpp"
 
 #include <QtWidgets/QApplication>
+#include <QSettings>
 
 #include "create_server_dialog.hpp"
 #include "server_widget.hpp"

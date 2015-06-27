@@ -40,6 +40,7 @@ set(SOURCES
     src/rcon_window.cpp
     src/server_widget.cpp
     src/history_line_edit.cpp
+    src/settings.cpp
 )
 
 
