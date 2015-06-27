@@ -35,20 +35,11 @@ class ServerWidget : public QWidget, private Ui_ServerWidget
 {
     Q_OBJECT
 
+    friend class Ui_ServerWidget;
+
 public:
     ServerWidget(network::Xonotic xonotic, QWidget* parent = nullptr);
     ~ServerWidget();
-
-    /**
-     * \brief Close the xonotic connection and clear connection data
-     */
-    void xonotic_disconnect();
-
-    /**
-     * \brief Open the xonotic connection
-     * \returns Whether the connection has been successful
-     */
-    bool xonotic_connect();
 
     /**
      * \brief Whether the widget is connected to the xonotic server
@@ -99,6 +90,22 @@ public slots:
     {
         rcon_command(command.toStdString());
     }
+
+    /**
+     * \brief Close the xonotic connection and clear connection data
+     */
+    void xonotic_disconnect();
+
+    /**
+     * \brief Open the xonotic connection
+     * \returns Whether the connection has been successful
+     */
+    bool xonotic_connect();
+
+    /**
+     * \brief Diconnect and connect from xonotic
+     */
+    bool xonotic_reconnect();
 
 private slots:
     void on_button_setup_clicked();

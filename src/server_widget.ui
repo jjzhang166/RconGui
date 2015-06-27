@@ -178,6 +178,16 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="button_reconnect">
+           <property name="text">
+            <string>Reconnect</string>
+           </property>
+           <property name="icon">
+            <iconset theme="network-connect"/>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="button_setup">
            <property name="text">
             <string>&amp;Connection...</string>
@@ -348,8 +358,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>button_reconnect</sender>
+   <signal>clicked()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>xonotic_reconnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>580</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>570</x>
+     <y>577</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_refresh</sender>
+   <signal>clicked()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>xonotic_request_status()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>512</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>86</x>
+     <y>588</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>rcon_command(QString)</slot>
+  <slot>xonotic_reconnect()</slot>
+  <slot>xonotic_request_status()</slot>
  </slots>
 </ui>

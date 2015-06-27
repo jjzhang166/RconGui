@@ -113,6 +113,12 @@ bool ServerWidget::xonotic_connect()
     return io.connected();
 }
 
+bool ServerWidget::xonotic_reconnect()
+{
+    xonotic_disconnect();
+    return xonotic_connect();
+}
+
 void ServerWidget::xonotic_clear()
 {
     /// \todo
@@ -185,10 +191,7 @@ void ServerWidget::on_button_setup_clicked()
         xonotic = dlg.connection_info();
 
         if ( oldxon.server != xonotic.server )
-        {
-            xonotic_disconnect();
-            xonotic_connect();
-        }
+            xonotic_reconnect();
 
         if ( xonotic.name != oldxon.name )
             emit name_changed(QString::fromStdString(xonotic.name));
