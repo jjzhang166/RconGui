@@ -31,7 +31,7 @@
 
 #include "ui_server_widget.h"
 #include "network/udp_io.hpp"
-#include "xonotic/xonotic.hpp"
+#include "xonotic/connection_details.hpp"
 #include "xonotic/log_parser.hpp"
 #include "xonotic/server_model.hpp"
 #include "xonotic/cvar_model.hpp"
@@ -50,7 +50,7 @@ class ServerWidget : public QWidget, private Ui_ServerWidget
     friend class Ui_ServerWidget;
 
 public:
-    ServerWidget(xonotic::Xonotic xonotic, QWidget* parent = nullptr);
+    ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent = nullptr);
     ~ServerWidget();
 
     /**
@@ -61,7 +61,7 @@ public:
     /**
      * \brief Returns Xonotic connection details
      */
-    const xonotic::Xonotic& xonotic_connection() const { return xonotic; }
+    const xonotic::ConnectionDetails& xonotic_connection() const { return xonotic; }
 
     /**
      * \brief Name of the xonotic connection as a QString
@@ -212,7 +212,7 @@ private:
     std::mutex                  mutex;
     std::string                 header{"\xff\xff\xff\xff"};     ///< Connection message header
     std::string                 line_buffer;                    ///< Buffer for overflowing messages from Xonotic
-    xonotic::Xonotic            xonotic;
+    xonotic::ConnectionDetails            xonotic;
     network::UdpIo              io;
     std::thread                 thread_input;
     xonotic::LogParser          log_parser;

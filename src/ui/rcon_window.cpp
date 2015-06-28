@@ -57,10 +57,10 @@ void RconWindow::new_tab()
 {
     ServerSetupDialog dlg(this);
     if ( dlg.exec() )
-        create_tab(dlg.connection_info());
+        create_tab(dlg.connection_details());
 }
 
-void RconWindow::create_tab(const xonotic::Xonotic& xonotic)
+void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
 {
     QString name = QString::fromStdString(xonotic.name);
     auto tab = new ServerWidget(std::move(xonotic));
@@ -73,5 +73,5 @@ void RconWindow::create_tab(const xonotic::Xonotic& xonotic)
 
 void RconWindow::on_widget_server_setup_accepted()
 {
-    create_tab(widget_server_setup->connection_info());
+    create_tab(widget_server_setup->connection_details());
 }

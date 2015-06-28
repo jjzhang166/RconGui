@@ -41,7 +41,7 @@ public:
         setupUi(this);
     }
 
-    ServerSetupDialog(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr)
+    ServerSetupDialog(const xonotic::ConnectionDetails& xonotic, QWidget* parent = nullptr)
         : ServerSetupDialog(parent)
     {
         widget->populate(xonotic);
@@ -50,9 +50,9 @@ public:
     /**
      * \brief Builds a Xonotic connection from the form contents
      */
-    xonotic::Xonotic connection_info() const
+    xonotic::ConnectionDetails connection_details() const
     {
-        return widget->connection_info();
+        return widget->connection_details();
     }
 };
 

@@ -47,7 +47,7 @@ private slots:
     void on_widget_server_setup_accepted();
 
 private:
-    void create_tab(const xonotic::Xonotic& xonotic);
+    void create_tab(const xonotic::ConnectionDetails& xonotic);
 };
 
 #endif // RCON_WINDOW_HPP

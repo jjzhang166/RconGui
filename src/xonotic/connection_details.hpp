@@ -30,9 +30,8 @@ namespace xonotic {
 
 /**
  * \brief Xonotic connection information
- * \todo rename it to Server or Connection
  */
-struct Xonotic
+struct ConnectionDetails
 {
     enum Secure {
         NO        = 0,  ///< Plaintext rcon
@@ -40,7 +39,7 @@ struct Xonotic
         CHALLENGE = 2   ///< Challeng-based security
     };
 
-    Xonotic(network::Server     server,
+    ConnectionDetails(network::Server     server,
             std::string         rcon_password,
             Secure              rcon_secure = NO,
             std::string         name = {})

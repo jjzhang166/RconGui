@@ -29,7 +29,7 @@
 #include <QColor>
 #include <QFont>
 
-#include "xonotic/xonotic.hpp"
+#include "xonotic/connection_details.hpp"
 
 /**
  * \brief Settings singleton
@@ -64,7 +64,7 @@ public:
      */
     void set_history(const std::string& server, const QStringList& history);
 
-    QHash<QString, xonotic::Xonotic> saved_servers; ///< Server presets
+    QHash<QString, xonotic::ConnectionDetails> saved_servers; ///< Server presets
     QHash<QString, QStringList> console_history;    ///< Per-server console history
 
     QColor console_foreground{192, 192, 192};   ///< Default text color for the console

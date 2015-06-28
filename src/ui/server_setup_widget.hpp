@@ -25,7 +25,7 @@
 #define SERVER_SETUP_WIDGET_HPP
 
 #include "ui_server_setup_widget.h"
-#include "xonotic/xonotic.hpp"
+#include "xonotic/connection_details.hpp"
 
 /**
  * \brief Form used to gather Xonotic connection information
@@ -37,17 +37,17 @@ class ServerSetupWidget : public QWidget, private Ui::ServerSetupWidget
 public:
     ServerSetupWidget(QWidget* parent = nullptr);
 
-    ServerSetupWidget(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr);
+    ServerSetupWidget(const xonotic::ConnectionDetails& xonotic, QWidget* parent = nullptr);
 
     /**
      * \brief Builds a Xonotic connection from the form contents
      */
-    xonotic::Xonotic connection_info() const;
+    xonotic::ConnectionDetails connection_details() const;
 
     /**
      * \brief Populates the form input fields from the server settings
      */
-    void populate(const xonotic::Xonotic& xonotic);
+    void populate(const xonotic::ConnectionDetails& xonotic);
 
 signals:
     void accepted();

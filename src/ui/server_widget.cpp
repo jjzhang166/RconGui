@@ -33,7 +33,7 @@
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
 
-ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
+ServerWidget::ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent)
     : QWidget(parent), xonotic(std::move(xonotic))
 {
     setupUi(this);
@@ -258,7 +258,7 @@ void ServerWidget::on_button_setup_clicked()
     if ( dlg.exec() )
     {
         auto oldxon = xonotic;
-        xonotic = dlg.connection_info();
+        xonotic = dlg.connection_details();
 
         if ( oldxon.server != xonotic.server )
             xonotic_reconnect();
@@ -287,11 +287,11 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
 void ServerWidget::rcon_command(const std::string& command)
 {
     /// \todo rcon_secure 2
-    if ( xonotic.rcon_secure == xonotic::Xonotic::NO )
+    if ( xonotic.rcon_secure == xonotic::ConnectionDetails::NO )
     {
         xonotic_write("rcon "+xonotic.rcon_password+' '+command);
     }
-    else if ( xonotic.rcon_secure == xonotic::Xonotic::TIME )
+    else if ( xonotic.rcon_secure == xonotic::ConnectionDetails::TIME )
     {
         auto message = QString("%1.000000 %2")
                         .arg(std::time(nullptr))

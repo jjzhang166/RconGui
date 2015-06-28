@@ -35,26 +35,26 @@ ServerSetupWidget::ServerSetupWidget(QWidget* parent)
     update_presets();
 }
 
-ServerSetupWidget::ServerSetupWidget(const xonotic::Xonotic& xonotic,
+ServerSetupWidget::ServerSetupWidget(const xonotic::ConnectionDetails& xonotic,
                                        QWidget* parent)
     : ServerSetupWidget(parent)
 {
     populate(xonotic);
 }
 
-xonotic::Xonotic ServerSetupWidget::connection_info() const
+xonotic::ConnectionDetails ServerSetupWidget::connection_details() const
 {
-    return xonotic::Xonotic(
+    return xonotic::ConnectionDetails(
         network::Server(input_host->text().toStdString(), input_port->value()),
         input_password->text().toStdString(),
-        xonotic::Xonotic::Secure(input_secure->currentIndex()),
+        xonotic::ConnectionDetails::Secure(input_secure->currentIndex()),
         input_name->text().toStdString()
     );
 }
 
 void ServerSetupWidget::on_button_save_clicked()
 {
-    auto xonotic = connection_info();
+    auto xonotic = connection_details();
     auto name = QString::fromStdString(xonotic.name);
     Settings::instance().saved_servers.insert(name, xonotic);
     update_presets();
@@ -66,7 +66,7 @@ void ServerSetupWidget::on_button_save_clicked()
 
 void ServerSetupWidget::on_button_delete_clicked()
 {
-    auto xonotic = connection_info();
+    auto xonotic = connection_details();
     Settings::instance().saved_servers
         .remove(QString::fromStdString(xonotic.name));
     update_presets();
@@ -94,7 +94,7 @@ void ServerSetupWidget::on_input_preset_currentIndexChanged(const QString& text)
     }
 }
 
-void ServerSetupWidget::populate(const xonotic::Xonotic& xonotic)
+void ServerSetupWidget::populate(const xonotic::ConnectionDetails& xonotic)
 {
     input_host->setText(QString::fromStdString(xonotic.server.host));
     input_port->setValue(xonotic.server.port);

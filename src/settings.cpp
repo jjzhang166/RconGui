@@ -46,9 +46,9 @@ void Settings::load()
         std::string password = settings.value("password").toString().toStdString();
         int secure = qBound(0, settings.value("secure").toInt(), 2);
         saved_servers.insert(key,
-            xonotic::Xonotic(network::Server(host, port),
+            xonotic::ConnectionDetails(network::Server(host, port),
                             password,
-                            xonotic::Xonotic::Secure(secure),
+                            xonotic::ConnectionDetails::Secure(secure),
                             key.toStdString()
         ));
         auto it = console_history.find(key);
