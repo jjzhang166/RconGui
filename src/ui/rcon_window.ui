@@ -11,9 +11,8 @@
    </rect>
   </property>
   <property name="windowIcon">
-   <iconset theme="utilities-terminal">
-    <normaloff/>
-   </iconset>
+   <iconset resource="../../data/data.qrc">
+    <normaloff>:/icons/icon.svg</normaloff>:/icons/icon.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -102,7 +101,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../data/data.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <slot>new_tab()</slot>

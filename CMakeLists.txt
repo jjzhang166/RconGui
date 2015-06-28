@@ -48,10 +48,11 @@ endif()
 # Enable extra Qt tools
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-set(SOURCES src/xonotic/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
+set(SOURCES data/data.qrc src/xonotic/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
     src/main.cpp
     src/ui/server_setup_widget.cpp
     src/ui/rcon_window.cpp
