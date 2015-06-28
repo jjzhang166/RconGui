@@ -45,19 +45,25 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
             &model_server, &xonotic::ServerModel::set_server_property,
             Qt::QueuedConnection);
 
-    table_cvars->setModel(&model_cvar);
+    table_cvars->setModel(&proxy_cvar);
+    proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
             &model_cvar, &xonotic::CvarModel::set_cvar,
             Qt::QueuedConnection);
+    auto header_view = table_cvars->horizontalHeader();
+    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
+    table_cvars->hideColumn(2);
+    table_cvars->hideColumn(3);
+    for ( int i = 0; i < model_cvar.columnCount(); i++ )
+        input_cvar_filter_section->addItem(
+            model_cvar.headerData(i,Qt::Horizontal).toString());
 
     connect(this, &ServerWidget::log_received,
             this, &ServerWidget::append_log, Qt::QueuedConnection);
 
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
-    auto header_view = table_cvars->horizontalHeader();
-    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
 
     clear_log();
 
@@ -402,6 +408,15 @@ void ServerWidget::on_action_save_log_triggered()
     else
         file.write(output_console->toPlainText().toUtf8());
 
+}
+
+void ServerWidget::cvarlist_apply_filter()
+{
+    proxy_cvar.setFilterKeyColumn(input_cvar_filter_section->currentIndex());
+    if ( input_cvar_filter_regex->isChecked() )
+        proxy_cvar.setFilterRegExp(input_cvar_filter_pattern->text());
+    else
+        proxy_cvar.setFilterFixedString(input_cvar_filter_pattern->text());
 }
 
 void ServerWidget::network_error_status(const QString& msg)

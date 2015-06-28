@@ -47,7 +47,7 @@ public:
 
     int columnCount(const QModelIndex & = {}) const override
     {
-        return 3;
+        return 4;
     }
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override
@@ -65,6 +65,7 @@ public:
                 case 0: return QString::fromStdString(cvar.name);
                 case 1: return QString::fromStdString(cvar.value);
                 case 2: return QString::fromStdString(cvar.default_value);
+                case 3: return QString::fromStdString(cvar.description);
             }
         }
         else if ( role == Qt::ToolTipRole || role == Qt::WhatsThisRole )
@@ -88,6 +89,7 @@ public:
                 case 0: return tr("Name");
                 case 1: return tr("Value");
                 case 2: return tr("Default");
+                case 3: return tr("Description");
             }
         }
         return {};

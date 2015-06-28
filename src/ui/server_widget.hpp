@@ -27,6 +27,8 @@
 #include <thread>
 #include <mutex>
 
+#include <QSortFilterProxyModel>
+
 #include "ui_server_widget.h"
 #include "network/udp_io.hpp"
 #include "xonotic/xonotic.hpp"
@@ -144,6 +146,11 @@ private slots:
      */
     void network_error_status(const QString& msg);
 
+    /**
+     * \brief Applys the current filter settings to the cvar list
+     */
+    void cvarlist_apply_filter();
+
 private:
     /**
      * \brief Low level xonotic disconnection
@@ -203,6 +210,7 @@ private:
     xonotic::LogParser          log_parser;
     xonotic::ServerModel        model_server;
     xonotic::CvarModel          model_cvar;
+    QSortFilterProxyModel       proxy_cvar;
 };
 
 #endif // SERVER_WIDGET_HPP

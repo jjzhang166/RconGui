@@ -213,6 +213,30 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLineEdit" name="input_cvar_filter_pattern">
+           <property name="placeholderText">
+            <string>filter</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="input_cvar_filter_regex">
+           <property name="text">
+            <string>Regex</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="input_cvar_filter_section"/>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QTableView" name="table_cvars">
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
@@ -461,11 +485,60 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>input_cvar_filter_pattern</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>cvarlist_apply_filter()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>823</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_cvar_filter_regex</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>cvarlist_apply_filter()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>823</x>
+     <y>152</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_cvar_filter_section</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>cvarlist_apply_filter()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>703</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>806</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>rcon_command(QString)</slot>
   <slot>xonotic_reconnect()</slot>
   <slot>xonotic_request_status()</slot>
   <slot>xonotic_request_cvars()</slot>
+  <slot>cvarlist_apply_filter()</slot>
  </slots>
 </ui>
