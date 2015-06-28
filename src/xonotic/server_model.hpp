@@ -35,10 +35,6 @@ namespace xonotic {
 class ServerModel : public QAbstractListModel
 {
 public:
-    /**
-     * \brief Get a server property
-     */
-    QString server_property(const QString& name);
 
     int rowCount(const QModelIndex & = {}) const override
     {
@@ -66,6 +62,14 @@ public:
             return pair.first;
         }
         return {};
+    }
+
+    /**
+     * \brief Get a server property
+     */
+    QString server_property(const QString& property)
+    {
+        return  properties[property].second;
     }
 
 public slots:

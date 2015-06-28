@@ -29,6 +29,8 @@
 #include <QString>
 #include <QObject>
 
+#include "cvar.hpp"
+
 namespace xonotic {
 
 /**
@@ -45,19 +47,6 @@ struct Player
     std::string frags;
     std::string no;
     std::string name;
-};
-
-/**
- * \brief Xonotic console variable info
- *
- * Contains raw data as read from the log line
- */
-struct Cvar
-{
-    std::string name;
-    std::string value;
-    std::string default_value;
-    std::string description;
 };
 
 /**

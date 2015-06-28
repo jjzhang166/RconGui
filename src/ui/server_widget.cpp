@@ -45,10 +45,19 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
             &model_server, &xonotic::ServerModel::set_server_property,
             Qt::QueuedConnection);
 
+    table_cvars->setModel(&model_cvar);
+    connect(&log_parser, &xonotic::LogParser::cvar,
+            &model_cvar, &xonotic::CvarModel::set_cvar,
+            Qt::QueuedConnection);
+
     connect(this, &ServerWidget::log_received,
             this, &ServerWidget::append_log, Qt::QueuedConnection);
 
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
+
+    auto header_view = table_cvars->horizontalHeader();
+    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
 
     clear_log();
 

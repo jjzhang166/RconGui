@@ -32,6 +32,7 @@
 #include "xonotic/xonotic.hpp"
 #include "xonotic/server_model.hpp"
 #include "xonotic/log_parser.hpp"
+#include "xonotic/cvar_model.hpp"
 
 using Lock = std::unique_lock<std::mutex>;
 
@@ -199,8 +200,9 @@ private:
     xonotic::Xonotic            xonotic;
     network::UdpIo              io;
     std::thread                 thread_input;
-    xonotic::ServerModel        model_server;
     xonotic::LogParser          log_parser;
+    xonotic::ServerModel        model_server;
+    xonotic::CvarModel          model_cvar;
 };
 
 #endif // SERVER_WIDGET_HPP
