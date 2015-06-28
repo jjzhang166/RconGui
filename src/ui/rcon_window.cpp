@@ -41,7 +41,7 @@ RconWindow::RconWindow(QWidget* parent)
     new_tab->setIcon(QIcon::fromTheme("document-new"));
     new_tab->setShortcut(QKeySequence::New);
     connect(new_tab, &QToolButton::clicked, this, &RconWindow::new_tab);
-    tabWidget->setCornerWidget(new_tab, Qt::TopRightCorner);
+    tabWidget->setCornerWidget(new_tab, Qt::TopLeftCorner);
 
     connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
         delete tabWidget->widget(index);
@@ -64,10 +64,11 @@ void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
 {
     QString name = QString::fromStdString(xonotic.name);
     auto tab = new ServerWidget(std::move(xonotic));
-    tabWidget->addTab(tab, name);
+    int tabindex = tabWidget->addTab(tab, name);
     connect(tab, &ServerWidget::name_changed,[this,tab](const QString& string){
         tabWidget->setTabText(tabWidget->indexOf(tab), string);
     });
+    tabWidget->setCurrentIndex(tabindex);
     stacked_widget->setCurrentIndex(1);
 }
 
