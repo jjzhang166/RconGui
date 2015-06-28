@@ -20,7 +20,7 @@
 #define CREATE_SERVER_DIALOG_HPP
 
 #include "ui_create_server_dialog.h"
-#include "xonotic.hpp"
+#include "xonotic/xonotic.hpp"
 
 /**
  * \brief Form used to gather Xonotic connection information
@@ -32,12 +32,12 @@ class CreateServerDialog : public QDialog, private Ui::CreateServerDialog
 public:
     CreateServerDialog(QWidget* parent = nullptr);
 
-    CreateServerDialog(const network::Xonotic& xonotic, QWidget* parent = nullptr);
+    CreateServerDialog(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr);
 
     /**
      * \brief Builds a Xonotic connection from the form contents
      */
-    network::Xonotic connection_info() const;
+    xonotic::Xonotic connection_info() const;
 
 private slots:
     void on_button_save_clicked();
@@ -52,7 +52,7 @@ private:
     /**
      * \brief Populates the form input fields from the server settings
      */
-    void populate(const network::Xonotic& xonotic);
+    void populate(const xonotic::Xonotic& xonotic);
 };
 
 #endif // CREATE_SERVER_DIALOG_HPP

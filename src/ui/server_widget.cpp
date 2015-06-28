@@ -27,7 +27,7 @@
 #include "create_server_dialog.hpp"
 #include "settings.hpp"
 
-ServerWidget::ServerWidget(network::Xonotic xonotic, QWidget* parent)
+ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
     : QWidget(parent), xonotic(std::move(xonotic))
 {
     setupUi(this);
@@ -175,10 +175,15 @@ void ServerWidget::xonotic_read(const std::string& datagram)
             }
             break;
         }
+        xontotic_parse(line);
         emit log_received(QString::fromUtf8(line.data(), line.size()));
     }
 }
 
+void ServerWidget::xontotic_parse(const std::string& log_line)
+{
+    // todo
+}
 
 QString ServerWidget::name() const
 {

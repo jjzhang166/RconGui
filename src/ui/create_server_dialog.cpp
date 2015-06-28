@@ -27,19 +27,19 @@ CreateServerDialog::CreateServerDialog(QWidget* parent)
     update_presets();
 }
 
-CreateServerDialog::CreateServerDialog(const network::Xonotic& xonotic,
+CreateServerDialog::CreateServerDialog(const xonotic::Xonotic& xonotic,
                                        QWidget* parent)
     : CreateServerDialog(parent)
 {
     populate(xonotic);
 }
 
-network::Xonotic CreateServerDialog::connection_info() const
+xonotic::Xonotic CreateServerDialog::connection_info() const
 {
-    return network::Xonotic(
+    return xonotic::Xonotic(
         network::Server(input_host->text().toStdString(), input_port->value()),
         input_password->text().toStdString(),
-        network::Xonotic::Secure(input_secure->currentIndex()),
+        xonotic::Xonotic::Secure(input_secure->currentIndex()),
         input_name->text().toStdString()
     );
 }
@@ -86,7 +86,7 @@ void CreateServerDialog::on_input_preset_currentIndexChanged(const QString& text
     }
 }
 
-void CreateServerDialog::populate(const network::Xonotic& xonotic)
+void CreateServerDialog::populate(const xonotic::Xonotic& xonotic)
 {
     input_host->setText(QString::fromStdString(xonotic.server.host));
     input_port->setValue(xonotic.server.port);

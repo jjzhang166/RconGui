@@ -18,9 +18,9 @@
 #ifndef XONOTIC_HPP
 #define XONOTIC_HPP
 
-#include "server.hpp"
+#include "network/server.hpp"
 
-namespace network {
+namespace xonotic {
 
 /**
  * \brief Xonotic connection information
@@ -33,10 +33,10 @@ struct Xonotic
         CHALLENGE = 2   ///< Challeng-based security
     };
 
-    Xonotic(Server      server,
-            std::string rcon_password,
-            Secure      rcon_secure = NO,
-            std::string name = {})
+    Xonotic(network::Server     server,
+            std::string         rcon_password,
+            Secure              rcon_secure = NO,
+            std::string         name = {})
         : server(std::move(server)),
           rcon_password(std::move(rcon_password)),
           rcon_secure(rcon_secure),
@@ -46,11 +46,11 @@ struct Xonotic
             this->name = this->server.name();
     }
 
-    Server      server;         ///< Connection server
-    std::string rcon_password;  ///< Rcon Password
-    Secure      rcon_secure;    ///< Rcon Secure
-    std::string name;           ///< Server name
+    network::Server     server;         ///< Connection server
+    std::string         rcon_password;  ///< Rcon Password
+    Secure              rcon_secure;    ///< Rcon Secure
+    std::string         name;           ///< Server name
 };
 
-} // namespace network
+} // namespace xonotic
 #endif // XONOTIC_HPP

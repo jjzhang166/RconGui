@@ -23,8 +23,8 @@
 #include <mutex>
 
 #include "ui_server_widget.h"
-#include "xonotic.hpp"
-#include "udp_io.hpp"
+#include "network/udp_io.hpp"
+#include "xonotic/xonotic.hpp"
 
 using Lock = std::unique_lock<std::mutex>;
 
@@ -38,7 +38,7 @@ class ServerWidget : public QWidget, private Ui_ServerWidget
     friend class Ui_ServerWidget;
 
 public:
-    ServerWidget(network::Xonotic xonotic, QWidget* parent = nullptr);
+    ServerWidget(xonotic::Xonotic xonotic, QWidget* parent = nullptr);
     ~ServerWidget();
 
     /**
@@ -49,7 +49,7 @@ public:
     /**
      * \brief Returns Xonotic connection details
      */
-    const network::Xonotic& xonotic_connection() const { return xonotic; }
+    const xonotic::Xonotic& xonotic_connection() const { return xonotic; }
 
     /**
      * \brief Name of the xonotic connection as a QString
@@ -148,6 +148,11 @@ private:
     void xonotic_read(const std::string& datagram);
 
     /**
+     * \brief Parse a line from the xonotic log
+     */
+    void xontotic_parse(const std::string& log_line);
+
+    /**
      * \brief Color from regex match
      */
     static QColor xonotic_color(const QString& s);
@@ -169,7 +174,7 @@ private:
     std::mutex          mutex;
     std::string         header = "\xff\xff\xff\xff";    ///< Connection message header
     std::string         line_buffer;                    ///< Buffer for overflowing messages from Xonotic
-    network::Xonotic    xonotic;
+    xonotic::Xonotic    xonotic;
     network::UdpIo      io;
     std::thread         thread_input;
 };

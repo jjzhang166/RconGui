@@ -23,7 +23,7 @@
 #include <QColor>
 #include <QFont>
 
-#include "xonotic.hpp"
+#include "xonotic/xonotic.hpp"
 
 /**
  * \brief Settings singleton
@@ -43,7 +43,7 @@ public:
 
     void save();
 
-    QHash<QString, network::Xonotic> saved_servers; ///< Server presets
+    QHash<QString, xonotic::Xonotic> saved_servers; ///< Server presets
 
     QColor console_foreground{192, 192, 192};   ///< Default text color for the console
     QColor console_background{Qt::black};       ///< Background color for the console

@@ -36,10 +36,10 @@ include_directories("${CMAKE_SOURCE_DIR}/src")
 
 set(SOURCES
     src/main.cpp
-    src/create_server_dialog.cpp
-    src/rcon_window.cpp
-    src/server_widget.cpp
-    src/history_line_edit.cpp
+    src/ui/create_server_dialog.cpp
+    src/ui/rcon_window.cpp
+    src/ui/server_widget.cpp
+    src/ui/history_line_edit.cpp
     src/settings.cpp
 )
 
