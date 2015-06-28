@@ -51,6 +51,11 @@ void Settings::load()
                             xonotic::Xonotic::Secure(secure),
                             key.toStdString()
         ));
+        auto it = console_history.find(key);
+        if ( it == console_history.end() )
+            console_history.insert(key, settings.value("console_history").toStringList());
+        else
+            *it = settings.value("console_history", *it).toStringList();
         settings.endGroup();
     }
     settings.endGroup();
@@ -75,6 +80,7 @@ void Settings::save()
         settings.setValue("port",uint(server.server.port));
         settings.setValue("password",QString::fromStdString(server.rcon_password));
         settings.setValue("secure",int(server.rcon_secure));
+        settings.setValue("console_history",get_history(server.name));
         settings.endGroup();
     }
     settings.endGroup();
@@ -86,4 +92,17 @@ void Settings::save()
     settings.setValue("brightness_min",console_brightness_min);
     settings.setValue("font",console_font.toString());
     settings.endGroup();
+}
+
+QStringList Settings::get_history(const std::string& server) const
+{
+    auto it = console_history.find(QString::fromStdString(server));
+    if ( it == console_history.end() )
+        return {};
+    return *it;
+}
+
+void Settings::set_history(const std::string& server, const QStringList& history)
+{
+    console_history[QString::fromStdString(server)] = history;
 }

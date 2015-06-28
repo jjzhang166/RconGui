@@ -45,11 +45,27 @@ public:
 
     ~Settings();
 
+    /**
+     * \brief Loads settings from the permanent storage (called from the ctor)
+     */
     void load();
 
+    /**
+     * \brief Save settings in the permanent storage (called from the dtor)
+     */
     void save();
 
+    /**
+     * \brief Get the console history for the given server
+     */
+    QStringList get_history(const std::string& server) const;
+    /**
+     * \brief Set the console history for the given server
+     */
+    void set_history(const std::string& server, const QStringList& history);
+
     QHash<QString, xonotic::Xonotic> saved_servers; ///< Server presets
+    QHash<QString, QStringList> console_history;    ///< Per-server console history
 
     QColor console_foreground{192, 192, 192};   ///< Default text color for the console
     QColor console_background{Qt::black};       ///< Background color for the console

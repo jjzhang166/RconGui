@@ -64,6 +64,8 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
 
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
+    input_console->setFont(settings().console_font);
+    input_console->setHistory(settings().get_history(this->xonotic.name));
 
     clear_log();
 
@@ -92,6 +94,7 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
 ServerWidget::~ServerWidget()
 {
     xonotic_disconnect();
+    settings().set_history(xonotic.name, input_console->history());
 }
 
 void ServerWidget::clear_log()
