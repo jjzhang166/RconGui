@@ -1,4 +1,10 @@
-/*
+/**
+ * \file
+ *
+ * \author Mattia Basaglia
+ *
+ * \section License
+ *
  * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
