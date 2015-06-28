@@ -134,6 +134,11 @@ private slots:
     void xonotic_request_status();
 
     /**
+     * \brief Requests xonotic cvar list
+     */
+    void xonotic_request_cvars();
+
+    /**
      * \brief Update the model with the error message
      */
     void network_error_status(const QString& msg);
@@ -163,6 +168,11 @@ private:
      * \brief Parse a line from the xonotic log
      */
     void xontotic_parse(const std::string& log_line);
+
+    /**
+     * \brief Sets the network status message
+     */
+    void set_network_status(const QString& msg);
 
     /**
      * \brief Color from regex match

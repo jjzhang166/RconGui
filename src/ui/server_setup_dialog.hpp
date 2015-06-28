@@ -21,33 +21,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef RCON_WINDOW_HPP
-#define RCON_WINDOW_HPP
+#ifndef SERVER_SETUP_DIALOG_HPP
+#define SERVER_SETUP_DIALOG_HPP
 
-#include <QMainWindow>
-#include "ui_rcon_window.h"
+#include "ui_server_setup_dialog.h"
+
 
 /**
- * \brief Main window
+ * \brief Form used to gather Xonotic connection information
  */
-class RconWindow : public QMainWindow, private Ui::RconWindow
+class ServerSetupDialog : public QDialog, private Ui::ServerSetupDialog
 {
     Q_OBJECT
 
 public:
-    RconWindow(QWidget* parent = nullptr);
+    ServerSetupDialog(QWidget* parent = nullptr)
+        : QDialog(parent)
+    {
+        setupUi(this);
+    }
 
-public slots:
+    ServerSetupDialog(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr)
+        : ServerSetupDialog(parent)
+    {
+        widget->populate(xonotic);
+    }
+
     /**
-     * \brief Shows the server creation dialog and creates a new tab
+     * \brief Builds a Xonotic connection from the form contents
      */
-    void new_tab();
-
-private slots:
-    void on_widget_server_setup_accepted();
-
-private:
-    void create_tab(const xonotic::Xonotic& xonotic);
+    xonotic::Xonotic connection_info() const
+    {
+        return widget->connection_info();
+    }
 };
 
-#endif // RCON_WINDOW_HPP
+
+#endif // SERVER_SETUP_DIALOG_HPP

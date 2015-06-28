@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CreateServerDialog</class>
- <widget class="QDialog" name="CreateServerDialog">
+ <class>ServerSetupWidget</class>
+ <widget class="QWidget" name="ServerSetupWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -214,7 +214,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="button_box">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
@@ -233,38 +233,5 @@
   <tabstop>button_delete</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>CreateServerDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>258</x>
-     <y>497</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CreateServerDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>400</x>
-     <y>344</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>406</x>
-     <y>510</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

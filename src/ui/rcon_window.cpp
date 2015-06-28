@@ -25,21 +25,28 @@
 
 #include <QtWidgets/QApplication>
 #include <QSettings>
+#include <QToolButton>
 
-#include "create_server_dialog.hpp"
+
+#include "server_setup_dialog.hpp"
 #include "server_widget.hpp"
 
 RconWindow::RconWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setupUi(this);
-    
-    action_new_tab->setShortcut(QKeySequence::New);
-    action_quit->setShortcut(QKeySequence::Quit);
+
+    auto new_tab = new QToolButton();
+    new_tab->setText(tr("New Tab"));
+    new_tab->setIcon(QIcon::fromTheme("document-new"));
+    new_tab->setShortcut(QKeySequence::New);
+    connect(new_tab, &QToolButton::clicked, this, &RconWindow::new_tab);
+    tabWidget->setCornerWidget(new_tab, Qt::TopRightCorner);
 
     connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
         delete tabWidget->widget(index);
-        tabWidget->removeTab(index);
+        if ( tabWidget->count() == 0 )
+            stacked_widget->setCurrentIndex(0);
     });
     connect(tabWidget, &QTabWidget::currentChanged, [this](int index){
         setWindowTitle(tabWidget->tabText(index));
@@ -48,15 +55,23 @@ RconWindow::RconWindow(QWidget* parent)
 
 void RconWindow::new_tab()
 {
-    CreateServerDialog dlg(this);
+    ServerSetupDialog dlg(this);
     if ( dlg.exec() )
-    {
-        auto xonotic = dlg.connection_info();
-        QString name = QString::fromStdString(xonotic.name);
-        auto tab = new ServerWidget(std::move(xonotic));
-        tabWidget->addTab(tab, name);
-        connect(tab, &ServerWidget::name_changed,[this,tab](const QString& string){
-            tabWidget->setTabText(tabWidget->indexOf(tab), string);
-        });
-    }
+        create_tab(dlg.connection_info());
+}
+
+void RconWindow::create_tab(const xonotic::Xonotic& xonotic)
+{
+    QString name = QString::fromStdString(xonotic.name);
+    auto tab = new ServerWidget(std::move(xonotic));
+    tabWidget->addTab(tab, name);
+    connect(tab, &ServerWidget::name_changed,[this,tab](const QString& string){
+        tabWidget->setTabText(tabWidget->indexOf(tab), string);
+    });
+    stacked_widget->setCurrentIndex(1);
+}
+
+void RconWindow::on_widget_server_setup_accepted()
+{
+    create_tab(widget_server_setup->connection_info());
 }

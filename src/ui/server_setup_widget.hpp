@@ -21,28 +21,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CREATE_SERVER_DIALOG_HPP
-#define CREATE_SERVER_DIALOG_HPP
+#ifndef SERVER_SETUP_WIDGET_HPP
+#define SERVER_SETUP_WIDGET_HPP
 
-#include "ui_create_server_dialog.h"
+#include "ui_server_setup_widget.h"
 #include "xonotic/xonotic.hpp"
 
 /**
  * \brief Form used to gather Xonotic connection information
  */
-class CreateServerDialog : public QDialog, private Ui::CreateServerDialog
+class ServerSetupWidget : public QWidget, private Ui::ServerSetupWidget
 {
     Q_OBJECT
 
 public:
-    CreateServerDialog(QWidget* parent = nullptr);
+    ServerSetupWidget(QWidget* parent = nullptr);
 
-    CreateServerDialog(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr);
+    ServerSetupWidget(const xonotic::Xonotic& xonotic, QWidget* parent = nullptr);
 
     /**
      * \brief Builds a Xonotic connection from the form contents
      */
     xonotic::Xonotic connection_info() const;
+
+    /**
+     * \brief Populates the form input fields from the server settings
+     */
+    void populate(const xonotic::Xonotic& xonotic);
+
+signals:
+    void accepted();
+    void rejected();
 
 private slots:
     void on_button_save_clicked();
@@ -54,10 +63,7 @@ private:
      * \brief Loads the saved servers in the preset combo box
      */
     void update_presets();
-    /**
-     * \brief Populates the form input fields from the server settings
-     */
-    void populate(const xonotic::Xonotic& xonotic);
+
 };
 
-#endif // CREATE_SERVER_DIALOG_HPP
+#endif // SERVER_SETUP_WIDGET_HPP

@@ -21,33 +21,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef RCON_WINDOW_HPP
-#define RCON_WINDOW_HPP
-
-#include <QMainWindow>
-#include "ui_rcon_window.h"
-
-/**
- * \brief Main window
- */
-class RconWindow : public QMainWindow, private Ui::RconWindow
-{
-    Q_OBJECT
-
-public:
-    RconWindow(QWidget* parent = nullptr);
-
-public slots:
-    /**
-     * \brief Shows the server creation dialog and creates a new tab
-     */
-    void new_tab();
-
-private slots:
-    void on_widget_server_setup_accepted();
-
-private:
-    void create_tab(const xonotic::Xonotic& xonotic);
-};
-
-#endif // RCON_WINDOW_HPP
+#include "server_setup_dialog.hpp"

@@ -29,7 +29,7 @@
 #include <QMessageBox>
 #include <QTextObject>
 
-#include "create_server_dialog.hpp"
+#include "server_setup_dialog.hpp"
 #include "settings.hpp"
 
 ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
@@ -37,7 +37,8 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
 {
     setupUi(this);
 
-    button_refresh->setShortcut(QKeySequence::Refresh);
+    button_refresh_status->setShortcut(QKeySequence::Refresh);
+    button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
     table_server_status->setModel(&model_server);
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
@@ -104,7 +105,7 @@ void ServerWidget::xonotic_disconnect()
     xonotic_close_connection();
     xonotic_clear();
 
-    model_server.set_server_property("connection",tr("Disconnected"));
+    set_network_status(tr("Disconnected"));
 }
 
 bool ServerWidget::xonotic_connect()
@@ -128,7 +129,7 @@ bool ServerWidget::xonotic_connect()
                 io.run_input();
             }));
 
-            model_server.set_server_property("connection",tr("Connected"));
+            set_network_status(tr("Connected"));
         }
     }
 
@@ -211,7 +212,7 @@ QString ServerWidget::name() const
 
 void ServerWidget::on_button_setup_clicked()
 {
-    CreateServerDialog dlg(xonotic, this);
+    ServerSetupDialog dlg(xonotic, this);
     if ( dlg.exec() )
     {
         auto oldxon = xonotic;
@@ -396,5 +397,16 @@ void ServerWidget::on_action_save_log_triggered()
 
 void ServerWidget::network_error_status(const QString& msg)
 {
-    model_server.set_server_property("connection",tr("Error: %1").arg(msg));
+    set_network_status(tr("Error: %1").arg(msg));
+}
+
+void ServerWidget::set_network_status(const QString& msg)
+{
+    label_connection->setText(msg);
+    model_server.set_server_property("connection",msg);
+}
+
+void ServerWidget::xonotic_request_cvars()
+{
+    rcon_command("cvarlist");
 }

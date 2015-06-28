@@ -110,7 +110,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QPushButton" name="button_refresh">
+          <widget class="QPushButton" name="button_refresh_status">
            <property name="text">
             <string>&amp;Refresh</string>
            </property>
@@ -129,7 +129,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_refresh_status">
            <property name="text">
             <string>(time)</string>
            </property>
@@ -147,30 +147,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="button_reconnect">
-           <property name="text">
-            <string>Reconnect</string>
-           </property>
-           <property name="icon">
-            <iconset theme="network-connect">
-             <normaloff/>
-            </iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="button_setup">
-           <property name="text">
-            <string>&amp;Connection...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="configure">
-             <normaloff/>
-            </iconset>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
@@ -226,7 +202,107 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_cvars">
+      <attribute name="icon">
+       <iconset theme="format-list-unordered"/>
+      </attribute>
+      <attribute name="title">
+       <string>Cvars</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QTableView" name="table_cvars"/>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="button_refresh_cvars">
+           <property name="text">
+            <string>&amp;Refresh</string>
+           </property>
+           <property name="icon">
+            <iconset theme="view-refresh">
+             <normaloff/>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Last Updated</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_refresh_cvar">
+           <property name="text">
+            <string>(time)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_connection"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_reconnect">
+       <property name="text">
+        <string>Reconnect</string>
+       </property>
+       <property name="icon">
+        <iconset theme="network-connect">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_setup">
+       <property name="text">
+        <string>&amp;Connection...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="configure">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
   <action name="action_clear_log">
@@ -348,18 +424,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_refresh</sender>
+   <sender>button_refresh_status</sender>
    <signal>clicked()</signal>
    <receiver>ServerWidget</receiver>
    <slot>xonotic_request_status()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>512</y>
+     <x>116</x>
+     <y>478</y>
     </hint>
     <hint type="destinationlabel">
      <x>86</x>
      <y>588</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_refresh_cvars</sender>
+   <signal>clicked()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>xonotic_request_cvars()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>458</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>112</x>
+     <y>561</y>
     </hint>
    </hints>
   </connection>
@@ -368,5 +460,6 @@
   <slot>rcon_command(QString)</slot>
   <slot>xonotic_reconnect()</slot>
   <slot>xonotic_request_status()</slot>
+  <slot>xonotic_request_cvars()</slot>
  </slots>
 </ui>

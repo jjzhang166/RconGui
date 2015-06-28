@@ -21,25 +21,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#include "create_server_dialog.hpp"
+#include "server_setup_widget.hpp"
 #include "settings.hpp"
+#include <QDialog>
 
-CreateServerDialog::CreateServerDialog(QWidget* parent)
-    : QDialog(parent)
+ServerSetupWidget::ServerSetupWidget(QWidget* parent)
+    : QWidget(parent)
 {
     setupUi(this);
     button_save->setShortcut(QKeySequence::Save);
+    connect(button_box, &QDialogButtonBox::accepted, this, &ServerSetupWidget::accepted);
+    connect(button_box, &QDialogButtonBox::rejected, this, &ServerSetupWidget::rejected);
     update_presets();
 }
 
-CreateServerDialog::CreateServerDialog(const xonotic::Xonotic& xonotic,
+ServerSetupWidget::ServerSetupWidget(const xonotic::Xonotic& xonotic,
                                        QWidget* parent)
-    : CreateServerDialog(parent)
+    : ServerSetupWidget(parent)
 {
     populate(xonotic);
 }
 
-xonotic::Xonotic CreateServerDialog::connection_info() const
+xonotic::Xonotic ServerSetupWidget::connection_info() const
 {
     return xonotic::Xonotic(
         network::Server(input_host->text().toStdString(), input_port->value()),
@@ -49,7 +52,7 @@ xonotic::Xonotic CreateServerDialog::connection_info() const
     );
 }
 
-void CreateServerDialog::on_button_save_clicked()
+void ServerSetupWidget::on_button_save_clicked()
 {
     auto xonotic = connection_info();
     auto name = QString::fromStdString(xonotic.name);
@@ -61,7 +64,7 @@ void CreateServerDialog::on_button_save_clicked()
     input_preset->blockSignals(false);
 }
 
-void CreateServerDialog::on_button_delete_clicked()
+void ServerSetupWidget::on_button_delete_clicked()
 {
     auto xonotic = connection_info();
     Settings::instance().saved_servers
@@ -69,7 +72,7 @@ void CreateServerDialog::on_button_delete_clicked()
     update_presets();
 }
 
-void CreateServerDialog::update_presets()
+void ServerSetupWidget::update_presets()
 {
     input_preset->blockSignals(true);
     auto current = input_preset->currentText();
@@ -81,7 +84,7 @@ void CreateServerDialog::update_presets()
     input_preset->blockSignals(false);
 }
 
-void CreateServerDialog::on_input_preset_currentIndexChanged(const QString& text)
+void ServerSetupWidget::on_input_preset_currentIndexChanged(const QString& text)
 {
     if ( input_preset->currentIndex() != 0 )
     {
@@ -91,7 +94,7 @@ void CreateServerDialog::on_input_preset_currentIndexChanged(const QString& text
     }
 }
 
-void CreateServerDialog::populate(const xonotic::Xonotic& xonotic)
+void ServerSetupWidget::populate(const xonotic::Xonotic& xonotic)
 {
     input_host->setText(QString::fromStdString(xonotic.server.host));
     input_port->setValue(xonotic.server.port);

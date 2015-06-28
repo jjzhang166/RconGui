@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ServerSetupDialog</class>
+ <widget class="QDialog" name="ServerSetupDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>437</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="ServerSetupWidget" name="widget" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ServerSetupWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/server_setup_widget.hpp</header>
+   <container>1</container>
+   <slots>
+    <signal>accepted()</signal>
+    <signal>rejected()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>widget</sender>
+   <signal>accepted()</signal>
+   <receiver>ServerSetupDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>247</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>684</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>rejected()</signal>
+   <receiver>ServerSetupDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>674</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

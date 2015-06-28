@@ -16,89 +16,94 @@
    </iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="tabsClosable">
-       <bool>true</bool>
+     <widget class="QStackedWidget" name="stacked_widget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="ServerSetupWidget" name="widget_server_setup" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="tabsClosable">
+           <bool>true</bool>
+          </property>
+          <property name="movable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="action_quit"/>
-   <addaction name="action_new_tab"/>
-  </widget>
-  <action name="action_quit">
-   <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-  </action>
-  <action name="action_new_tab">
-   <property name="icon">
-    <iconset theme="tab-new">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New Tab</string>
-   </property>
-  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ServerSetupWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/server_setup_widget.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>action_quit</sender>
-   <signal>triggered()</signal>
-   <receiver>RconWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_new_tab</sender>
-   <signal>triggered()</signal>
-   <receiver>RconWindow</receiver>
-   <slot>new_tab()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>new_tab()</slot>
  </slots>
