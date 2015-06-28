@@ -28,6 +28,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextObject>
+#include <QMessageAuthenticationCode>
 
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
@@ -285,8 +286,23 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
 
 void ServerWidget::rcon_command(const std::string& command)
 {
-    /// \todo rcon_secure 1 and 2
-    xonotic_write("rcon "+xonotic.rcon_password+' '+command);
+    /// \todo rcon_secure 2
+    if ( xonotic.rcon_secure == xonotic::Xonotic::NO )
+    {
+        xonotic_write("rcon "+xonotic.rcon_password+' '+command);
+    }
+    else if ( xonotic.rcon_secure == xonotic::Xonotic::TIME )
+    {
+        auto message = QString("%1.000000 %2")
+                        .arg(std::time(nullptr))
+                        .arg(QString::fromStdString(command));
+        QMessageAuthenticationCode code(QCryptographicHash::Md4);
+        code.setKey(QByteArray::fromStdString(xonotic.rcon_password));
+        code.addData(message.toUtf8());
+        auto output = code.result();
+        xonotic_write(std::string("srcon HMAC-MD4 TIME ")+
+            std::string(output.data(), output.size())+' '+message.toStdString());
+    }
 }
 
 void ServerWidget::xonotic_write(std::string line)
