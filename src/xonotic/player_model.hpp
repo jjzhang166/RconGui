@@ -37,6 +37,8 @@ namespace xonotic {
  */
 class PlayerModel : public QAbstractTableModel
 {
+    Q_OBJECT
+
 public:
 
     int rowCount(const QModelIndex & = {}) const override
@@ -49,75 +51,9 @@ public:
         return 8;
     }
 
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override
-    {
-        if ( index.row() < 0 || index.row() >= int(players.size()) )
-            return {};
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 
-        const auto& player = players[index.row()];
-        if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
-        {
-            switch(index.column())
-            {
-                case 0: return QString::fromStdString(player.ip);
-                case 1: return QString::fromStdString(player.name);
-                case 2: return QString::fromStdString(player.no);
-                case 3: return QString::fromStdString(player.ping);
-                case 4: return QString::fromStdString(player.pl);
-                case 5: return QString::fromStdString(player.frags);
-                case 6: return QString::fromStdString(player.time);
-                case 7: return QString::fromStdString(player.no);
-            }
-        }
-        else if ( role == Qt::TextAlignmentRole )
-        {
-            if ( index.column() >= 2 && index.column() <= 6 )
-                return Qt::AlignCenter;
-        }
-
-        return {};
-    }
-
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override
-    {
-        if ( orientation != Qt::Horizontal )
-            return {};
-
-        if ( role == Qt::DisplayRole )
-        {
-            switch(section)
-            {
-                case 0: return tr("IP");
-                case 1: return tr("Name");
-                case 2: return tr("#");
-                case 3: return tr("Ping");
-                case 4: return tr("PL");
-                case 5: return tr("Score");
-                case 6: return tr("Time");
-                case 7: return tr("Actions");
-            }
-        }
-        else if ( role == Qt::ToolTipRole || role == Qt::WhatsThisRole )
-        {
-            switch(section)
-            {
-                case 0: return tr("IP Address");
-                case 1: return tr("Name");
-                case 2: return tr("Entity number");
-                case 3: return tr("Ping");
-                case 4: return tr("Packet Loss");
-                case 5: return tr("Score");
-                case 6: return tr("Time");
-                case 7: return tr("Actions");
-            }
-        }
-        else if ( role == Qt::SizeHintRole && section >= 2 && section <= 6 )
-        {
-            return QSize();
-        }
-
-        return {};
-    }
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 public slots:
     /**
@@ -128,6 +64,7 @@ public slots:
         beginResetModel();
         players = player_list;
         endResetModel();
+        emit players_changed(players);
     }
 
     /**
@@ -138,7 +75,14 @@ public slots:
         beginResetModel();
         players.clear();
         endResetModel();
+        emit players_changed(players);
     }
+
+signals:
+    /**
+     * \brief Emitted after the model has changed
+     */
+    void players_changed(const std::vector<Player>& players);
 
 private:
     std::vector<Player> players; ///< list of players

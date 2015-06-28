@@ -36,6 +36,7 @@
 #include "xonotic/server_model.hpp"
 #include "xonotic/cvar_model.hpp"
 #include "xonotic/player_model.hpp"
+#include "xonotic/player_action.hpp"
 
 using Lock = std::unique_lock<std::mutex>;
 
@@ -182,6 +183,12 @@ private:
      * \brief Sets the network status message
      */
     void set_network_status(const QString& msg);
+
+    /**
+     * \brief Creates a button which executes the given action on the given player
+     */
+    QPushButton* create_button(const xonotic::PlayerAction& action,
+                               const xonotic::Player& player);
 
     /**
      * \brief Color from regex match

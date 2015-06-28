@@ -51,7 +51,7 @@ set(CMAKE_AUTOUIC ON)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-set(SOURCES src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
+set(SOURCES src/xonotic/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
     src/main.cpp
     src/ui/server_setup_widget.cpp
     src/ui/rcon_window.cpp

@@ -72,6 +72,15 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
     header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(7, QHeaderView::ResizeToContents);
+    connect(&model_player, &xonotic::PlayerModel::players_changed,
+        [this](const std::vector<xonotic::Player>& players) {
+            xonotic::PlayerAction act(tr("Kick"),"kick # $entity");
+            for ( unsigned i = 0; i < players.size(); i++ )
+            {
+                auto index = model_player.index(i, model_player.columnCount()-1);
+                table_players->setIndexWidget(index, create_button(act,players[i]));
+            }
+        });
 
     connect(this, &ServerWidget::log_received,
             this, &ServerWidget::append_log, Qt::QueuedConnection);
@@ -452,4 +461,16 @@ void ServerWidget::xonotic_request_cvars()
 {
     model_cvar.clear();
     rcon_command("cvarlist");
+}
+
+QPushButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
+                                         const xonotic::Player& player)
+{
+    auto button = new QPushButton(action.name());
+    auto cmd = action.command(player);
+    connect(button, &QPushButton::clicked, [this, cmd]{
+        rcon_command(cmd);
+        xonotic_request_status();
+    });
+    return button;
 }
