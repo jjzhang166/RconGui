@@ -85,10 +85,11 @@ void LogParser::parse_status(const std::string& line)
     }
     else if ( std::regex_match(line, match, regex_player_header) )
     {
+        players_.clear();
         if ( players_active == 0 )
         {
             listening = DEFAULT;
-            emit players_changed();
+            emit players_changed(players_);
         }
         else
         {
@@ -104,8 +105,8 @@ void LogParser::parse_status(const std::string& line)
 void LogParser::parse_player(const std::string& line)
 {
     static std::regex regex_player(
-        // rowcol IP      %pl     ping    time   frags    no            name
-        R"(\^[37](\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(#[0-9]+)\s+\^7(.*))",
+        // rowcol IP      %pl     ping    time   frags     no           name
+        R"(\^[37](\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+#([0-9]+)\s+\^7(.*))",
         reo
     );
 
@@ -123,7 +124,7 @@ void LogParser::parse_player(const std::string& line)
         if ( players_active == players_.size() )
         {
             listening = DEFAULT;
-            emit players_changed();
+            emit players_changed(players_);
         }
     }
 }

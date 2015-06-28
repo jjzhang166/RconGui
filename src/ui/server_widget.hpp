@@ -32,9 +32,10 @@
 #include "ui_server_widget.h"
 #include "network/udp_io.hpp"
 #include "xonotic/xonotic.hpp"
-#include "xonotic/server_model.hpp"
 #include "xonotic/log_parser.hpp"
+#include "xonotic/server_model.hpp"
 #include "xonotic/cvar_model.hpp"
+#include "xonotic/player_model.hpp"
 
 using Lock = std::unique_lock<std::mutex>;
 
@@ -211,6 +212,7 @@ private:
     xonotic::ServerModel        model_server;
     xonotic::CvarModel          model_cvar;
     QSortFilterProxyModel       proxy_cvar;
+    xonotic::PlayerModel        model_player;
 };
 
 #endif // SERVER_WIDGET_HPP

@@ -51,58 +51,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="tableWidget">
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>64</number>
-           </attribute>
+          <widget class="QTableView" name="table_players">
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
            </attribute>
-           <column>
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Address</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Ping</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>PL</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Score</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Edict</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Kick</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Ban</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Mute</string>
-            </property>
-           </column>
           </widget>
          </item>
         </layout>

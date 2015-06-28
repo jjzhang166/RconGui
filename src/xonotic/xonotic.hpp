@@ -30,6 +30,7 @@ namespace xonotic {
 
 /**
  * \brief Xonotic connection information
+ * \todo rename it to Server or Connection
  */
 struct Xonotic
 {

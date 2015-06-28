@@ -30,24 +30,9 @@
 #include <QObject>
 
 #include "cvar.hpp"
+#include "player.hpp"
 
 namespace xonotic {
-
-/**
- * \brief Xonotic player info
- *
- * Contains raw data as read from the status line
- */
-struct Player
-{
-    std::string ip;
-    std::string pl;
-    std::string ping;
-    std::string time;
-    std::string frags;
-    std::string no;
-    std::string name;
-};
 
 /**
  * \brief Parser for "status 1"
@@ -72,7 +57,7 @@ signals:
 
     void cvar(Cvar var);
 
-    void players_changed();
+    void players_changed(const std::vector<Player>& players);
 
 private:
     enum {
@@ -95,4 +80,7 @@ private:
 };
 
 } // namespace xonotic
+
+Q_DECLARE_METATYPE(std::vector<xonotic::Player>)
+
 #endif // XONOTIC_LOG_PARSER_HPP

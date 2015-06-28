@@ -59,6 +59,20 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
         input_cvar_filter_section->addItem(
             model_cvar.headerData(i,Qt::Horizontal).toString());
 
+    table_players->setModel(&model_player);
+    connect(&log_parser, &xonotic::LogParser::players_changed,
+            &model_player, &xonotic::PlayerModel::set_players,
+            Qt::QueuedConnection);
+    header_view = table_players->horizontalHeader();
+    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
+    header_view->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(7, QHeaderView::ResizeToContents);
+
     connect(this, &ServerWidget::log_received,
             this, &ServerWidget::append_log, Qt::QueuedConnection);
 
@@ -262,6 +276,7 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
 
 void ServerWidget::rcon_command(const std::string& command)
 {
+    /// \todo rcon_secure 1 and 2
     xonotic_write("rcon "+xonotic.rcon_password+' '+command);
 }
 

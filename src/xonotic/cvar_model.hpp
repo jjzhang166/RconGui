@@ -57,7 +57,7 @@ public:
 
         auto it = cvars.begin();
         std::advance(it, index.row());
-        auto cvar = *it;
+        const auto& cvar = *it;
         if ( role == Qt::DisplayRole )
         {
             switch(index.column())
