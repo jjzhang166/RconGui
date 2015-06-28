@@ -25,6 +25,8 @@
 #include "ui_server_widget.h"
 #include "network/udp_io.hpp"
 #include "xonotic/xonotic.hpp"
+#include "xonotic/server_model.hpp"
+#include "xonotic/log_parser.hpp"
 
 using Lock = std::unique_lock<std::mutex>;
 
@@ -126,6 +128,11 @@ private slots:
      */
     void xonotic_request_status();
 
+    /**
+     * \brief Update the model with the error message
+     */
+    void network_error_status(const QString& msg);
+
 private:
     /**
      * \brief Low level xonotic disconnection
@@ -171,12 +178,14 @@ private:
         return 0;
     }
 
-    std::mutex          mutex;
-    std::string         header = "\xff\xff\xff\xff";    ///< Connection message header
-    std::string         line_buffer;                    ///< Buffer for overflowing messages from Xonotic
-    xonotic::Xonotic    xonotic;
-    network::UdpIo      io;
-    std::thread         thread_input;
+    std::mutex                  mutex;
+    std::string                 header{"\xff\xff\xff\xff"};     ///< Connection message header
+    std::string                 line_buffer;                    ///< Buffer for overflowing messages from Xonotic
+    xonotic::Xonotic            xonotic;
+    network::UdpIo              io;
+    std::thread                 thread_input;
+    xonotic::ServerModel        model_server;
+    xonotic::LogParser          log_parser;
 };
 
 #endif // SERVER_WIDGET_HPP

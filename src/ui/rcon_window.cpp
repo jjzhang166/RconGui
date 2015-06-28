@@ -53,11 +53,5 @@ void RconWindow::new_tab()
         connect(tab, &ServerWidget::name_changed,[this,tab](const QString& string){
             tabWidget->setTabText(tabWidget->indexOf(tab), string);
         });
-        connect(tab, &ServerWidget::network_error, [this, tab](const QString& msg){
-            statusbar->showMessage(
-                tr("Error: %1: %2").arg(tab->name()).arg(msg),
-                10*1000 // 10 seconds
-            );
-        });
     }
 }

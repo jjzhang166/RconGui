@@ -34,6 +34,16 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
 
     button_refresh->setShortcut(QKeySequence::Refresh);
 
+    table_server_status->setModel(&model_server);
+    connect(&log_parser, &xonotic::LogParser::server_property_changed,
+            &model_server, &xonotic::ServerModel::set_server_property,
+            Qt::QueuedConnection);
+
+    connect(this, &ServerWidget::log_received,
+            this, &ServerWidget::append_log, Qt::QueuedConnection);
+
+    connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
+
     clear_log();
 
     io.max_datagram_size(1400);
@@ -51,13 +61,11 @@ ServerWidget::ServerWidget(xonotic::Xonotic xonotic, QWidget* parent)
         xonotic_disconnect();
     };
 
+    connect(this, &ServerWidget::network_error,
+            this, &ServerWidget::network_error_status,
+            Qt::QueuedConnection);
+
     xonotic_connect();
-
-    connect(this, &ServerWidget::log_received,
-            this, &ServerWidget::append_log, Qt::QueuedConnection);
-
-    connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
-
 }
 
 ServerWidget::~ServerWidget()
@@ -77,7 +85,6 @@ void ServerWidget::clear_log()
 
 void ServerWidget::xonotic_close_connection()
 {
-
     if ( io.connected() )
         io.disconnect();
     if ( thread_input.joinable() &&
@@ -91,10 +98,15 @@ void ServerWidget::xonotic_disconnect()
         /// \todo clear log_dest_udp if needed
     xonotic_close_connection();
     xonotic_clear();
+
+    model_server.set_server_property("connection",tr("Disconnected"));
 }
 
 bool ServerWidget::xonotic_connect()
 {
+    model_server.set_server_property("server",
+        QString::fromStdString(xonotic.server.name()));
+
     if ( !io.connected() )
     {
         if ( io.connect(xonotic.server) )
@@ -110,6 +122,8 @@ bool ServerWidget::xonotic_connect()
                 xonotic_request_status();
                 io.run_input();
             }));
+
+            model_server.set_server_property("connection",tr("Connected"));
         }
     }
 
@@ -182,7 +196,7 @@ void ServerWidget::xonotic_read(const std::string& datagram)
 
 void ServerWidget::xontotic_parse(const std::string& log_line)
 {
-    // todo
+    log_parser.parse(log_line);
 }
 
 QString ServerWidget::name() const
@@ -373,4 +387,9 @@ void ServerWidget::on_action_save_log_triggered()
     else
         file.write(output_console->toPlainText().toUtf8());
 
+}
+
+void ServerWidget::network_error_status(const QString& msg)
+{
+    model_server.set_server_property("connection",tr("Error: %1").arg(msg));
 }

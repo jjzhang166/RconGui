@@ -34,7 +34,7 @@ set(CMAKE_AUTOUIC ON)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-set(SOURCES
+set(SOURCES src/xonotic/log_parser.cpp
     src/main.cpp
     src/ui/create_server_dialog.cpp
     src/ui/rcon_window.cpp
