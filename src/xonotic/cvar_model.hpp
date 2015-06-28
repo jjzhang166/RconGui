@@ -111,10 +111,21 @@ public slots:
     {
         if ( !cvar.name.empty() )
         {
+            /// \todo could optimize model invalidation
             beginResetModel();
             cvars.insert(QString::fromStdString(cvar.name), cvar);
             endResetModel();
         }
+    }
+
+    /**
+     * \brief Removes all stored cvars
+     */
+    void clear()
+    {
+        beginResetModel();
+        cvars.clear();
+        endResetModel();
     }
 
 private:

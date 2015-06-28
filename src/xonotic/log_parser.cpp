@@ -36,7 +36,7 @@ void LogParser::parse(const std::string& line)
     {
         static std::regex regex_status_begin("host:\\s+(.+)",reo);
         static std::regex regex_cvar(
-            R"regex("?([^"]+)"? is "([^"]*)" \["([^"]*)"\]\s*(.*))regex",reo);
+            R"regex((?:cvar \^3|")?([^"^]+)(?:"|\^7)? is "([^"]*)" \["([^"]*)"\]\s*(.*))regex",reo);
 
         std::smatch match;
         if ( std::regex_match(line, match, regex_status_begin) )

@@ -217,7 +217,7 @@
          <item>
           <widget class="QLineEdit" name="input_cvar_filter_pattern">
            <property name="placeholderText">
-            <string>filter</string>
+            <string>Filter</string>
            </property>
           </widget>
          </item>
@@ -470,22 +470,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_refresh_cvars</sender>
-   <signal>clicked()</signal>
-   <receiver>ServerWidget</receiver>
-   <slot>xonotic_request_cvars()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>98</x>
-     <y>458</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>112</x>
-     <y>561</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>input_cvar_filter_pattern</sender>
    <signal>textChanged(QString)</signal>
    <receiver>ServerWidget</receiver>
@@ -530,6 +514,22 @@
     <hint type="destinationlabel">
      <x>806</x>
      <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_refresh_cvars</sender>
+   <signal>clicked()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>xonotic_request_cvars()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>458</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>112</x>
+     <y>561</y>
     </hint>
    </hints>
   </connection>

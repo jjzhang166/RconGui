@@ -432,5 +432,6 @@ void ServerWidget::set_network_status(const QString& msg)
 
 void ServerWidget::xonotic_request_cvars()
 {
+    model_cvar.clear();
     rcon_command("cvarlist");
 }
