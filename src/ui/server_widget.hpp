@@ -31,6 +31,7 @@
 #include "xonotic/connection_details.hpp"
 #include "xonotic/log_parser.hpp"
 #include "model/server_model.hpp"
+#include "model/server_delegate.hpp"
 #include "model/cvar_model.hpp"
 #include "model/player_model.hpp"
 #include "model/player_action.hpp"
@@ -155,6 +156,8 @@ private:
     xonotic::LogParser          log_parser;
     /// Server status model
     ServerModel                 model_server;
+    /// Server status edit delegate
+    ServerDelegate              delegate_server;
     /// Cvar list model
     CvarModel                   model_cvar;
     /// Proxy to filter the cvar list model
@@ -162,7 +165,7 @@ private:
     /// Connected player model
     PlayerModel                 model_player;
     /// Commands used to request status
-    QStringList                 cmd_status = {"status 1"};
+    QStringList                 cmd_status = {"status 1", "g_maplist"};
     /// Commands used to request cvars
     QStringList                 cmd_cvars  = {"cvarlist g_", "cvarlist sv_"};
 };

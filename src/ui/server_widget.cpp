@@ -42,7 +42,19 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     button_refresh_status->setShortcut(QKeySequence::Refresh);
     button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
+    QHeaderView* header_view = table_server_status->verticalHeader();
+    QFont header_font = header_view->font();
+    header_font.setBold(true);
+    header_view->setFont(header_font);
     table_server_status->setModel(&model_server);
+    table_server_status->setItemDelegate(&delegate_server);
+    delegate_server.g_maplist = [this] {
+        return model_cvar.cvar_value("g_maplist");
+    };
+    delegate_server.chmap = [this](const QString& map) {
+        rcon_command("chmap "+map); /// \todo Read command from settings
+        model_server.set_server_property("map", map);
+    };
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
             &model_server, &ServerModel::set_server_property);
 
@@ -50,7 +62,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
             &model_cvar, &CvarModel::set_cvar);
-    auto header_view = table_cvars->horizontalHeader();
+    header_view = table_cvars->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
     table_cvars->hideColumn(2);

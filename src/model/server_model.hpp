@@ -43,6 +43,8 @@ public:
     {
         if ( accept(index.row()) && role == Qt::DisplayRole )
             return properties[display_property[index.row()]].second;
+        else if ( accept(index.row()) && role == Qt::UserRole )
+            return display_property[index.row()];
         return {};
     }
 
@@ -60,6 +62,14 @@ public:
             return pair.first;
         }
         return {};
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        auto flags = QAbstractListModel::flags(index);
+        if ( accept(index.row()) && display_property[index.row()] == "map" )
+            flags |= Qt::ItemIsEditable;
+        return flags;
     }
 
     /**

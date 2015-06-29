@@ -96,10 +96,19 @@ public:
     /**
      * \brief Get a cvar
      */
-    const xonotic::Cvar& server_property(const QString& name)
+    xonotic::Cvar cvar(const QString& name) const
     {
         return cvars[name];
     }
+
+    /**
+     * \brief Returns the value of a cvar as a QString
+     */
+    QString cvar_value(const QString& name) const
+    {
+        return QString::fromStdString(cvars[name].value);
+    }
+
 
 public slots:
     /**
