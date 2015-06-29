@@ -62,8 +62,7 @@ Darkplaces::~Darkplaces()
 
 void Darkplaces::close_connection()
 {
-    if ( io.connected() )
-        io.disconnect();
+    io.disconnect();
     if ( thread_input.joinable() &&
             thread_input.get_id() != std::this_thread::get_id() )
         thread_input.join();

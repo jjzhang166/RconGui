@@ -94,7 +94,8 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
             this, &ServerWidget::xonotic_disconnected,
             Qt::QueuedConnection);
     connect(&connection, &xonotic::QDarkplaces::connected,
-            this, &ServerWidget::xonotic_connected);
+            this, &ServerWidget::xonotic_connected,
+            Qt::QueuedConnection);
     connect(&connection, &xonotic::QDarkplaces::connection_error,
             this, &ServerWidget::network_error_status,
             Qt::QueuedConnection);
