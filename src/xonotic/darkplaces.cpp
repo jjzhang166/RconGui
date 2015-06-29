@@ -27,8 +27,8 @@
 static std::string hmac_md4(const std::string& input, const std::string& key)
 {
     QMessageAuthenticationCode code(QCryptographicHash::Md4);
-    code.setKey(QByteArray::fromStdString(key));
-    code.addData(QByteArray::fromStdString(input));
+    code.setKey(QByteArray(key.data(), key.size()));
+    code.addData(input.data(), input.size());
     auto output = code.result();
     return std::string(output.data(), output.size());
 }
