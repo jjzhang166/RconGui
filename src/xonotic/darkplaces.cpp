@@ -57,7 +57,15 @@ Darkplaces::Darkplaces(ConnectionDetails connection_details)
 Darkplaces::~Darkplaces()
 {
     if ( connected() )
+    {
         disconnect();
+    }
+    else
+    {
+        // In case the connection failed
+        if ( thread_input.joinable() )
+            thread_input.join();
+    }
 }
 
 void Darkplaces::close_connection()
