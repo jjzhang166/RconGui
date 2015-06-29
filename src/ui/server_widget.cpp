@@ -69,14 +69,17 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(7, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(7, QHeaderView::Fixed);
     connect(&model_player, &xonotic::PlayerModel::players_changed,
         [this](const std::vector<xonotic::Player>& players) {
-            xonotic::PlayerAction act(tr("Kick"),"kick # $entity");
             for ( unsigned i = 0; i < players.size(); i++ )
             {
+                QDialogButtonBox *buttons = new QDialogButtonBox();
+                for ( const auto& action : settings().player_actions )
+                    buttons->addButton(create_button(action,players[i]),
+                                       QDialogButtonBox::ActionRole);
                 auto index = model_player.index(i, model_player.columnCount()-1);
-                table_players->setIndexWidget(index, create_button(act,players[i]));
+                table_players->setIndexWidget(index, buttons);
             }
         });
 
@@ -131,7 +134,6 @@ void ServerWidget::xonotic_connected()
     set_network_status(tr("Connected"));
     request_status();
 }
-
 
 void ServerWidget::xonotic_clear()
 {
@@ -363,6 +365,7 @@ QPushButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
 {
     auto button = new QPushButton(action.name());
     auto cmd = action.command(player);
+    button->setToolTip(cmd);
     connect(button, &QPushButton::clicked, [this, cmd]{
         rcon_command(cmd);
         request_status();

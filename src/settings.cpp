@@ -67,6 +67,23 @@ void Settings::load()
     console_brightness_min = qBound(0,settings.value("brightness_min",console_brightness_min).toInt(),255);
     console_font.fromString(settings.value("font",console_font.toString()).toString());
     settings.endGroup();
+
+    settings.beginGroup("behaviour");
+    if ( settings.contains("player") )
+    {
+        int sz = settings.beginReadArray("player");
+        player_actions.clear();
+        player_actions.reserve(sz);
+        for ( int i = 0; i < sz; i++ )
+        {
+            QString label = settings.value("label").toString();
+            QString command = settings.value("command").toString();
+            if ( !label.isEmpty() && !command.isEmpty() )
+                player_actions.push_back({label, command});
+        }
+        settings.endArray();
+    }
+    settings.endGroup();
 }
 
 void Settings::save()
@@ -91,6 +108,17 @@ void Settings::save()
     settings.setValue("brightness_max",console_brightness_max);
     settings.setValue("brightness_min",console_brightness_min);
     settings.setValue("font",console_font.toString());
+    settings.endGroup();
+
+    settings.beginGroup("behaviour");
+    settings.beginWriteArray("player");
+    for ( int i = 0; i < player_actions.size(); i++ )
+    {
+        settings.setArrayIndex(i);
+        settings.setValue("label",player_actions[i].name());
+        settings.setValue("command",player_actions[i].command());
+    }
+    settings.endArray();
     settings.endGroup();
 }
 

@@ -30,6 +30,7 @@
 #include <QFont>
 
 #include "xonotic/connection_details.hpp"
+#include "xonotic/player_action.hpp"
 
 /**
  * \brief Settings singleton
@@ -65,13 +66,19 @@ public:
     void set_history(const std::string& server, const QStringList& history);
 
     QHash<QString, xonotic::ConnectionDetails> saved_servers; ///< Server presets
-    QHash<QString, QStringList> console_history;    ///< Per-server console history
+    QHash<QString, QStringList> console_history; ///< Per-server console history
 
     QColor console_foreground{192, 192, 192};   ///< Default text color for the console
     QColor console_background{Qt::black};       ///< Background color for the console
     int    console_brightness_max{255};         ///< Maximum brightness for console colors
     int    console_brightness_min{80};          ///< Minimum brightness for console colors
     QFont  console_font{"monospace", 10};       ///< Console text font
+
+    QList<xonotic::PlayerAction> player_actions = {
+        {"Kick", "kick # $entity"},
+        {"Ban", "kickban #$entity"},
+        {"Mute", "mute #$entity"},
+    };
 
 private:
     Settings();
