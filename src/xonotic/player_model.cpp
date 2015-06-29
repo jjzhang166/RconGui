@@ -24,6 +24,8 @@
 #include "player_model.hpp"
 
 #include <QSize>
+#include <QStyleOptionViewItem>
+#include <QApplication>
 
 namespace xonotic {
 
@@ -89,9 +91,14 @@ QVariant PlayerModel::headerData(int section, Qt::Orientation orientation, int r
             case 7: return tr("Actions");
         }
     }
-    else if ( role == Qt::SizeHintRole && section >= 2 && section <= 6 )
+    else if ( role == Qt::SizeHintRole && section >= 2 )
     {
-        return QSize();
+        // This ensures that the columns are just right and not too wide
+        QStyleOptionViewItem option;
+        option.features |= QStyleOptionViewItem::HasDisplay;
+        option.text = headerData(section, orientation, Qt::DisplayRole).toString();
+        option.styleObject = 0;
+        return QApplication::style()->sizeFromContents(QStyle::CT_ItemViewItem, &option, QSize(), nullptr);
     }
 
     return {};

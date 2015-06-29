@@ -70,7 +70,6 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(7, QHeaderView::ResizeToContents);
     connect(&model_player, &xonotic::PlayerModel::players_changed,
         [this](const std::vector<xonotic::Player>& players) {
             for ( unsigned i = 0; i < players.size(); i++ )
