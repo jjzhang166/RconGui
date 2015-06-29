@@ -23,11 +23,12 @@
  */
 #include "server_widget.hpp"
 
-#include <QMenu>
-#include <QScrollBar>
 #include <QFileDialog>
+#include <QMenu>
 #include <QMessageBox>
+#include <QScrollBar>
 #include <QTextObject>
+#include <QTime>
 #include <QToolButton>
 
 #include "server_setup_dialog.hpp"
@@ -358,6 +359,7 @@ void ServerWidget::request_status()
 {
     for ( const auto& cmd : cmd_status )
         rcon_command(cmd);
+    label_refresh_status->setText(QTime::currentTime().toString("hh:mm:ss"));
 }
 
 void ServerWidget::request_cvars()
@@ -365,6 +367,7 @@ void ServerWidget::request_cvars()
     model_cvar.clear();
     for ( const auto& cmd : cmd_cvars )
         rcon_command(cmd);
+    label_refresh_cvar->setText(QTime::currentTime().toString("hh:mm:ss"));
 }
 
 QAbstractButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
