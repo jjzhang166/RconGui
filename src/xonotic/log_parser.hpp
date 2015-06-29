@@ -53,11 +53,29 @@ public:
     const std::vector<Player> players() const { return players_; }
 
 signals:
+    /**
+     * \brief Emitted when a status server property has been matched
+     */
     void server_property_changed(const QString& name, const QString& value);
 
+    /**
+     * \brief Emitted when the log showed info about a cvar
+     */
     void cvar(Cvar var);
 
+    /**
+     * \brief Emitted at the end of status 1
+     */
     void players_changed(const std::vector<Player>& players);
+
+    /**
+     * \brief Emitted at the beginning of cvarlist
+     */
+    void cvarlist_begin();
+    /**
+     * \brief Emitted at the end of cvarlist
+     */
+    void cvarlist_end();
 
 private:
     enum {
@@ -67,6 +85,7 @@ private:
     } listening = DEFAULT;
     std::vector<Player> players_;
     unsigned players_active = 0;
+    bool cvarlist = false;
 
     /**
      * \brief Parses a player line

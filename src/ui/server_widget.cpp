@@ -37,11 +37,14 @@
 ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     : QWidget(parent), connection(std::move(details))
 {
+    /// \todo break into smaller functions
     setupUi(this);
 
+// shortcuts
     button_refresh_status->setShortcut(QKeySequence::Refresh);
     button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
+// server status
     QHeaderView* header_view = table_server_status->verticalHeader();
     QFont header_font = header_view->font();
     header_font.setBold(true);
@@ -61,11 +64,17 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     };
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
             &model_server, &ServerModel::set_server_property);
+    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
 
+// cvars
     table_cvars->setModel(&proxy_cvar);
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
             &model_cvar, &CvarModel::set_cvar);
+    connect(&log_parser, &xonotic::LogParser::cvarlist_begin,
+            &model_cvar, &CvarModel::block_updates);
+    connect(&log_parser, &xonotic::LogParser::cvarlist_end,
+            &model_cvar, &CvarModel::unblock_updates);
     header_view = table_cvars->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -74,7 +83,9 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     for ( int i = 0; i < model_cvar.columnCount(); i++ )
         input_cvar_filter_section->addItem(
             model_cvar.headerData(i,Qt::Horizontal).toString());
+    cmd_cvars = settings().get("behaviour/cmd_cvars", cmd_cvars);
 
+    // players
     table_players->setModel(&model_player);
     connect(&log_parser, &xonotic::LogParser::players_changed,
             &model_player, &PlayerModel::set_players,
@@ -100,16 +111,15 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
             }
         });
 
+// console
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
     input_console->setFont(settings().console_font);
     input_console->setHistory(settings().get_history(connection.details().name));
 
-    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
-    cmd_cvars = settings().get("behaviour/cmd_cvars", cmd_cvars);
-
     clear_log();
 
+// connection
     connect(&connection, &xonotic::QDarkplaces::disconnected,
             this, &ServerWidget::xonotic_disconnected,
             Qt::QueuedConnection);
@@ -386,7 +396,6 @@ void ServerWidget::request_status()
 
 void ServerWidget::request_cvars()
 {
-    model_cvar.clear();
     for ( const auto& cmd : cmd_cvars )
         rcon_command(cmd);
     label_refresh_cvar->setText(QTime::currentTime().toString("hh:mm:ss"));

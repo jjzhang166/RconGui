@@ -37,17 +37,33 @@ void LogParser::parse(const std::string& line)
         static std::regex regex_status_begin("host:\\s+(.+)",reo);
         static std::regex regex_cvar(
             R"regex((?:cvar \^3|")?([^"^]+)(?:"|\^7)? is "([^"]*)" \["([^"]*)"\]\s*(.*))regex",reo);
+        static std::regex regex_cvarlist_end(
+            R"regex(\d+ cvar(?:\(s\))|(?: beginning with .*))regex",reo);
 
         std::smatch match;
+        if ( std::regex_match(line, match, regex_cvar) )
+        {
+            // only cvarlist and apropos show the description
+            if ( !cvarlist && match[4].length() )
+            {
+                cvarlist = true;
+                emit cvarlist_begin();
+            }
+            emit cvar({match[1], match[2], match[3], match[4]});
+            return;
+        }
+        else if ( cvarlist )
+        {
+            cvarlist = false;
+            emit cvarlist_end();
+        }
+
         if ( std::regex_match(line, match, regex_status_begin) )
         {
             listening = STATUS;
             emit server_property_changed("host", QString::fromStdString(match[1]));
         }
-        else if ( std::regex_match(line, match, regex_cvar) )
-        {
-            emit cvar({match[1], match[2], match[3], match[4]});
-        }
+
     }
     else if ( listening == STATUS )
     {

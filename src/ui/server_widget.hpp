@@ -106,7 +106,7 @@ private slots:
 
     void xonotic_disconnected();
     void xonotic_connected();
-    void xonotic_log(const QString& line);
+    void xonotic_log(const QString& log);
 
 private:
 
@@ -167,7 +167,7 @@ private:
     /// Commands used to request status
     QStringList                 cmd_status = {"status 1", "g_maplist"};
     /// Commands used to request cvars
-    QStringList                 cmd_cvars  = {"cvarlist g_", "cvarlist sv_"};
+    QStringList                 cmd_cvars  = {"cvarlist"};
 };
 
 #endif // SERVER_WIDGET_HPP

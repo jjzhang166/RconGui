@@ -119,9 +119,34 @@ public slots:
         if ( cvar.name.empty() )
             return;
 
-        beginResetModel();
+        if ( !no_update ) beginResetModel();
         cvars[QString::fromStdString(cvar.name)] = cvar;
-        endResetModel();
+        if ( !no_update ) endResetModel();
+
+        /*QString name = QString::fromStdString(cvar.name);
+        auto it = cvars.lowerBound(name);
+
+        if ( it != cvars.end() && it.key() == name )
+        {
+            *it = cvar;
+            if ( !no_update )
+            {
+                int row = std::distance(cvars.begin(), it);
+                if ( row != -1 )
+                    emit dataChanged(index(row,0), index(row, columnCount()-1));
+            }
+        }
+        else
+        {
+            if ( !no_update )
+            {
+                int row = std::distance(cvars.begin(), it);
+                beginInsertRows({},row,row);
+            }
+            cvars.insert(it, name, cvar);
+            if ( !no_update )
+                endInsertRows();
+        }*/
     }
 
     /**
@@ -129,13 +154,36 @@ public slots:
      */
     void clear()
     {
+        unblock_updates();
         beginResetModel();
         cvars.clear();
         endResetModel();
     }
 
+    /**
+     * \brief Temporarily block model change signals
+     */
+    void block_updates()
+    {
+        no_update = true;
+    }
+
+    /**
+     * \brief Unblocks model change signals
+     */
+    void unblock_updates()
+    {
+        if ( no_update )
+        {
+            beginResetModel();
+            endResetModel();
+        }
+        no_update = false;
+    }
+
 private:
     QMap<QString, xonotic::Cvar> cvars; ///< Cvar name -> info
+    bool no_update = false;
 
 };
 
