@@ -123,14 +123,12 @@ void ServerWidget::clear_log()
 
 void ServerWidget::xonotic_disconnected()
 {
+    xonotic_clear();
     set_network_status(tr("Disconnected"));
 }
 
 void ServerWidget::xonotic_connected()
 {
-    model_server.set_server_property("server",
-        QString::fromStdString(connection.details().server.name()));
-
     xonotic_clear();
     set_network_status(tr("Connected"));
     request_status();
@@ -138,9 +136,11 @@ void ServerWidget::xonotic_connected()
 
 void ServerWidget::xonotic_clear()
 {
-    /// \todo
-    // clear status and cvars
-    // clear cvars
+    model_cvar.clear();
+    model_player.clear();
+    model_server.clear();
+    model_server.set_server_property("server",
+        QString::fromStdString(connection.details().server.name()));
 }
 
 void ServerWidget::request_status()
@@ -346,6 +346,7 @@ void ServerWidget::cvarlist_apply_filter()
 
 void ServerWidget::network_error_status(const QString& msg)
 {
+    xonotic_clear(); /// \todo option to disable clearing
     set_network_status(tr("Error: %1").arg(msg));
 }
 

@@ -69,7 +69,17 @@ public:
      */
     QString server_property(const QString& property)
     {
-        return  properties[property].second;
+        return properties[property].second;
+    }
+
+    /**
+     * \brief Removes all stored properties
+     */
+    void clear()
+    {
+        beginResetModel();
+        properties.clear();
+        endResetModel();
     }
 
 public slots:
