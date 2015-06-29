@@ -78,7 +78,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
                 for ( const auto& action : settings().player_actions )
                     buttons->addButton(create_button(action,players[i]),
                                        QDialogButtonBox::ActionRole);
-                auto index = model_player.index(i, model_player.columnCount()-1);
+                auto index = model_player.index(i, xonotic::PlayerModel::Actions);
                 table_players->setIndexWidget(index, buttons);
             }
         });

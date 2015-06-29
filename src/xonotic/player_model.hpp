@@ -40,6 +40,16 @@ class PlayerModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
+    enum ColumnNames {
+        Ip      = 0,
+        Name    = 1,
+        Entity  = 2,
+        Ping    = 3,
+        Pl      = 4,
+        Score   = 5,
+        Time    = 6,
+        Actions = 7
+    };
 
     int rowCount(const QModelIndex & = {}) const override
     {

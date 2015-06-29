@@ -40,18 +40,18 @@ QVariant PlayerModel::data(const QModelIndex & index, int role) const
     {
         switch(index.column())
         {
-            case 0: return QString::fromStdString(player.ip);
-            case 1: return QString::fromStdString(player.name);
-            case 2: return QString::fromStdString(player.no);
-            case 3: return QString::fromStdString(player.ping);
-            case 4: return QString::fromStdString(player.pl);
-            case 5: return QString::fromStdString(player.frags);
-            case 6: return QString::fromStdString(player.time);
+            case Ip:    return QString::fromStdString(player.ip);
+            case Name:  return QString::fromStdString(player.name);
+            case Entity:return QString::fromStdString(player.no);
+            case Ping:  return QString::fromStdString(player.ping);
+            case Pl:    return QString::fromStdString(player.pl);
+            case Score: return QString::fromStdString(player.frags);
+            case Time:  return QString::fromStdString(player.time);
         }
     }
     else if ( role == Qt::TextAlignmentRole )
     {
-        if ( index.column() >= 2 && index.column() <= 6 )
+        if ( index.column() >= Entity && index.column() <= Time )
             return Qt::AlignCenter;
     }
 
@@ -67,31 +67,31 @@ QVariant PlayerModel::headerData(int section, Qt::Orientation orientation, int r
     {
         switch(section)
         {
-            case 0: return tr("IP");
-            case 1: return tr("Name");
-            case 2: return tr("#");
-            case 3: return tr("Ping");
-            case 4: return tr("PL");
-            case 5: return tr("Score");
-            case 6: return tr("Time");
-            case 7: return tr("Actions");
+            case Ip:     return tr("IP");
+            case Name:   return tr("Name");
+            case Entity: return tr("#");
+            case Ping:   return tr("Ping");
+            case Pl:     return tr("PL");
+            case Score:  return tr("Score");
+            case Time:   return tr("Time");
+            case Actions:return tr("Actions");
         }
     }
     else if ( role == Qt::ToolTipRole || role == Qt::WhatsThisRole )
     {
         switch(section)
         {
-            case 0: return tr("IP Address");
-            case 1: return tr("Name");
-            case 2: return tr("Entity number");
-            case 3: return tr("Ping");
-            case 4: return tr("Packet Loss");
-            case 5: return tr("Score");
-            case 6: return tr("Time");
-            case 7: return tr("Actions");
+            case Ip:     return tr("IP Address");
+            case Name:   return tr("Name");
+            case Entity: return tr("Entity number");
+            case Ping:   return tr("Ping");
+            case Pl:     return tr("Packet Loss");
+            case Score:  return tr("Score");
+            case Time:   return tr("Time");
+            case Actions:return tr("Actions");
         }
     }
-    else if ( role == Qt::SizeHintRole && section >= 2 )
+    else if ( role == Qt::SizeHintRole && section >= Entity )
     {
         // This ensures that the columns are just right and not too wide
         QStyleOptionViewItem option;
