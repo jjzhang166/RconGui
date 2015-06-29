@@ -334,6 +334,12 @@ void ServerWidget::on_action_save_log_triggered()
 
 }
 
+void ServerWidget::on_tabWidget_currentChanged(int tab)
+{
+    if ( tabWidget->widget(tab) == tab_cvars )
+        ensure_has_cvars();
+}
+
 void ServerWidget::cvarlist_apply_filter()
 {
     proxy_cvar.setFilterKeyColumn(input_cvar_filter_section->currentIndex());
@@ -382,4 +388,12 @@ QAbstractButton* ServerWidget::create_button(const xonotic::PlayerAction& action
         request_status();
     });
     return button;
+}
+
+void ServerWidget::ensure_has_cvars()
+{
+    // Arbitrary heuristic
+    // should be loaded from settings and set an explicit flag on request_cvars()
+    if ( model_cvar.rowCount() < 256 )
+        request_cvars();
 }

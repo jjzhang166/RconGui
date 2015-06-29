@@ -79,6 +79,7 @@ private slots:
     void on_action_attach_log_triggered();
     void on_action_detach_log_triggered();
     void on_action_save_log_triggered();
+    void on_tabWidget_currentChanged(int tab);
 
     void clear_log();
 
@@ -123,6 +124,11 @@ private:
      */
     QAbstractButton* create_button(const xonotic::PlayerAction& action,
                                    const xonotic::Player& player);
+
+    /**
+     * \brief Ensures cvars have been loaded
+     */
+    void ensure_has_cvars();
 
     /**
      * \brief Color from regex match
