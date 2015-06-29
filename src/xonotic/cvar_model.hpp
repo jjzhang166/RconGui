@@ -112,23 +112,9 @@ public slots:
         if ( cvar.name.empty() )
             return;
 
-        QString name = QString::fromStdString(cvar.name);
-        auto it = cvars.lowerBound(name);
-
-        if ( it != cvars.end() && it.key() == name )
-        {
-            *it = cvar;
-            int row = std::distance(cvars.begin(), it);
-            if ( row != -1 )
-                emit dataChanged(index(row,0), index(row, columnCount()-1));
-        }
-        else
-        {
-            int row = std::distance(cvars.begin(), it);
-            beginInsertRows({},row,row);
-            cvars.insert(it, name, cvar);
-            endInsertRows();
-        }
+        beginResetModel();
+        cvars[QString::fromStdString(cvar.name)] = cvar;
+        endResetModel();
     }
 
     /**
