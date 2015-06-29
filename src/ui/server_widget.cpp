@@ -55,6 +55,10 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
         rcon_command("chmap "+map); /// \todo Read command from settings
         model_server.set_server_property("map", map);
     };
+    delegate_server.set_hostname = [this](const QString& name) {
+        rcon_command("set hostname "+name);
+        model_server.set_server_property("host", name);
+    };
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
             &model_server, &ServerModel::set_server_property);
 

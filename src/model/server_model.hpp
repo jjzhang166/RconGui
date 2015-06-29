@@ -41,7 +41,7 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override
     {
-        if ( accept(index.row()) && role == Qt::DisplayRole )
+        if ( accept(index.row()) && (role == Qt::DisplayRole || role == Qt::EditRole) )
             return properties[display_property[index.row()]].second;
         else if ( accept(index.row()) && role == Qt::UserRole )
             return display_property[index.row()];
@@ -67,7 +67,9 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
         auto flags = QAbstractListModel::flags(index);
-        if ( accept(index.row()) && display_property[index.row()] == "map" )
+        if ( accept(index.row()) && (
+                display_property[index.row()] == "map"  ||
+                display_property[index.row()] == "host" ))
             flags |= Qt::ItemIsEditable;
         return flags;
     }

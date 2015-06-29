@@ -24,12 +24,13 @@
 #ifndef SERVER_DELEGATE_HPP
 #define SERVER_DELEGATE_HPP
 
-#include <QStyledItemDelegate>
+#include <QApplication>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QPalette>
+#include <QStyledItemDelegate>
 
 #include "functional.hpp"
-#include <QApplication>
-#include <QPalette>
 
 /**
  * \brief Shows a combo box for the map
@@ -44,37 +45,53 @@ public:
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override
     {
-        if ( discard_index(index) )
-            return QStyledItemDelegate::createEditor(parent, option, index);
-
-        auto combo = new QComboBox(parent);
-        if ( g_maplist )
-            combo->addItems(g_maplist().split(" ", QString::SkipEmptyParts));
-        combo->setEditable(true);
-        return combo;
+        if ( index_property(index, "map") )
+        {
+            auto combo = new QComboBox(parent);
+            if ( g_maplist )
+                combo->addItems(g_maplist().split(" ", QString::SkipEmptyParts));
+            combo->setEditable(true);
+            return combo;
+        }
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const override
     {
-        if ( discard_index(index) )
-            return QStyledItemDelegate::setEditorData(editor, index);
+        if ( index_property(index, "map") )
+        {
+            QString current = index.data().toString();
+            auto combo = static_cast<QComboBox*>(editor);
+            if ( combo->findText(current) == -1 )
+                combo->addItem(current);
+            combo->setCurrentText(current);
+        }
+        else
+        {
+            QStyledItemDelegate::setEditorData(editor, index);
+        }
 
-        QString current = index.data().toString();
-        auto combo = static_cast<QComboBox*>(editor);
-        if ( combo->findText(current) == -1 )
-            combo->addItem(current);
-        combo->setCurrentText(current);
     }
 
     void setModelData(QWidget *editor,
                       QAbstractItemModel *model,
                       const QModelIndex &index) const override
     {
-        if ( discard_index(index) )
-            return QStyledItemDelegate::setModelData(editor, model, index);
+        if ( index_property(index, "map") )
+        {
+            auto combo = static_cast<QComboBox*>(editor);
+            callback(chmap, combo->currentText());
+        }
+        else if ( index_property(index, "host") )
+        {
+            auto edit = static_cast<QLineEdit*>(editor);
+            callback(set_hostname, edit->text());
+        }
+        else
+        {
+            QStyledItemDelegate::setModelData(editor, model, index);
+        }
 
-        auto combo = static_cast<QComboBox*>(editor);
-        callback(chmap, combo->currentText());
     }
 
 
@@ -87,7 +104,7 @@ public:
 
         opt.features |= QStyleOptionViewItem::HasDisplay;
         opt.text = displayText(index.data(Qt::DisplayRole).toString(), opt.locale);
-        
+
         if ( ! (index.flags() & Qt::ItemIsEditable) )
             opt.backgroundBrush = QApplication::palette()
                 .brush(QPalette::Disabled, QPalette::Base);
@@ -100,14 +117,16 @@ public:
     std::function<QString()> g_maplist;
     /// \brief Function to call to change the map
     std::function<void (const QString&)> chmap;
+    /// \brief Function to call to set the hostname
+    std::function<void (const QString&)> set_hostname;
 
 private:
     /**
-     * \brief Whether the index is to be discarded
+     * \brief Whether the index points to the given property
      */
-    bool discard_index(const QModelIndex &index) const
+    bool index_property(const QModelIndex &index, const QString& property) const
     {
-        return index.data(Qt::UserRole).toString() != "map";
+        return index.data(Qt::UserRole).toString() == property;
     }
 };
 
