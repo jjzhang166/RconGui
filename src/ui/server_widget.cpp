@@ -28,13 +28,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextObject>
-#include <QMessageAuthenticationCode>
 
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
 
-ServerWidget::ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent)
-    : QWidget(parent), xonotic(std::move(xonotic))
+ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
+    : QWidget(parent), connection(std::move(details))
 {
     setupUi(this);
 
@@ -43,14 +42,12 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent)
 
     table_server_status->setModel(&model_server);
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
-            &model_server, &xonotic::ServerModel::set_server_property,
-            Qt::QueuedConnection);
+            &model_server, &xonotic::ServerModel::set_server_property);
 
     table_cvars->setModel(&proxy_cvar);
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
-            &model_cvar, &xonotic::CvarModel::set_cvar,
-            Qt::QueuedConnection);
+            &model_cvar, &xonotic::CvarModel::set_cvar);
     auto header_view = table_cvars->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -83,42 +80,31 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent)
             }
         });
 
-    connect(this, &ServerWidget::log_received,
-            this, &ServerWidget::append_log, Qt::QueuedConnection);
-
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
     input_console->setFont(settings().console_font);
-    input_console->setHistory(settings().get_history(this->xonotic.name));
+    input_console->setHistory(settings().get_history(connection.details().name));
 
     clear_log();
 
-    io.max_datagram_size(1400);
-    io.on_error = [this](const std::string& msg)
-    {
-        emit network_error(QString::fromStdString(msg));
-        xonotic_close_connection();
-    };
-    io.on_async_receive = [this](const std::string& datagram)
-    {
-        xonotic_read(datagram);
-    };
-    io.on_failure = [this]()
-    {
-        xonotic_disconnect();
-    };
-
-    connect(this, &ServerWidget::network_error,
+    connect(&connection, &xonotic::QDarkplaces::disconnected,
+            this, &ServerWidget::xonotic_disconnected,
+            Qt::QueuedConnection);
+    connect(&connection, &xonotic::QDarkplaces::connected,
+            this, &ServerWidget::xonotic_connected);
+    connect(&connection, &xonotic::QDarkplaces::connection_error,
             this, &ServerWidget::network_error_status,
             Qt::QueuedConnection);
-
-    xonotic_connect();
+    connect(&connection, &xonotic::QDarkplaces::received_log,
+            this, &ServerWidget::xonotic_log,
+            Qt::QueuedConnection);
+    /// \todo Connect disconnecting -> clear log_dest_udp if needed
+    connection.xonotic_connect();
 }
 
 ServerWidget::~ServerWidget()
 {
-    xonotic_disconnect();
-    settings().set_history(xonotic.name, input_console->history());
+    settings().set_history(connection.details().name, input_console->history());
 }
 
 void ServerWidget::clear_log()
@@ -131,222 +117,38 @@ void ServerWidget::clear_log()
     output_console->setTextColor(settings().console_foreground);
 }
 
-void ServerWidget::xonotic_close_connection()
+void ServerWidget::xonotic_disconnected()
 {
-    if ( io.connected() )
-        io.disconnect();
-    if ( thread_input.joinable() &&
-            thread_input.get_id() != std::this_thread::get_id() )
-        thread_input.join();
-}
-
-void ServerWidget::xonotic_disconnect()
-{
-    // if ( io.connected() )
-        /// \todo clear log_dest_udp if needed
-    xonotic_close_connection();
-    xonotic_clear();
-
     set_network_status(tr("Disconnected"));
 }
 
-bool ServerWidget::xonotic_connect()
+void ServerWidget::xonotic_connected()
 {
     model_server.set_server_property("server",
-        QString::fromStdString(xonotic.server.name()));
+        QString::fromStdString(connection.details().server.name()));
 
-    if ( !io.connected() )
-    {
-        if ( io.connect(xonotic.server) )
-        {
-            if ( thread_input.get_id() == std::this_thread::get_id() )
-                return false;
-
-            if ( thread_input.joinable() )
-                thread_input.join();
-
-            thread_input = std::move(std::thread([this]{
-                xonotic_clear();
-                xonotic_request_status();
-                io.run_input();
-            }));
-
-            set_network_status(tr("Connected"));
-        }
-    }
-
-    return io.connected();
+    xonotic_clear();
+    set_network_status(tr("Connected"));
+    request_status();
 }
 
-bool ServerWidget::xonotic_reconnect()
-{
-    xonotic_disconnect();
-    return xonotic_connect();
-}
 
 void ServerWidget::xonotic_clear()
 {
     /// \todo
-    // Lock lock(mutex);
-    // clear rcon secure 2 buffer
     // clear status and cvars
     // clear cvars
 }
 
-void ServerWidget::xonotic_request_status()
+void ServerWidget::request_status()
 {
-    rcon_command("status 1");
+    connection.rcon_command("status 1");
 }
 
-bool ServerWidget::xonotic_connected()
+void ServerWidget::xonotic_log(const QString& log)
 {
-    return io.connected();
-}
+    log_parser.parse(log.toStdString());
 
-void ServerWidget::xonotic_read(const std::string& datagram)
-{
-
-    if ( datagram.size() < 5 || datagram.substr(0,4) != "\xff\xff\xff\xff" )
-    {
-        network_error(tr("Invalid datagram: %1")
-            .arg(QString::fromStdString(datagram)));
-        return;
-    }
-
-    // discard non-log/rcon output
-    if ( datagram[4] != 'n' )
-        return;
-
-    Lock lock(mutex);
-    std::istringstream socket_stream(line_buffer+datagram.substr(5));
-    line_buffer.clear();
-    lock.unlock();
-
-    // convert the datagram into lines
-    std::string line;
-    while (socket_stream)
-    {
-        std::getline(socket_stream,line);
-        if (socket_stream.eof())
-        {
-            if (!line.empty())
-            {
-                lock.lock();
-                line_buffer = line;
-                lock.unlock();
-            }
-            break;
-        }
-        xontotic_parse(line);
-        emit log_received(QString::fromUtf8(line.data(), line.size()));
-    }
-}
-
-void ServerWidget::xontotic_parse(const std::string& log_line)
-{
-    log_parser.parse(log_line);
-}
-
-QString ServerWidget::name() const
-{
-    return QString::fromStdString(xonotic.name);
-}
-
-void ServerWidget::on_button_setup_clicked()
-{
-    ServerSetupDialog dlg(xonotic, this);
-    if ( dlg.exec() )
-    {
-        auto oldxon = xonotic;
-        xonotic = dlg.connection_details();
-
-        if ( oldxon.server != xonotic.server )
-            xonotic_reconnect();
-
-        if ( xonotic.name != oldxon.name )
-            emit name_changed(QString::fromStdString(xonotic.name));
-    }
-}
-
-void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &pos)
-{
-    QMenu* menu = output_console->createStandardContextMenu();
-
-    menu->addSeparator();
-    menu->addAction(action_save_log);
-    menu->addAction(action_clear_log);
-
-    menu->addSeparator();
-    menu->addAction(action_attach_log);
-    menu->addAction(action_detach_log);
-    menu->addAction(action_parse_colors);
-
-    menu->exec(output_console->mapToGlobal(pos));
-}
-
-void ServerWidget::rcon_command(const std::string& command)
-{
-    /// \todo rcon_secure 2
-    if ( xonotic.rcon_secure == xonotic::ConnectionDetails::NO )
-    {
-        xonotic_write("rcon "+xonotic.rcon_password+' '+command);
-    }
-    else if ( xonotic.rcon_secure == xonotic::ConnectionDetails::TIME )
-    {
-        auto message = QString("%1.000000 %2")
-                        .arg(std::time(nullptr))
-                        .arg(QString::fromStdString(command));
-        QMessageAuthenticationCode code(QCryptographicHash::Md4);
-        code.setKey(QByteArray::fromStdString(xonotic.rcon_password));
-        code.addData(message.toUtf8());
-        auto output = code.result();
-        xonotic_write(std::string("srcon HMAC-MD4 TIME ")+
-            std::string(output.data(), output.size())+' '+message.toStdString());
-    }
-}
-
-void ServerWidget::xonotic_write(std::string line)
-{
-    line.erase(std::remove_if(line.begin(), line.end(),
-        [](char c){return c == '\n' || c == '\0' || c == '\xff';}),
-        line.end());
-
-    io.write(header+line);
-}
-
-QColor ServerWidget::xonotic_color ( const QString& s )
-{
-    if ( s.size() == 4 )
-    {
-        return QColor(
-            hex_to_int(s[1].unicode())*255/15,
-            hex_to_int(s[2].unicode())*255/15,
-            hex_to_int(s[3].unicode())*255/15
-        );
-    }
-
-    if ( s.size() != 1 )
-        return Qt::gray;
-
-    switch ( s[0].unicode() )
-    {
-        case '0': return Qt::black;
-        case '1': return Qt::red;
-        case '2': return Qt::green;
-        case '3': return Qt::yellow;
-        case '4': return Qt::blue;
-        case '5': return Qt::cyan;
-        case '6': return Qt::magenta;
-        case '7': return Qt::white;
-        case '8': return Qt::darkGray;
-        case '9': return Qt::gray;
-    }
-
-    return Qt::gray;
-}
-
-void ServerWidget::append_log(const QString& log)
-{
     auto scrollbar = output_console->verticalScrollBar();
     bool scroll = scrollbar->value() == scrollbar->maximum();
 
@@ -406,14 +208,91 @@ void ServerWidget::append_log(const QString& log)
         scrollbar->setValue(scrollbar->maximum());
 }
 
+QString ServerWidget::name() const
+{
+    return QString::fromStdString(connection.details().name);
+}
+
+void ServerWidget::rcon_command(const QString& command)
+{
+    connection.rcon_command(command.toStdString());
+}
+
+bool ServerWidget::xonotic_reconnect()
+{
+    return connection.reconnect();
+}
+
+void ServerWidget::on_button_setup_clicked()
+{
+    ServerSetupDialog dlg(connection.details(), this);
+    if ( dlg.exec() )
+    {
+        auto oldname = connection.details().name;
+        connection.set_details(dlg.connection_details());
+        auto newname = connection.details().name;
+
+        if ( newname != oldname )
+            emit name_changed(QString::fromStdString(newname));
+    }
+}
+
+void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &pos)
+{
+    QMenu* menu = output_console->createStandardContextMenu();
+
+    menu->addSeparator();
+    menu->addAction(action_save_log);
+    menu->addAction(action_clear_log);
+
+    menu->addSeparator();
+    menu->addAction(action_attach_log);
+    menu->addAction(action_detach_log);
+    menu->addAction(action_parse_colors);
+
+    menu->exec(output_console->mapToGlobal(pos));
+}
+
+/// \todo Move out
+QColor ServerWidget::xonotic_color(const QString& s)
+{
+    if ( s.size() == 4 )
+    {
+        return QColor(
+            hex_to_int(s[1].unicode())*255/15,
+            hex_to_int(s[2].unicode())*255/15,
+            hex_to_int(s[3].unicode())*255/15
+        );
+    }
+
+    if ( s.size() != 1 )
+        return Qt::gray;
+
+    switch ( s[0].unicode() )
+    {
+        case '0': return Qt::black;
+        case '1': return Qt::red;
+        case '2': return Qt::green;
+        case '3': return Qt::yellow;
+        case '4': return Qt::blue;
+        case '5': return Qt::cyan;
+        case '6': return Qt::magenta;
+        case '7': return Qt::white;
+        case '8': return Qt::darkGray;
+        case '9': return Qt::gray;
+    }
+
+    return Qt::gray;
+}
+
 void ServerWidget::on_action_attach_log_triggered()
 {
-    rcon_command("log_dest_udp "+io.local_endpoint().name());
+    connection.rcon_command("log_dest_udp "+connection.local_endpoint().name());
 }
 
 void ServerWidget::on_action_detach_log_triggered()
 {
-    rcon_command("log_dest_udp \"\"");
+    connection.rcon_command("log_dest_udp \"\"");
 }
 
 void ServerWidget::on_action_save_log_triggered()
@@ -473,10 +352,10 @@ void ServerWidget::set_network_status(const QString& msg)
     model_server.set_server_property("connection",msg);
 }
 
-void ServerWidget::xonotic_request_cvars()
+void ServerWidget::request_cvars()
 {
     model_cvar.clear();
-    rcon_command("cvarlist");
+    connection.rcon_command("cvarlist");
 }
 
 QPushButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
@@ -486,7 +365,7 @@ QPushButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
     auto cmd = action.command(player);
     connect(button, &QPushButton::clicked, [this, cmd]{
         rcon_command(cmd);
-        xonotic_request_status();
+        request_status();
     });
     return button;
 }

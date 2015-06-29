@@ -24,21 +24,16 @@
 #ifndef SERVER_WIDGET_HPP
 #define SERVER_WIDGET_HPP
 
-#include <thread>
-#include <mutex>
-
 #include <QSortFilterProxyModel>
 
 #include "ui_server_widget.h"
-#include "network/udp_io.hpp"
+#include "xonotic/qdarkplaces.hpp"
 #include "xonotic/connection_details.hpp"
 #include "xonotic/log_parser.hpp"
 #include "xonotic/server_model.hpp"
 #include "xonotic/cvar_model.hpp"
 #include "xonotic/player_model.hpp"
 #include "xonotic/player_action.hpp"
-
-using Lock = std::unique_lock<std::mutex>;
 
 /**
  * \brief Widget interfacing to rcon
@@ -51,31 +46,13 @@ class ServerWidget : public QWidget, private Ui_ServerWidget
 
 public:
     ServerWidget(xonotic::ConnectionDetails xonotic, QWidget* parent = nullptr);
+
     ~ServerWidget();
-
-    /**
-     * \brief Whether the widget is connected to the xonotic server
-     */
-    bool xonotic_connected();
-
-    /**
-     * \brief Returns Xonotic connection details
-     */
-    const xonotic::ConnectionDetails& xonotic_connection() const { return xonotic; }
 
     /**
      * \brief Name of the xonotic connection as a QString
      */
     QString name() const;
-
-    /**
-     * \brief Runs a rcon command
-     */
-    void rcon_command(const std::string& command);
-    void rcon_command(const char* command)
-    {
-        rcon_command(std::string(command));
-    }
 
 signals:
     /**
@@ -88,35 +65,12 @@ signals:
      */
     void network_error(const QString& message);
 
-    /**
-     * \brief Emitted when a log message is received
-     * \note Not emitted from the main thread
-     */
-    void log_received(const QString& line);
-
 public slots:
     /**
      * \brief Runs a rcon command
      */
-    void rcon_command(const QString& command)
-    {
-        rcon_command(command.toStdString());
-    }
+    void rcon_command(const QString& command);
 
-    /**
-     * \brief Close the xonotic connection and clear connection data
-     */
-    void xonotic_disconnect();
-
-    /**
-     * \brief Open the xonotic connection
-     * \returns Whether the connection has been successful
-     */
-    bool xonotic_connect();
-
-    /**
-     * \brief Diconnect and connect from xonotic
-     */
     bool xonotic_reconnect();
 
 private slots:
@@ -129,19 +83,14 @@ private slots:
     void clear_log();
 
     /**
-     * \brief Appends log to the output console
-     */
-    void append_log(const QString& log);
-
-    /**
      * \brief Requests xonotic status
      */
-    void xonotic_request_status();
+    void request_status();
 
     /**
      * \brief Requests xonotic cvar list
      */
-    void xonotic_request_cvars();
+    void request_cvars();
 
     /**
      * \brief Update the model with the error message
@@ -153,31 +102,16 @@ private slots:
      */
     void cvarlist_apply_filter();
 
+    void xonotic_disconnected();
+    void xonotic_connected();
+    void xonotic_log(const QString& line);
+
 private:
-    /**
-     * \brief Low level xonotic disconnection
-     */
-    void xonotic_close_connection();
 
     /**
-     * \brief Clear connection data
+     * \brief Cleans up the connection
      */
     void xonotic_clear();
-
-    /**
-     * \brief Writes \c line to the xonotic server
-     */
-    void xonotic_write(std::string line);
-
-    /**
-     * \brief Handles a Xonotic datagram
-     */
-    void xonotic_read(const std::string& datagram);
-
-    /**
-     * \brief Parse a line from the xonotic log
-     */
-    void xontotic_parse(const std::string& log_line);
 
     /**
      * \brief Sets the network status message
@@ -209,12 +143,7 @@ private:
         return 0;
     }
 
-    std::mutex                  mutex;
-    std::string                 header{"\xff\xff\xff\xff"};     ///< Connection message header
-    std::string                 line_buffer;                    ///< Buffer for overflowing messages from Xonotic
-    xonotic::ConnectionDetails            xonotic;
-    network::UdpIo              io;
-    std::thread                 thread_input;
+    xonotic::QDarkplaces        connection;
     xonotic::LogParser          log_parser;
     xonotic::ServerModel        model_server;
     xonotic::CvarModel          model_cvar;

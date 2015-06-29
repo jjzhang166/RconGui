@@ -409,7 +409,7 @@
    <sender>button_refresh_status</sender>
    <signal>clicked()</signal>
    <receiver>ServerWidget</receiver>
-   <slot>xonotic_request_status()</slot>
+   <slot>request_status()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>116</x>
@@ -473,7 +473,7 @@
    <sender>button_refresh_cvars</sender>
    <signal>clicked()</signal>
    <receiver>ServerWidget</receiver>
-   <slot>xonotic_request_cvars()</slot>
+   <slot>request_cvars()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>98</x>
@@ -489,8 +489,8 @@
  <slots>
   <slot>rcon_command(QString)</slot>
   <slot>xonotic_reconnect()</slot>
-  <slot>xonotic_request_status()</slot>
-  <slot>xonotic_request_cvars()</slot>
+  <slot>request_status()</slot>
+  <slot>request_cvars()</slot>
   <slot>cvarlist_apply_filter()</slot>
  </slots>
 </ui>
