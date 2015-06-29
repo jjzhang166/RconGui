@@ -35,8 +35,6 @@ Settings::~Settings()
 
 void Settings::load()
 {
-    QSettings settings;
-
     settings.beginGroup("servers");
     for ( const QString& key : settings.childGroups() )
     {
@@ -90,7 +88,6 @@ void Settings::load()
 
 void Settings::save()
 {
-    QSettings settings;
     settings.beginGroup("servers");
     for ( const auto& server : saved_servers )
     {

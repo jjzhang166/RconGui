@@ -57,6 +57,36 @@ public:
     void save();
 
     /**
+     * \brief Get a settings value
+     * \tparam T A Type registered to QVariant
+     */
+    template<class T>
+        T get(const QString& key, T&& default_value)
+        {
+            return settings.value(key,
+                QVariant::fromValue(std::forward<T>(default_value)))
+                .template value<T>();
+        }
+    /**
+     * \brief Get a settings value
+     * \tparam T A Type registered to QVariant
+     */
+    template<class T>
+        T get(const QString& key)
+        {
+            return settings.value(key).value<T>();
+        }
+    /**
+     * \brief Put a settings value
+     * \tparam T A Type registered to QVariant
+     */
+    template<class T>
+        void put(const QString& key, T&& value)
+        {
+            settings.setValue(key, QVariant::fromValue(std::forward<T>(value)));
+        }
+
+    /**
      * \brief Get the console history for the given server
      */
     QStringList get_history(const std::string& server) const;
@@ -82,6 +112,8 @@ public:
 
 private:
     Settings();
+
+    QSettings settings;
 
 };
 
