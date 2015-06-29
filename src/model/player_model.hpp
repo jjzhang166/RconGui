@@ -28,9 +28,7 @@
 
 #include <QAbstractTableModel>
 
-#include "player.hpp"
-
-namespace xonotic {
+#include "xonotic/player.hpp"
 
 /**
  * \brief Model for the player status
@@ -69,7 +67,7 @@ public slots:
     /**
      * \brief Sets the players
      */
-    void set_players(const std::vector<Player>& player_list)
+    void set_players(const std::vector<xonotic::Player>& player_list)
     {
         beginResetModel();
         players = player_list;
@@ -92,12 +90,11 @@ signals:
     /**
      * \brief Emitted after the model has changed
      */
-    void players_changed(const std::vector<Player>& players);
+    void players_changed(const std::vector<xonotic::Player>& players);
 
 private:
-    std::vector<Player> players; ///< list of players
+    std::vector<xonotic::Player> players; ///< list of players
 
 };
-} // namespace xonotic
 
 #endif // XONOTIC_PLAYER_MODEL_HPP

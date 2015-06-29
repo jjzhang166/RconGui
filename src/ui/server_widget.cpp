@@ -44,12 +44,12 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
 
     table_server_status->setModel(&model_server);
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
-            &model_server, &xonotic::ServerModel::set_server_property);
+            &model_server, &ServerModel::set_server_property);
 
     table_cvars->setModel(&proxy_cvar);
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
-            &model_cvar, &xonotic::CvarModel::set_cvar);
+            &model_cvar, &CvarModel::set_cvar);
     auto header_view = table_cvars->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -61,7 +61,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
 
     table_players->setModel(&model_player);
     connect(&log_parser, &xonotic::LogParser::players_changed,
-            &model_player, &xonotic::PlayerModel::set_players,
+            &model_player, &PlayerModel::set_players,
             Qt::QueuedConnection);
     header_view = table_players->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -71,7 +71,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
-    connect(&model_player, &xonotic::PlayerModel::players_changed,
+    connect(&model_player, &PlayerModel::players_changed,
         [this](const std::vector<xonotic::Player>& players) {
             for ( unsigned i = 0; i < players.size(); i++ )
             {
@@ -79,7 +79,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
                 for ( const auto& action : settings().player_actions )
                     buttons->addButton(create_button(action,players[i]),
                                        QDialogButtonBox::ActionRole);
-                auto index = model_player.index(i, xonotic::PlayerModel::Actions);
+                auto index = model_player.index(i, PlayerModel::Actions);
                 table_players->setIndexWidget(index, buttons);
             }
         });
@@ -376,7 +376,7 @@ void ServerWidget::request_cvars()
     label_refresh_cvar->setText(QTime::currentTime().toString("hh:mm:ss"));
 }
 
-QAbstractButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
+QAbstractButton* ServerWidget::create_button(const PlayerAction& action,
                                              const xonotic::Player& player)
 {
     auto button = new QToolButton();

@@ -27,8 +27,6 @@
 #include <QAbstractListModel>
 #include <QHash>
 
-namespace xonotic {
-
 /**
  * \brief Model for the server status
  */
@@ -145,5 +143,4 @@ private:
 
 };
 
-} // namespace xonotic
 #endif // XONOTIC_SERVER_MODEL_HPP

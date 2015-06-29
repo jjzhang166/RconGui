@@ -30,10 +30,10 @@
 #include "xonotic/qdarkplaces.hpp"
 #include "xonotic/connection_details.hpp"
 #include "xonotic/log_parser.hpp"
-#include "xonotic/server_model.hpp"
-#include "xonotic/cvar_model.hpp"
-#include "xonotic/player_model.hpp"
-#include "xonotic/player_action.hpp"
+#include "model/server_model.hpp"
+#include "model/cvar_model.hpp"
+#include "model/player_model.hpp"
+#include "model/player_action.hpp"
 
 /**
  * \brief Widget interfacing to rcon
@@ -122,7 +122,7 @@ private:
     /**
      * \brief Creates a button which executes the given action on the given player
      */
-    QAbstractButton* create_button(const xonotic::PlayerAction& action,
+    QAbstractButton* create_button(const PlayerAction& action,
                                    const xonotic::Player& player);
 
     /**
@@ -154,13 +154,13 @@ private:
     /// Parses the log from the connection to populate the model
     xonotic::LogParser          log_parser;
     /// Server status model
-    xonotic::ServerModel        model_server;
+    ServerModel                 model_server;
     /// Cvar list model
-    xonotic::CvarModel          model_cvar;
+    CvarModel                   model_cvar;
     /// Proxy to filter the cvar list model
     QSortFilterProxyModel       proxy_cvar;
     /// Connected player model
-    xonotic::PlayerModel        model_player;
+    PlayerModel                 model_player;
     /// Commands used to request status
     QStringList                 cmd_status = {"status 1"};
     /// Commands used to request cvars

@@ -29,9 +29,7 @@
 #include <QAbstractTableModel>
 #include <QMap>
 
-#include "cvar.hpp"
-
-namespace xonotic {
+#include "xonotic/cvar.hpp"
 
 /**
  * \brief Model for the server status
@@ -98,7 +96,7 @@ public:
     /**
      * \brief Get a cvar
      */
-    const Cvar& server_property(const QString& name)
+    const xonotic::Cvar& server_property(const QString& name)
     {
         return cvars[name];
     }
@@ -107,7 +105,7 @@ public slots:
     /**
      * \brief Sets a server property
      */
-    void set_cvar(const Cvar& cvar)
+    void set_cvar(const xonotic::Cvar& cvar)
     {
         if ( cvar.name.empty() )
             return;
@@ -128,9 +126,8 @@ public slots:
     }
 
 private:
-    QMap<QString, Cvar> cvars; ///< Cvar name -> info
+    QMap<QString, xonotic::Cvar> cvars; ///< Cvar name -> info
 
 };
 
-} // namespace xonotic
 #endif // XONOTIC_CVAR_MODEL_HPP

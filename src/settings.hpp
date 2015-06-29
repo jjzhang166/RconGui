@@ -30,7 +30,7 @@
 #include <QFont>
 
 #include "xonotic/connection_details.hpp"
-#include "xonotic/player_action.hpp"
+#include "model/player_action.hpp"
 
 /**
  * \brief Settings singleton
@@ -104,7 +104,7 @@ public:
     int    console_brightness_min{80};          ///< Minimum brightness for console colors
     QFont  console_font{"monospace", 10};       ///< Console text font
 
-    QList<xonotic::PlayerAction> player_actions = {
+    QList<PlayerAction> player_actions = {
         {"Kick", "kick # $entity",   "im-kick-user"},
         {"Ban",  "kickban #$entity", ":/icons/ban-hammer.svg"},
         {"Mute", "mute #$entity",    ":/icons/no-chat.svg"},

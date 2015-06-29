@@ -27,9 +27,7 @@
 #include <QString>
 #include <QIcon>
 
-#include "player.hpp"
-
-namespace xonotic {
+#include "xonotic/player.hpp"
 
 /**
  * \brief An action to perform on a player
@@ -56,7 +54,7 @@ public:
      * \brief Expanded command
      * \todo Use a trie
      */
-    QString command(const Player& player) const
+    QString command(const xonotic::Player& player) const
     {
         auto cmd = command_;
         return cmd
@@ -89,5 +87,4 @@ private:
     QString icon_;
 };
 
-} // namespace xonotic
 #endif // XONOTIC_PLAYER_ACTION_HPP
