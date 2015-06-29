@@ -89,6 +89,7 @@ void Settings::load()
 void Settings::save()
 {
     settings.beginGroup("servers");
+    settings.remove("");
     for ( const auto& server : saved_servers )
     {
         settings.beginGroup(QString::fromStdString(server.name));
