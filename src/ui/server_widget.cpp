@@ -88,6 +88,9 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     input_console->setFont(settings().console_font);
     input_console->setHistory(settings().get_history(connection.details().name));
 
+    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
+    cmd_cvars = settings().get("behaviour/cmd_cvars", cmd_cvars);
+
     clear_log();
 
     connect(&connection, &xonotic::QDarkplaces::disconnected,
@@ -141,11 +144,6 @@ void ServerWidget::xonotic_clear()
     model_server.clear();
     model_server.set_server_property("server",
         QString::fromStdString(connection.details().server.name()));
-}
-
-void ServerWidget::request_status()
-{
-    connection.rcon_command("status 1");
 }
 
 void ServerWidget::xonotic_log(const QString& log)
@@ -356,10 +354,17 @@ void ServerWidget::set_network_status(const QString& msg)
     model_server.set_server_property("connection",msg);
 }
 
+void ServerWidget::request_status()
+{
+    for ( const auto& cmd : cmd_status )
+        rcon_command(cmd);
+}
+
 void ServerWidget::request_cvars()
 {
     model_cvar.clear();
-    connection.rcon_command("cvarlist");
+    for ( const auto& cmd : cmd_cvars )
+        rcon_command(cmd);
 }
 
 QAbstractButton* ServerWidget::create_button(const xonotic::PlayerAction& action,

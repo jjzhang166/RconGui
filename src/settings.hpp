@@ -61,11 +61,11 @@ public:
      * \tparam T A Type registered to QVariant
      */
     template<class T>
-        T get(const QString& key, T&& default_value)
+        typename std::remove_reference<T>::type get(const QString& key, T&& default_value)
         {
             return settings.value(key,
                 QVariant::fromValue(std::forward<T>(default_value)))
-                .template value<T>();
+                .template value<typename std::remove_reference<T>::type>();
         }
     /**
      * \brief Get a settings value

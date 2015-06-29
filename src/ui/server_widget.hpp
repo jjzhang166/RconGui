@@ -143,12 +143,22 @@ private:
         return 0;
     }
 
+    /// Object handling the DP protocol
     xonotic::QDarkplaces        connection;
+    /// Parses the log from the connection to populate the model
     xonotic::LogParser          log_parser;
+    /// Server status model
     xonotic::ServerModel        model_server;
+    /// Cvar list model
     xonotic::CvarModel          model_cvar;
+    /// Proxy to filter the cvar list model
     QSortFilterProxyModel       proxy_cvar;
+    /// Connected player model
     xonotic::PlayerModel        model_player;
+    /// Commands used to request status
+    QStringList                 cmd_status = {"status 1"};
+    /// Commands used to request cvars
+    QStringList                 cmd_cvars  = {"cvarlist g_", "cvarlist sv_"};
 };
 
 #endif // SERVER_WIDGET_HPP
