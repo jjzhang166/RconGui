@@ -69,17 +69,19 @@ void Settings::load()
     settings.endGroup();
 
     settings.beginGroup("behaviour");
-    if ( settings.contains("player") )
+    if ( settings.childGroups().contains("player") )
     {
         int sz = settings.beginReadArray("player");
         player_actions.clear();
         player_actions.reserve(sz);
         for ( int i = 0; i < sz; i++ )
         {
+            settings.setArrayIndex(i);
             QString label = settings.value("label").toString();
             QString command = settings.value("command").toString();
-            if ( !label.isEmpty() && !command.isEmpty() )
-                player_actions.push_back({label, command});
+            QString icon = settings.value("icon").toString();
+            if ( !command.isEmpty() )
+                player_actions.push_back({label, command, icon});
         }
         settings.endArray();
     }
@@ -117,6 +119,7 @@ void Settings::save()
         settings.setArrayIndex(i);
         settings.setValue("label",player_actions[i].name());
         settings.setValue("command",player_actions[i].command());
+        settings.setValue("icon",player_actions[i].icon_name());
     }
     settings.endArray();
     settings.endGroup();

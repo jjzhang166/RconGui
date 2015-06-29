@@ -75,9 +75,9 @@ public:
     QFont  console_font{"monospace", 10};       ///< Console text font
 
     QList<xonotic::PlayerAction> player_actions = {
-        {"Kick", "kick # $entity"},
-        {"Ban", "kickban #$entity"},
-        {"Mute", "mute #$entity"},
+        {"Kick", "kick # $entity",   "im-kick-user"},
+        {"Ban",  "kickban #$entity", ":/icons/ban-hammer.svg"},
+        {"Mute", "mute #$entity",    ":/icons/no-chat.svg"},
     };
 
 private:

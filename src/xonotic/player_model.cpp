@@ -45,7 +45,6 @@ QVariant PlayerModel::data(const QModelIndex & index, int role) const
             case 4: return QString::fromStdString(player.pl);
             case 5: return QString::fromStdString(player.frags);
             case 6: return QString::fromStdString(player.time);
-            case 7: return QString::fromStdString(player.no);
         }
     }
     else if ( role == Qt::TextAlignmentRole )

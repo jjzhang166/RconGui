@@ -28,6 +28,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextObject>
+#include <QToolButton>
 
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
@@ -69,7 +70,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(7, QHeaderView::Fixed);
+    header_view->setSectionResizeMode(7, QHeaderView::ResizeToContents);
     connect(&model_player, &xonotic::PlayerModel::players_changed,
         [this](const std::vector<xonotic::Player>& players) {
             for ( unsigned i = 0; i < players.size(); i++ )
@@ -360,12 +361,13 @@ void ServerWidget::request_cvars()
     connection.rcon_command("cvarlist");
 }
 
-QPushButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
-                                         const xonotic::Player& player)
+QAbstractButton* ServerWidget::create_button(const xonotic::PlayerAction& action,
+                                             const xonotic::Player& player)
 {
-    auto button = new QPushButton(action.name());
+    auto button = new QToolButton();
+    button->setIcon(action.icon());
     auto cmd = action.command(player);
-    button->setToolTip(cmd);
+    button->setToolTip(action.name().isEmpty() ? cmd : action.name());
     connect(button, &QPushButton::clicked, [this, cmd]{
         rcon_command(cmd);
         request_status();

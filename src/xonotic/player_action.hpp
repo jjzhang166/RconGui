@@ -25,6 +25,7 @@
 #define XONOTIC_PLAYER_ACTION_HPP
 
 #include <QString>
+#include <QIcon>
 
 #include "player.hpp"
 
@@ -36,8 +37,10 @@ namespace xonotic {
 class PlayerAction
 {
 public:
-    PlayerAction(const QString& name, const QString& command)
-        : name_(name), command_(command) {}
+    PlayerAction(QString name, QString command, QString icon = {})
+        : name_(std::move(name)),
+          command_(std::move(command)),
+          icon_(std::move(icon)){}
 
     /**
      * \brief Name of the action
@@ -63,9 +66,27 @@ public:
         ;
     }
 
+    /**
+     * \brief Name/path of the icon for the action
+     */
+    QString icon_name() const { return icon_; }
+
+    /**
+     * \brief Icon for the action
+     */
+    QIcon icon() const
+    {
+        if ( icon_.isEmpty() )
+            return {};
+        if ( !icon_.contains("/") )
+            return QIcon::fromTheme(icon_);
+        return QIcon(icon_);
+    }
+
 private:
     QString name_;
     QString command_;
+    QString icon_;
 };
 
 } // namespace xonotic

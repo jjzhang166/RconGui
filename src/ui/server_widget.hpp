@@ -121,8 +121,8 @@ private:
     /**
      * \brief Creates a button which executes the given action on the given player
      */
-    QPushButton* create_button(const xonotic::PlayerAction& action,
-                               const xonotic::Player& player);
+    QAbstractButton* create_button(const xonotic::PlayerAction& action,
+                                   const xonotic::Player& player);
 
     /**
      * \brief Color from regex match

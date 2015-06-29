@@ -1,3 +1,10 @@
 
-The image icon.svg has been made using resources from the oxygen icon theme
-See http://websvn.kde.org/trunk/kdesupport/oxygen-icons/ for the sources.
+icon.svg
+no-chat.svg
+    Made using resources from the oxygen icon theme
+    See http://websvn.kde.org/trunk/kdesupport/oxygen-icons/ for the sources.
+    Sources are LGPLv3
+
+ban-hammer.svg
+    Modified from https://openclipart.org/detail/196486/mallet
+    Source is CC0

@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/icons">
         <file>icon.svg</file>
+        <file>ban-hammer.svg</file>
+        <file>no-chat.svg</file>
     </qresource>
 </RCC>
