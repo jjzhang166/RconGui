@@ -79,13 +79,23 @@ public slots:
 private slots:
     void on_button_setup_clicked();
     void on_output_console_customContextMenuRequested(const QPoint &pos);
-    void on_action_attach_log_triggered();
-    void on_action_detach_log_triggered();
     void on_action_save_log_triggered();
     void on_tabWidget_currentChanged(int tab);
     void on_input_cvar_filter_section_currentIndexChanged(int index);
     void on_input_console_lineExecuted(QString cmd);
 
+    /**
+     * \brief Attaches log_dest_udp
+     */
+    void attach_log();
+    /**
+     * \brief Detaches
+     */
+    void detach_log();
+
+    /**
+     * \brief Clears the console
+     */
     void clear_log();
 
     /**
@@ -185,6 +195,8 @@ private:
     QStringList                 cmd_status = {"status 1", "g_maplist"};
     /// Commands used to request cvars
     QStringList                 cmd_cvars  = {"cvarlist"};
+    /// Whether log_dest_udp has been set and needs cleanup
+    bool                        log_dest_set = false;
 
 };
 

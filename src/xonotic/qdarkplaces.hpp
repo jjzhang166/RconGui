@@ -36,6 +36,8 @@ public:
     explicit QDarkplaces(xonotic::ConnectionDetails details, QObject* parent = nullptr)
         : QObject(parent), Darkplaces(std::move(details)) {}
 
+    bool xonotic_connected() { return Darkplaces::connected(); }
+
 public slots:
     bool xonotic_connect() { return Darkplaces::connect(); }
     void xonotic_disconnect() { return Darkplaces::disconnect(); }

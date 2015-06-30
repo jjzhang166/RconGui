@@ -83,6 +83,7 @@ void ServerWidget::init_cvar_table()
 {
     delegate_cvar.set_cvar = [this](const QString& name, const QString& value)
     {
+        /// \todo Maybe option to choose set or seta
         rcon_command("set "+name+' '+value);
         auto cvar = model_cvar.cvar(name);
         cvar.value = value.toStdString();
@@ -173,12 +174,15 @@ void ServerWidget::init_connection()
     connect(&connection, &xonotic::QDarkplaces::log_end,
             this, &ServerWidget::xonotic_log_end,
             Qt::QueuedConnection);
-    /// \todo Connect disconnecting -> clear log_dest_udp if needed
+    connect(&connection, &xonotic::QDarkplaces::disconnecting,
+            this, &ServerWidget::detach_log,
+            Qt::QueuedConnection);
     connection.xonotic_connect();
 }
 
 ServerWidget::~ServerWidget()
 {
+    detach_log();
     settings().set_history(connection.details().name, input_console->history());
 }
 
@@ -293,14 +297,22 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
     menu->exec(output_console->mapToGlobal(pos));
 }
 
-void ServerWidget::on_action_attach_log_triggered()
+void ServerWidget::attach_log()
 {
-    connection.rcon_command("log_dest_udp "+connection.local_endpoint().name());
+    if ( connection.xonotic_connected() )
+    {
+        connection.rcon_command("log_dest_udp "+connection.local_endpoint().name());
+        log_dest_set = true;
+    }
 }
 
-void ServerWidget::on_action_detach_log_triggered()
+void ServerWidget::detach_log()
 {
-    connection.rcon_command("log_dest_udp \"\"");
+    if ( log_dest_set )
+    {
+        connection.rcon_command("log_dest_udp \"\"");
+        log_dest_set = false;
+    }
 }
 
 void ServerWidget::on_action_save_log_triggered()
@@ -355,7 +367,8 @@ void ServerWidget::on_input_console_lineExecuted(QString cmd)
 {
     if ( input_expand_cvars->isChecked() )
     {
-        /// \todo ensure cvars?
+        /// \todo Warn if the model doesn't have the given cvar?
+        ///       Can be checked by getting the cvar and checking if the name is empty
         static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
         int i = 0;
         while ( i < cmd.size() )

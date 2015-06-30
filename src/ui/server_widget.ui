@@ -469,6 +469,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_attach_log</sender>
+   <signal>triggered()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>attach_log()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>387</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_detach_log</sender>
+   <signal>triggered()</signal>
+   <receiver>ServerWidget</receiver>
+   <slot>detach_log()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>387</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>rcon_command(QString)</slot>
@@ -476,5 +508,7 @@
   <slot>request_status()</slot>
   <slot>request_cvars()</slot>
   <slot>cvarlist_apply_filter()</slot>
+  <slot>attach_log()</slot>
+  <slot>detach_log()</slot>
  </slots>
 </ui>
