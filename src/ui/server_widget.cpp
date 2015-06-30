@@ -148,7 +148,8 @@ void ServerWidget::init_console()
     complete_cvar.setModelSorting(QCompleter::CaseSensitivelySortedModel);
     complete_cvar.setCompletionColumn(CvarModel::Name);
     complete_cvar.setCompletionRole(Qt::DisplayRole);
-    input_console->setWordCompleter(&complete_cvar);
+    if ( settings().get("console/autocomplete", true) )
+        input_console->setWordCompleter(&complete_cvar);
     input_console->setWordCompleterPrefix("$");
     input_console->setWordCompleterMinChars(settings().get("console/autocomplete/min_chars",1));
     input_console->setFont(settings().console_font);
