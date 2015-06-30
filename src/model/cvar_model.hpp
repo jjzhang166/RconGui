@@ -37,6 +37,12 @@
 class CvarModel : public QAbstractTableModel
 {
 public:
+    enum ColumnNames {
+        Name        = 0,
+        Value       = 1,
+        Default     = 2,
+        Description = 3,
+    };
 
     int rowCount(const QModelIndex & = {}) const override
     {
@@ -60,21 +66,21 @@ public:
         {
             switch(index.column())
             {
-                case 0: return QString::fromStdString(cvar.name);
-                case 1: return QString::fromStdString(cvar.value);
-                case 2: return QString::fromStdString(cvar.default_value);
-                case 3: return QString::fromStdString(cvar.description);
+                case Name       : return QString::fromStdString(cvar.name);
+                case Value      : return QString::fromStdString(cvar.value);
+                case Default    : return QString::fromStdString(cvar.default_value);
+                case Description: return QString::fromStdString(cvar.description);
             }
         }
         else if ( role == Qt::ToolTipRole || role == Qt::WhatsThisRole )
         {
             return QString::fromStdString(cvar.description);
         }
-        else if ( role == Qt::EditRole && index.column() == 1 )
+        else if ( role == Qt::EditRole && index.column() == Value )
         {
             return QString::fromStdString(cvar.value);
         }
-        else if ( role == Qt::UserRole && index.column() == 1 )
+        else if ( role == Qt::UserRole && index.column() == Value )
         {
             return QString::fromStdString(cvar.name);
         }
@@ -86,7 +92,7 @@ public:
     {
         auto flags = QAbstractTableModel::flags(index);
 
-        if ( index.column() == 1 && index.row() >= 0 && index.row() < cvars.size() )
+        if ( index.column() == Value && index.row() >= 0 && index.row() < cvars.size() )
             flags |= Qt::ItemIsEditable;
 
         return flags;
@@ -98,10 +104,10 @@ public:
         {
             switch(section)
             {
-                case 0: return tr("Name");
-                case 1: return tr("Value");
-                case 2: return tr("Default");
-                case 3: return tr("Description");
+                case Name       : return tr("Name");
+                case Value      : return tr("Value");
+                case Default    : return tr("Default");
+                case Description: return tr("Description");
             }
         }
         return {};

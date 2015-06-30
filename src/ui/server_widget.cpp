@@ -99,10 +99,10 @@ void ServerWidget::init_cvar_table()
     connect(&log_parser, &xonotic::LogParser::cvarlist_end,
             &model_cvar, &CvarModel::unblock_updates);
     auto header_view = table_cvars->horizontalHeader();
-    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
-    table_cvars->hideColumn(2);
-    table_cvars->hideColumn(3);
+    header_view->setSectionResizeMode(CvarModel::Name, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(CvarModel::Value, QHeaderView::Stretch);
+    table_cvars->hideColumn(CvarModel::Default);
+    table_cvars->hideColumn(CvarModel::Description);
     for ( int i = 0; i < model_cvar.columnCount(); i++ )
         input_cvar_filter_section->addItem(
             model_cvar.headerData(i,Qt::Horizontal).toString());
@@ -146,9 +146,8 @@ void ServerWidget::init_console()
     complete_cvar.setModel(&model_cvar);
     complete_cvar.setCaseSensitivity(Qt::CaseSensitive);
     complete_cvar.setModelSorting(QCompleter::CaseSensitivelySortedModel);
-    complete_cvar.setCompletionColumn(0);
+    complete_cvar.setCompletionColumn(CvarModel::Name);
     complete_cvar.setCompletionRole(Qt::DisplayRole);
-    complete_cvar.setMaxVisibleItems(6);
     input_console->setWordCompleter(&complete_cvar);
     input_console->setWordCompleterPrefix("$");
     input_console->setFont(settings().console_font);
