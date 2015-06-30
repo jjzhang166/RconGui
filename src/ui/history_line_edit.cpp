@@ -89,7 +89,8 @@ void HistoryLineEdit::next_line()
 
 void HistoryLineEdit::execute()
 {
-    lines << text();
+    if ( lines.empty() || lines.back() != text() )
+        lines << text();
     current_line = lines.size();
     clear();
     emit lineExecuted(lines.back());
