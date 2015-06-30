@@ -111,8 +111,8 @@ bool Darkplaces::reconnect()
 
 void Darkplaces::clear()
 {
-    // Lock lock(mutex);
-    // clear rcon secure 2 buffer
+    Lock lock(mutex);
+    rcon2_buffer.clear();
 }
 
 bool Darkplaces::connected() const
