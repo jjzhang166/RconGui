@@ -141,6 +141,10 @@ void Darkplaces::read(const std::string& datagram)
         std::string message;
         if ( space != datagram.end() )
             message = std::string(space+1, datagram.end());
+
+        if ( command == "challenge" )
+            handle_challenge(message.substr(0,11));
+
         on_receive(command, message);
         return;
     }
@@ -173,6 +177,48 @@ void Darkplaces::read(const std::string& datagram)
     on_log_end();
 }
 
+void Darkplaces::handle_challenge(const std::string& challenge)
+{
+    Lock lock(mutex);
+    if ( rcon2_buffer.empty() || challenge.empty() ||
+        connection_details.rcon_secure != xonotic::ConnectionDetails::CHALLENGE)
+        return;
+
+    auto rcon_command = rcon2_buffer.front();
+    if ( !rcon_command.challenged ||
+        rcon_command.timeout < network::Clock::now() )
+    {
+        rcon2_buffer.front().challenged = false;
+        lock.unlock();
+        request_challenge();
+        return;
+    }
+
+    rcon2_buffer.pop_front();
+    bool request_new_challenge = !rcon2_buffer.empty();
+    lock.unlock();
+
+    std::string challenge_command = challenge+' '+rcon_command.command;
+    std::string key = hmac_md4(challenge_command, connection_details.rcon_password);
+    write("srcon HMAC-MD4 CHALLENGE "+key+' '+challenge_command);
+
+    if ( request_new_challenge )
+        request_challenge();
+
+}
+
+void Darkplaces::request_challenge()
+{
+    Lock lock(mutex);
+    if ( !rcon2_buffer.empty() && !rcon2_buffer.front().challenged )
+    {
+        rcon2_buffer.front().challenged = true;
+        /// \todo timeout from settings
+        rcon2_buffer.front().timeout = network::Clock::now() + std::chrono::seconds(5);
+        write("getchallenge");
+    }
+}
+
 void Darkplaces::set_details(const ConnectionDetails& details)
 {
     bool should_reconnect = details.server != connection_details.server;
@@ -187,7 +233,6 @@ void Darkplaces::rcon_command(std::string command)
         [](char c){return c == '\n' || c == '\0' || c == '\xff';}),
         command.end());
 
-    /// \todo rcon_secure 2
     if ( connection_details.rcon_secure == xonotic::ConnectionDetails::NO )
     {
         write("rcon "+connection_details.rcon_password+' '+command);
@@ -198,6 +243,13 @@ void Darkplaces::rcon_command(std::string command)
         write("srcon HMAC-MD4 TIME "+
             hmac_md4(message, connection_details.rcon_password)
             +' '+message);
+    }
+    else if ( connection_details.rcon_secure == xonotic::ConnectionDetails::CHALLENGE )
+    {
+        Lock lock(mutex);
+        rcon2_buffer.push_back(command);
+        lock.unlock();
+        request_challenge();
     }
 }
 

@@ -26,9 +26,11 @@
 
 #include <thread>
 #include <mutex>
+#include <list>
 
 #include "connection_details.hpp"
 #include "network/udp_io.hpp"
+#include "network/time.hpp"
 
 namespace xonotic {
 
@@ -152,6 +154,27 @@ private:
      */
     void read(const std::string& datagram);
 
+    /**
+     * \brief Handles a challenge recived from the server to be used in rcon_secure 2
+     */
+    void handle_challenge(const std::string& challenge);
+
+    /**
+     * \brief Asks the server for a challenge to be used in rcon_secure 2
+     */
+    void request_challenge();
+
+    /**
+     * \brief A command to be used with rcon_secure >= 2
+     */
+    struct Rcon2Command
+    {
+        std::string     command;        ///< Raw command string
+        bool            challenged;     ///< Whether a challenge has been sent
+        network::Time   timeout;        ///< Challenge timeout
+        Rcon2Command(std::string command)
+            : command(std::move(command)), challenged(false) {}
+    };
 
     std::mutex                  mutex;
     std::string                 header{"\xff\xff\xff\xff"};     ///< Connection message header
@@ -159,6 +182,7 @@ private:
     xonotic::ConnectionDetails  connection_details;
     network::UdpIo              io;
     std::thread                 thread_input;
+    std::list<Rcon2Command>     rcon2_buffer;                   ///< Buffer for rcon_secure 2 messages to be challenged
 };
 
 } // namespace xonotic
