@@ -66,13 +66,13 @@ void HistoryLineEdit::keyPressEvent(QKeyEvent * ev)
     if (completer)
     {
         QString current = current_word();
-        completer->setCompletionPrefix(current);
-        if ( current.isEmpty() )
+        if ( current.size() < completion_minchars )
         {
             completer->popup()->hide();
         }
         else
         {
+            completer->setCompletionPrefix(current);
             int c = cursorPosition();
             setCursorPosition(word_start());
             QRect rect = cursorRect();
@@ -86,7 +86,7 @@ void HistoryLineEdit::keyPressEvent(QKeyEvent * ev)
     }
 }
 
-void HistoryLineEdit::wheelEvent(QWheelEvent *ev )
+void HistoryLineEdit::wheelEvent(QWheelEvent *ev)
 {
     if ( ev->delta() > 0 )
         previous_line();
@@ -192,4 +192,9 @@ void HistoryLineEdit::setWordCompleter(QCompleter* comp)
 void HistoryLineEdit::setWordCompleterPrefix(const QString& prefix)
 {
     completion_prefix = prefix;
+}
+
+void HistoryLineEdit::setWordCompleterMinChars(int min_chars)
+{
+    completion_minchars = min_chars;
 }

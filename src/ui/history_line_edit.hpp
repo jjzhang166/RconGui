@@ -65,6 +65,11 @@ public:
      */
     void setWordCompleterPrefix(const QString& prefix);
 
+    /**
+     * \brief Sets the minimum number of characters required to display the word completer
+     */
+    void setWordCompleterMinChars(int min_chars);
+
 public slots:
     /**
      * \brief Executes the current line
@@ -107,6 +112,7 @@ private:
 
     QCompleter* completer=nullptr;
     QString     completion_prefix;
+    int         completion_minchars = 1;
 };
 
 #endif // HISTORY_LINE_EDIT_HPP
