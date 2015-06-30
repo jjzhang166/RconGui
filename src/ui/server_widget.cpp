@@ -38,15 +38,25 @@
 ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     : QWidget(parent), connection(std::move(details))
 {
-    /// \todo break into smaller functions
     setupUi(this);
 
-// shortcuts
     button_refresh_status->setShortcut(QKeySequence::Refresh);
     button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
-// server status
-    QHeaderView* header_view = table_server_status->verticalHeader();
+    init_status_table();
+
+    init_cvar_table();
+
+    init_player_table();
+
+    init_console();
+
+    init_connection();
+}
+
+void ServerWidget::init_status_table()
+{
+    auto header_view = table_server_status->verticalHeader();
     QFont header_font = header_view->font();
     header_font.setBold(true);
     header_view->setFont(header_font);
@@ -67,7 +77,10 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
             &model_server, &ServerModel::set_server_property);
     cmd_status = settings().get("behaviour/cmd_status", cmd_status);
 
-// cvars
+}
+
+void ServerWidget::init_cvar_table()
+{
     table_cvars->setModel(&proxy_cvar);
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
@@ -76,7 +89,7 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
             &model_cvar, &CvarModel::block_updates);
     connect(&log_parser, &xonotic::LogParser::cvarlist_end,
             &model_cvar, &CvarModel::unblock_updates);
-    header_view = table_cvars->horizontalHeader();
+    auto header_view = table_cvars->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
     table_cvars->hideColumn(2);
@@ -85,13 +98,15 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
         input_cvar_filter_section->addItem(
             model_cvar.headerData(i,Qt::Horizontal).toString());
     cmd_cvars = settings().get("behaviour/cmd_cvars", cmd_cvars);
+}
 
-    // players
+void ServerWidget::init_player_table()
+{
     table_players->setModel(&model_player);
     connect(&log_parser, &xonotic::LogParser::players_changed,
             &model_player, &PlayerModel::set_players,
             Qt::QueuedConnection);
-    header_view = table_players->horizontalHeader();
+    auto header_view = table_players->horizontalHeader();
     header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(1, QHeaderView::Stretch);
     header_view->setSectionResizeMode(2, QHeaderView::ResizeToContents);
@@ -112,15 +127,20 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
             }
         });
 
-// console
+}
+
+void ServerWidget::init_console()
+{
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
     input_console->setFont(settings().console_font);
     input_console->setHistory(settings().get_history(connection.details().name));
 
     clear_log();
+}
 
-// connection
+void ServerWidget::init_connection()
+{
     connect(&connection, &xonotic::QDarkplaces::disconnected,
             this, &ServerWidget::xonotic_disconnected,
             Qt::QueuedConnection);

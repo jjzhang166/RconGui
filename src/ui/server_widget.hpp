@@ -110,6 +110,31 @@ private slots:
     void xonotic_log(const QString& log);
 
 private:
+    /**
+     * \brief Initializes the server status UI
+     */
+    void init_status_table();
+
+
+    /**
+     * \brief Initializes the cvar list UI
+     */
+    void init_cvar_table();
+
+    /**
+     * \brief Initializes the player list UI
+     */
+    void init_player_table();
+
+    /**
+     * \brief Initializes the console UI
+     */
+    void init_console();
+
+    /**
+     * \brief Initializes the Darkplaces connection
+     */
+    void init_connection();
 
     /**
      * \brief Cleans up the connection
