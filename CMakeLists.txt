@@ -78,5 +78,10 @@ find_package (Boost COMPONENTS system thread REQUIRED)
 target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
 include_directories(${Boost_INCLUDE_DIRS})
 
+# Color widgets
+add_subdirectory(submodules/color_widgets)
+include_directories(submodules/color_widgets/include)
+target_link_libraries(${EXECUTABLE} ColorPicker-qt5)
+
 # Install
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
