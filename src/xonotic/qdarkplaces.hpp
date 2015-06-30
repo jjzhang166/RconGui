@@ -58,6 +58,22 @@ signals:
      */
     void disconnecting();
 
+
+    /**
+     * \brief Emitted when received a datagram containing some log
+     *
+     * Will follow several calls to on_receive_log() (one per log line)
+     * and on_log_end()
+     */
+    void log_begin();
+
+    /**
+     * \brief Emitted when received a datagram containing some log
+     *
+     * After on_log_begin() and on_receive_log()
+     */
+    void log_end();
+
     /**
      * \brief Emitted on a log line (from the network thread)
      */
@@ -73,6 +89,9 @@ protected:
 
     void on_disconnect() override { emit disconnecting(); }
     void on_disconnecting() override { emit disconnected(); }
+
+    void on_log_begin() override { emit log_begin(); }
+    void on_log_end() override { emit log_end(); }
 
     void on_receive_log(const std::string& line) override
     {

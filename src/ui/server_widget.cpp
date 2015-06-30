@@ -33,6 +33,7 @@
 
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
+#include "xonotic/color_parser.hpp"
 
 ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     : QWidget(parent), connection(std::move(details))
@@ -132,6 +133,9 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     connect(&connection, &xonotic::QDarkplaces::received_log,
             this, &ServerWidget::xonotic_log,
             Qt::QueuedConnection);
+    connect(&connection, &xonotic::QDarkplaces::log_end,
+            this, &ServerWidget::xonotic_log_end,
+            Qt::QueuedConnection);
     /// \todo Connect disconnecting -> clear log_dest_udp if needed
     connection.xonotic_connect();
 }
@@ -173,67 +177,38 @@ void ServerWidget::xonotic_clear()
         QString::fromStdString(connection.details().server.name()));
 }
 
-void ServerWidget::xonotic_log(const QString& log)
+void ServerWidget::xonotic_log_end()
 {
-    log_parser.parse(log.toStdString());
-
     auto scrollbar = output_console->verticalScrollBar();
     bool scroll = scrollbar->value() == scrollbar->maximum();
 
     if ( !action_parse_colors->isChecked() )
     {
-        output_console->append(log);
+        output_console->append(log_buffer.join("\n"));
     }
     else
     {
         QTextCursor cursor(output_console->document());
         cursor.movePosition(QTextCursor::End);
-        QTextCharFormat format;
-        QString text;
-        static QRegExp regex_xoncolor("^([0-9]|x[0-9a-fA-F]{3})");
-        format.setForeground(settings().console_foreground);
-        for ( int i = 0; i < log.size(); i++ )
-        {
-            if ( log[i] == '^' && i < log.size()-1 )
-            {
-                i++;
-                if ( log[i] == '^' )
-                {
-                    text += '^';
-                }
-                else if ( regex_xoncolor.indexIn(log, i, QRegExp::CaretAtOffset) != -1 )
-                {
-                    cursor.insertText(text,format);
-                    i += regex_xoncolor.matchedLength()-1;
-                    auto color = xonotic_color(regex_xoncolor.cap());
-                    format.setForeground(QColor::fromHsl(
-                        color.hue(),
-                        color.saturation(),
-                        qBound(settings().console_brightness_min,
-                               color.lightness(),
-                               settings().console_brightness_max)
-                    ));
-                    text.clear();
-                }
-                else
-                {
-                    text += '^';
-                    text += log[1];
-                }
-            }
-            /// \todo qfont
-            else
-            {
-                text += log[i];
-            }
-        }
-        cursor.insertText(text,format);
-        format.setForeground(settings().console_foreground);
-        cursor.insertText("\n",format);
+        xonotic::ColorParser(
+            settings().console_foreground,
+            settings().console_brightness_min,
+            settings().console_brightness_max
+        ).convert(log_buffer, &cursor);
+        log_buffer.clear();
     }
 
     if ( scroll )
         scrollbar->setValue(scrollbar->maximum());
+
+    log_buffer.clear();
+}
+
+void ServerWidget::xonotic_log(const QString& log)
+{
+    log_parser.parse(log.toStdString());
+
+    log_buffer.push_back(log);
 }
 
 QString ServerWidget::name() const
@@ -279,38 +254,6 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
     menu->addAction(action_parse_colors);
 
     menu->exec(output_console->mapToGlobal(pos));
-}
-
-/// \todo Move out
-QColor ServerWidget::xonotic_color(const QString& s)
-{
-    if ( s.size() == 4 )
-    {
-        return QColor(
-            hex_to_int(s[1].unicode())*255/15,
-            hex_to_int(s[2].unicode())*255/15,
-            hex_to_int(s[3].unicode())*255/15
-        );
-    }
-
-    if ( s.size() != 1 )
-        return Qt::gray;
-
-    switch ( s[0].unicode() )
-    {
-        case '0': return Qt::black;
-        case '1': return Qt::red;
-        case '2': return Qt::green;
-        case '3': return Qt::yellow;
-        case '4': return Qt::blue;
-        case '5': return Qt::cyan;
-        case '6': return Qt::magenta;
-        case '7': return Qt::white;
-        case '8': return Qt::darkGray;
-        case '9': return Qt::gray;
-    }
-
-    return Qt::gray;
 }
 
 void ServerWidget::on_action_attach_log_triggered()

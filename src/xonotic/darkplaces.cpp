@@ -150,6 +150,8 @@ void Darkplaces::read(const std::string& datagram)
     line_buffer.clear();
     lock.unlock();
 
+    on_log_begin();
+
     // convert the datagram into lines
     std::string line;
     while (socket_stream)
@@ -167,6 +169,8 @@ void Darkplaces::read(const std::string& datagram)
         }
         on_receive_log(line);
     }
+
+    on_log_end();
 }
 
 void Darkplaces::set_details(const ConnectionDetails& details)

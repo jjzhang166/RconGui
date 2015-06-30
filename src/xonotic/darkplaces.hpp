@@ -107,6 +107,21 @@ protected:
     virtual void on_disconnecting() {}
 
     /**
+     * \brief Called when received a datagram containing some log
+     *
+     * will follow several calls to on_receive_log() (one per log line)
+     * and on_log_end()
+     */
+    virtual void on_log_begin() {}
+
+    /**
+     * \brief Called when received a datagram containing some log
+     *
+     * After on_log_begin() and on_receive_log()
+     */
+    virtual void on_log_end() {}
+
+    /**
      * \brief Called after receiving a log line
      */
     virtual void on_receive_log(const std::string& line) {}

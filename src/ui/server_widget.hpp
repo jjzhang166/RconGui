@@ -106,6 +106,7 @@ private slots:
 
     void xonotic_disconnected();
     void xonotic_connected();
+    void xonotic_log_end();
     void xonotic_log(const QString& log);
 
 private:
@@ -131,29 +132,12 @@ private:
      */
     void ensure_has_cvars();
 
-    /**
-     * \brief Color from regex match
-     */
-    static QColor xonotic_color(const QString& s);
-
-    /**
-     * \brief Hex character to integer
-     */
-    static int hex_to_int(char c)
-    {
-        if ( c <= '9' && c >= '0' )
-            return c - '0';
-        if ( c <= 'f' && c >= 'a' )
-            return c - 'a' + 0xa;
-        if ( c <= 'F' && c >= 'A' )
-            return c - 'A' + 0xa;
-        return 0;
-    }
-
     /// Object handling the DP protocol
     xonotic::QDarkplaces        connection;
     /// Parses the log from the connection to populate the model
     xonotic::LogParser          log_parser;
+    /// Buffer used to cache log received from darkplaces
+    QStringList                 log_buffer;
     /// Server status model
     ServerModel                 model_server;
     /// Server status edit delegate
