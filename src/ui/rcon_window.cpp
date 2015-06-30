@@ -38,10 +38,22 @@ RconWindow::RconWindow(QWidget* parent)
 
     auto new_tab = new QToolButton();
     new_tab->setText(tr("New Tab"));
-    new_tab->setIcon(QIcon::fromTheme("document-new"));
+    new_tab->setToolTip(tr("Create a new tab"));
+    new_tab->setIcon(QIcon::fromTheme("tab-new"));
     new_tab->setShortcut(QKeySequence::New);
     connect(new_tab, &QToolButton::clicked, this, &RconWindow::new_tab);
     tabWidget->setCornerWidget(new_tab, Qt::TopLeftCorner);
+
+    auto preferences = new QToolButton();
+    preferences->setText(tr("Preferences"));
+    preferences->setToolTip(tr("Preferences"));
+    preferences->setIcon(QIcon::fromTheme("configure"));
+    preferences->setShortcut(QKeySequence::Preferences);
+    preferences->setEnabled(false);
+    connect(new_tab, &QToolButton::clicked, []{
+        /// \todo Show SettingsDialog
+    });
+    tabWidget->setCornerWidget(preferences, Qt::TopRightCorner);
 
     connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
         delete tabWidget->widget(index);
