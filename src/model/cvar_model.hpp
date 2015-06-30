@@ -74,8 +74,22 @@ public:
         {
             return QString::fromStdString(cvar.value);
         }
+        else if ( role == Qt::UserRole && index.column() == 1 )
+        {
+            return QString::fromStdString(cvar.name);
+        }
 
         return {};
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        auto flags = QAbstractTableModel::flags(index);
+
+        if ( index.column() == 1 && index.row() >= 0 && index.row() < cvars.size() )
+            flags |= Qt::ItemIsEditable;
+
+        return flags;
     }
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override

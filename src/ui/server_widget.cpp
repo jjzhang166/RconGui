@@ -81,7 +81,15 @@ void ServerWidget::init_status_table()
 
 void ServerWidget::init_cvar_table()
 {
+    delegate_cvar.set_cvar = [this](const QString& name, const QString& value)
+    {
+        rcon_command("set "+name+' '+value);
+        auto cvar = model_cvar.cvar(name);
+        cvar.value = value.toStdString();
+        model_cvar.set_cvar(cvar);
+    };
     table_cvars->setModel(&proxy_cvar);
+    table_cvars->setItemDelegate(&delegate_cvar);
     proxy_cvar.setSourceModel(&model_cvar);
     connect(&log_parser, &xonotic::LogParser::cvar,
             &model_cvar, &CvarModel::set_cvar);
@@ -347,6 +355,7 @@ void ServerWidget::on_input_console_lineExecuted(QString cmd)
 {
     if ( input_expand_cvars->isChecked() )
     {
+        /// \todo ensure cvars?
         static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
         int i = 0;
         while ( i < cmd.size() )

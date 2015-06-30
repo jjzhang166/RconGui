@@ -34,6 +34,7 @@
 #include "model/server_model.hpp"
 #include "model/server_delegate.hpp"
 #include "model/cvar_model.hpp"
+#include "model/cvar_delegate.hpp"
 #include "model/player_model.hpp"
 #include "model/player_action.hpp"
 
@@ -176,6 +177,8 @@ private:
     QSortFilterProxyModel       proxy_cvar;
     /// Completer for cvars
     QCompleter                  complete_cvar;
+    /// Cvar edit delegate
+    CvarDelegate                delegate_cvar;
     /// Connected player model
     PlayerModel                 model_player;
     /// Commands used to request status
