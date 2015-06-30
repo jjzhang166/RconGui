@@ -343,6 +343,30 @@ void ServerWidget::on_input_cvar_filter_section_currentIndexChanged(int index)
     proxy_cvar.setFilterKeyColumn(index);
 }
 
+void ServerWidget::on_input_console_lineExecuted(QString cmd)
+{
+    if ( input_expand_cvars->isChecked() )
+    {
+        static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
+        int i = 0;
+        while ( i < cmd.size() )
+        {
+            i = regex_cvar_expansion.indexIn(cmd, i);
+            if ( i == -1 )
+                break;
+            /// \todo skip alias arguments
+            QString cvar = regex_cvar_expansion.cap(1);
+            if ( cvar.isEmpty() )
+                cvar = regex_cvar_expansion.cap(2);
+            QString value = model_cvar.cvar_value(cvar);
+            cmd.replace(i, regex_cvar_expansion.matchedLength(), value);
+            i += value.size();
+        }
+    }
+
+    rcon_command(cmd);
+}
+
 void ServerWidget::cvarlist_apply_filter()
 {
     if ( input_cvar_filter_regex->isChecked() )

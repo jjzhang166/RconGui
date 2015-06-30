@@ -131,6 +131,22 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="input_expand_cvars">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Replaces occurrences of &lt;span style=&quot; font-style:italic;&quot;&gt;$cvar&lt;/span&gt; with the value found in the &lt;span style=&quot; font-weight:600;&quot;&gt;Cvars&lt;/span&gt; tab&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>E&amp;xpand Cvars</string>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-find-replace"/>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -364,28 +380,12 @@
    <slot>execute()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>41</y>
+     <x>634</x>
+     <y>50</y>
     </hint>
     <hint type="destinationlabel">
      <x>142</x>
      <y>42</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>input_console</sender>
-   <signal>lineExecuted(QString)</signal>
-   <receiver>ServerWidget</receiver>
-   <slot>rcon_command(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>142</x>
-     <y>45</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>819</x>
-     <y>200</y>
     </hint>
    </hints>
   </connection>
