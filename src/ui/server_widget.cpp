@@ -131,8 +131,17 @@ void ServerWidget::init_player_table()
 
 void ServerWidget::init_console()
 {
+
     connect(action_clear_log, &QAction::triggered, this, &ServerWidget::clear_log);
 
+    complete_cvar.setModel(&model_cvar);
+    complete_cvar.setCaseSensitivity(Qt::CaseSensitive);
+    complete_cvar.setModelSorting(QCompleter::CaseSensitivelySortedModel);
+    complete_cvar.setCompletionColumn(0);
+    complete_cvar.setCompletionRole(Qt::DisplayRole);
+    complete_cvar.setMaxVisibleItems(6);
+    input_console->setWordCompleter(&complete_cvar);
+    input_console->setWordCompleterPrefix("$");
     input_console->setFont(settings().console_font);
     input_console->setHistory(settings().get_history(connection.details().name));
 

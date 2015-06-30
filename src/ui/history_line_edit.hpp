@@ -26,6 +26,9 @@
 
 #include <QLineEdit>
 
+/**
+ * \brief Line edit providing a history of entered text
+ */
 class HistoryLineEdit : public QLineEdit
 {
     Q_OBJECT
@@ -48,6 +51,20 @@ public:
      */
     void setHistory(const QStringList& history);
 
+    /**
+     * \brief Sets the completer used on a per-word completion
+     *
+     * Unlike setCompleter(), this suggests completion at every entered word
+     *
+     * If \c completer is null it will remove the current completer
+     */
+    void setWordCompleter(QCompleter* completer);
+
+    /**
+     * \brief Sets a prefix that is ignored by the word completer
+     */
+    void setWordCompleterPrefix(const QString& prefix);
+
 public slots:
     /**
      * \brief Executes the current line
@@ -61,17 +78,35 @@ signals:
     void lineExecuted(QString);
 
 protected:
-    void keyPressEvent(QKeyEvent *);
-    void wheelEvent(QWheelEvent *);
+    void keyPressEvent(QKeyEvent *) override;
+    void wheelEvent(QWheelEvent *) override;
 
     void previous_line();
     void next_line();
 
+    /**
+     * \brief Current word being edited (used to fire the completer)
+     */
+    QString current_word() const;
+
+private slots:
+    /**
+     * \brief Autocompletes the current word
+     */
+    void autocomplete(const QString& completion);
+
 private:
+    /**
+     * \brief Returns the index of the character starting the currently edited word
+     */
+    int word_start() const;
+
     int         current_line;
     QStringList lines;
     QString     unfinished;
 
+    QCompleter* completer=nullptr;
+    QString     completion_prefix;
 };
 
 #endif // HISTORY_LINE_EDIT_HPP

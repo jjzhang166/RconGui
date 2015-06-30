@@ -25,6 +25,7 @@
 #define SERVER_WIDGET_HPP
 
 #include <QSortFilterProxyModel>
+#include <QCompleter>
 
 #include "ui_server_widget.h"
 #include "xonotic/qdarkplaces.hpp"
@@ -172,12 +173,15 @@ private:
     CvarModel                   model_cvar;
     /// Proxy to filter the cvar list model
     QSortFilterProxyModel       proxy_cvar;
+    /// Completer for cvars
+    QCompleter                  complete_cvar;
     /// Connected player model
     PlayerModel                 model_player;
     /// Commands used to request status
     QStringList                 cmd_status = {"status 1", "g_maplist"};
     /// Commands used to request cvars
     QStringList                 cmd_cvars  = {"cvarlist"};
+
 };
 
 #endif // SERVER_WIDGET_HPP

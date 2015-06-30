@@ -26,6 +26,10 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 
+#include <QCompleter>
+#include <QAbstractItemView>
+#include <QScrollBar>
+
 HistoryLineEdit::HistoryLineEdit(QWidget *parent) :
     QLineEdit(parent), current_line(0)
 {
@@ -37,13 +41,49 @@ void HistoryLineEdit::keyPressEvent(QKeyEvent * ev)
     if ( ev->key() == Qt::Key_Up )
     {
         previous_line();
+        return;
     }
     else if ( ev->key() == Qt::Key_Down )
     {
         next_line();
+        return;
     }
-    else
-        QLineEdit::keyPressEvent(ev);
+    else if (completer && completer->popup() && completer->popup()->isVisible())
+    {
+        switch (ev->key())
+        {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_F4:
+            case Qt::Key_Select:
+                completer->popup()->hide();
+                return;
+        }
+    }
+
+    QLineEdit::keyPressEvent(ev);
+
+    if (completer)
+    {
+        QString current = current_word();
+        completer->setCompletionPrefix(current);
+        if ( current.isEmpty() )
+        {
+            completer->popup()->hide();
+        }
+        else
+        {
+            int c = cursorPosition();
+            setCursorPosition(word_start());
+            QRect rect = cursorRect();
+            setCursorPosition(c);
+            rect.setWidth(
+                completer->popup()->sizeHintForColumn(0)
+                + completer->popup()->verticalScrollBar()->sizeHint().width()
+            );
+            completer->complete(rect);
+        }
+    }
 }
 
 void HistoryLineEdit::wheelEvent(QWheelEvent *ev )
@@ -100,4 +140,56 @@ void HistoryLineEdit::setHistory(const QStringList& history)
 {
     lines = history;
     current_line = lines.size();
+}
+
+int HistoryLineEdit::word_start() const
+{
+    // lastIndexOf returns the index of the last space or -1 if there are no spaces
+    // so that + 1 returns the index of the character starting the word or 0
+    auto after_space = text().leftRef(cursorPosition()).lastIndexOf(' ') + 1;
+    if ( text().rightRef(text().size()-after_space).startsWith(completion_prefix) )
+        after_space += completion_prefix.size();
+    return after_space;
+}
+
+QString HistoryLineEdit::current_word() const
+{
+    int completion_index = word_start();
+    return text().mid(completion_index, cursorPosition() - completion_index);
+}
+
+void HistoryLineEdit::autocomplete(const QString& completion)
+{
+    int completion_index = word_start();
+    setText(text().replace(
+        completion_index, cursorPosition() - completion_index,
+        completion
+    ));
+    setCursorPosition(completion_index+completion.size());
+}
+
+void HistoryLineEdit::setWordCompleter(QCompleter* comp)
+{
+    if ( completer )
+    {
+        disconnect(completer, 0, this, 0);
+        completer->setWidget(nullptr);
+    }
+
+    completer = comp;
+
+    if ( comp )
+    {
+        /// \todo should set these only when on focus
+        connect(completer, SIGNAL(activated(QString)),
+                this,      SLOT(autocomplete(QString)));
+        connect(completer, SIGNAL(highlighted(QString)),
+                this,      SLOT(autocomplete(QString)));
+        completer->setWidget(this);
+    }
+}
+
+void HistoryLineEdit::setWordCompleterPrefix(const QString& prefix)
+{
+    completion_prefix = prefix;
 }
