@@ -364,12 +364,12 @@
    <slot>execute()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>699</x>
-     <y>31</y>
+     <x>142</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
-     <x>576</x>
-     <y>32</y>
+     <x>142</x>
+     <y>42</y>
     </hint>
    </hints>
   </connection>
@@ -380,8 +380,8 @@
    <slot>rcon_command(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>35</y>
+     <x>142</x>
+     <y>45</y>
     </hint>
     <hint type="destinationlabel">
      <x>819</x>
@@ -450,22 +450,6 @@
     <hint type="destinationlabel">
      <x>823</x>
      <y>152</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>input_cvar_filter_section</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>ServerWidget</receiver>
-   <slot>cvarlist_apply_filter()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>703</x>
-     <y>39</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>806</x>
-     <y>101</y>
     </hint>
    </hints>
   </connection>

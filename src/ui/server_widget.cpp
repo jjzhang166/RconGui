@@ -329,9 +329,13 @@ void ServerWidget::on_tabWidget_currentChanged(int tab)
         ensure_has_cvars();
 }
 
+void ServerWidget::on_input_cvar_filter_section_currentIndexChanged(int index)
+{
+    proxy_cvar.setFilterKeyColumn(index);
+}
+
 void ServerWidget::cvarlist_apply_filter()
 {
-    proxy_cvar.setFilterKeyColumn(input_cvar_filter_section->currentIndex());
     if ( input_cvar_filter_regex->isChecked() )
         proxy_cvar.setFilterRegExp(input_cvar_filter_pattern->text());
     else

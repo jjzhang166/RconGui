@@ -81,6 +81,7 @@ private slots:
     void on_action_detach_log_triggered();
     void on_action_save_log_triggered();
     void on_tabWidget_currentChanged(int tab);
+    void on_input_cvar_filter_section_currentIndexChanged(int index);
 
     void clear_log();
 
