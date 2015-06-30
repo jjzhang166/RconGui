@@ -42,7 +42,6 @@ Darkplaces::Darkplaces(ConnectionDetails connection_details)
     io.on_error = [this](const std::string& msg)
     {
         on_network_error(msg);
-        close_connection();
     };
     io.on_async_receive = [this](const std::string& datagram)
     {
@@ -68,18 +67,14 @@ Darkplaces::~Darkplaces()
     }
 }
 
-void Darkplaces::close_connection()
+void Darkplaces::disconnect()
 {
+    if ( io.connected() )
+        on_disconnecting();
     io.disconnect();
     if ( thread_input.joinable() &&
             thread_input.get_id() != std::this_thread::get_id() )
         thread_input.join();
-}
-
-void Darkplaces::disconnect()
-{
-    on_disconnecting();
-    close_connection();
     clear();
     on_disconnect();
 }

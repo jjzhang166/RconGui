@@ -246,8 +246,8 @@ void ServerWidget::xonotic_log_end()
 
 void ServerWidget::xonotic_log(const QString& log)
 {
+    set_network_status(tr("Connected"));
     log_parser.parse(log.toStdString());
-
     log_buffer.push_back(log);
 }
 

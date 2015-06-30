@@ -140,11 +140,6 @@ protected:
 
 private:
     /**
-     * \brief Low level disconnection
-     */
-    void close_connection();
-
-    /**
      * \brief Clear connection data
      */
     void clear();
