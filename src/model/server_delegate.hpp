@@ -80,12 +80,14 @@ public:
         if ( index_property(index, "map") )
         {
             auto combo = static_cast<QComboBox*>(editor);
-            callback(chmap, combo->currentText());
+            if ( index.data().toString() != combo->currentText() )
+                callback(chmap, combo->currentText());
         }
         else if ( index_property(index, "host") )
         {
             auto edit = static_cast<QLineEdit*>(editor);
-            callback(set_hostname, edit->text());
+            if ( index.data().toString() != edit->text() )
+                callback(set_hostname, edit->text());
         }
         else
         {
