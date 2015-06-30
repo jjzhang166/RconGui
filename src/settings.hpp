@@ -93,7 +93,7 @@ public:
     /**
      * \brief Set the console history for the given server
      */
-    void set_history(const std::string& server, const QStringList& history);
+    void set_history(const std::string& server, QStringList history);
 
     QHash<QString, xonotic::ConnectionDetails> saved_servers; ///< Server presets
     QHash<QString, QStringList> console_history; ///< Per-server console history
@@ -103,6 +103,7 @@ public:
     int    console_brightness_max{255};         ///< Maximum brightness for console colors
     int    console_brightness_min{80};          ///< Minimum brightness for console colors
     QFont  console_font{"monospace", 10};       ///< Console text font
+    int    console_max_history=128;             ///< Number of items in the console history
 
     QList<PlayerAction> player_actions = {
         {"Kick", "kick # $entity",   "im-kick-user"},

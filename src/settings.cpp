@@ -64,6 +64,7 @@ void Settings::load()
     console_brightness_max = qBound(0,settings.value("brightness_max",console_brightness_max).toInt(),255);
     console_brightness_min = qBound(0,settings.value("brightness_min",console_brightness_min).toInt(),255);
     console_font.fromString(settings.value("font",console_font.toString()).toString());
+    console_max_history = settings.value("history",console_max_history).toInt();
     settings.endGroup();
 
     settings.beginGroup("behaviour");
@@ -108,6 +109,7 @@ void Settings::save()
     settings.setValue("brightness_max",console_brightness_max);
     settings.setValue("brightness_min",console_brightness_min);
     settings.setValue("font",console_font.toString());
+    settings.setValue("history",console_max_history);
     settings.endGroup();
 
     settings.beginGroup("behaviour");
@@ -131,7 +133,9 @@ QStringList Settings::get_history(const std::string& server) const
     return *it;
 }
 
-void Settings::set_history(const std::string& server, const QStringList& history)
+void Settings::set_history(const std::string& server, QStringList history)
 {
+    if ( history.size() > console_max_history && console_max_history > 0 )
+        history.erase(history.begin(), history.end()-console_max_history);
     console_history[QString::fromStdString(server)] = history;
 }
