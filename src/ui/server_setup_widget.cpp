@@ -23,13 +23,11 @@
  */
 #include "server_setup_widget.hpp"
 #include "settings.hpp"
-#include <QDialog>
 
 ServerSetupWidget::ServerSetupWidget(QWidget* parent)
     : QWidget(parent)
 {
     setupUi(this);
-    setup_secure_combo(input_secure);
     button_save->setShortcut(QKeySequence::Save);
     connect(button_box, &QDialogButtonBox::accepted, this, &ServerSetupWidget::accepted);
     connect(button_box, &QDialogButtonBox::rejected, this, &ServerSetupWidget::rejected);
@@ -105,53 +103,10 @@ void ServerSetupWidget::populate(const xonotic::ConnectionDetails& xonotic)
         QString::fromStdString(xonotic.name));
 }
 
-void ServerSetupWidget::setup_secure_combo(QComboBox* box)
+void ServerSetupWidget::update_placeholder()
 {
-    box->clear();
-    secure_to_item(box, xonotic::ConnectionDetails::NO);
-    secure_to_item(box, xonotic::ConnectionDetails::TIME);
-    secure_to_item(box, xonotic::ConnectionDetails::CHALLENGE);
-    box->setWhatsThis(R"(<html><head/><body>
-<p>Rcon secure protocol, must match the value of the cvar <b>rcon_secure</b> in the Xonotic server.</p>
-<ul>
-    <li>"No" (<tt>rcon_secure 0<tt>) the password is not encrypted and is the most reliable option.</li>
-    <li>"Time Based" (<tt>rcon_secure 1<tt>) hashes the command based on the system time, it requires to have the system clock to be synchronized with the server clock.</li>
-    <li>"Challenge Based" (<tt>rcon_secure 2<tt>) asks the server for challenges, secure but not always reliable.</li>
-</ul></body></html>)");
-    box->setToolTip("Rcon Secure Protocol");
-    /// \todo set secure 1 as the default?
-}
-
-QString ServerSetupWidget::secure_to_text(xonotic::ConnectionDetails::Secure secure)
-{
-    switch (secure)
-    {
-        case xonotic::ConnectionDetails::NO:
-            return tr("No");
-        case xonotic::ConnectionDetails::TIME:
-            return tr("Time Based");
-        case xonotic::ConnectionDetails::CHALLENGE:
-            return tr("Challenge Based");
-        default: return {};
-    }
-}
-
-QIcon ServerSetupWidget::secure_to_icon(xonotic::ConnectionDetails::Secure secure)
-{
-    switch (secure)
-    {
-        case xonotic::ConnectionDetails::NO:
-            return QIcon::fromTheme("security-low");
-        case xonotic::ConnectionDetails::TIME:
-            return QIcon::fromTheme("security-medium");
-        case xonotic::ConnectionDetails::CHALLENGE:
-            return QIcon::fromTheme("security-high");
-        default: return {};
-    }
-}
-
-void ServerSetupWidget::secure_to_item(QComboBox* box,
-                                       xonotic::ConnectionDetails::Secure secure)
-{
-    box->addItem(secure_to_icon(secure), secure_to_text(secure), int(secure));
+    input_name->setPlaceholderText(QString("%1:%2")
+        .arg(input_host->text())
+        .arg(input_port->value())
+    );
 }

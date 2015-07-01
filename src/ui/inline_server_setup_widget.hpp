@@ -21,23 +21,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef SERVER_SETUP_WIDGET_HPP
-#define SERVER_SETUP_WIDGET_HPP
+#ifndef INLINE_SERVER_SETUP_WIDGET_HPP
+#define INLINE_SERVER_SETUP_WIDGET_HPP
 
-#include "ui_server_setup_widget.h"
+#include "ui_inline_server_setup_widget.h"
 #include "xonotic/connection_details.hpp"
 
 /**
  * \brief Form used to gather Xonotic connection information
  */
-class ServerSetupWidget : public QWidget, private Ui::ServerSetupWidget
+class InlineServerSetupWidget : public QWidget, private Ui::InlineServerSetupWidget
 {
     Q_OBJECT
 
 public:
-    ServerSetupWidget(QWidget* parent = nullptr);
+    InlineServerSetupWidget(QWidget* parent = nullptr);
 
-    ServerSetupWidget(const xonotic::ConnectionDetails& xonotic, QWidget* parent = nullptr);
+    InlineServerSetupWidget(const xonotic::ConnectionDetails& xonotic, QWidget* parent = nullptr);
 
     /**
      * \brief Builds a Xonotic connection from the form contents
@@ -49,21 +49,34 @@ public:
      */
     void populate(const xonotic::ConnectionDetails& xonotic);
 
+    /**
+     * \brief Shows the action button the way it is
+     */
+    void show_action_button();
+
+    /**
+     * \brief Shows the action button changing its properties
+     */
+    void show_action_button(const QIcon& icon, const QString& text);
+
+    /**
+     * \brief Hides the action button
+     */
+    void hide_action_button();
+
+    /**
+     * \brief Clears the form
+     */
+    void clear();
+
 signals:
-    void accepted();
-    void rejected();
+    /**
+     * \brief Emitted when the action button has been clicked
+     */
+    void action_button_clicked();
 
 private slots:
-    void on_button_save_clicked();
-    void on_button_delete_clicked();
-    void on_input_preset_currentIndexChanged(const QString& text);
     void update_placeholder();
-
-private:
-    /**
-     * \brief Loads the saved servers in the preset combo box
-     */
-    void update_presets();
 };
 
-#endif // SERVER_SETUP_WIDGET_HPP
+#endif // INLINE_SERVER_SETUP_WIDGET_HPP

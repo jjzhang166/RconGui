@@ -37,10 +37,12 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 
 void SettingsDialog::init_tab_network()
 {
-    model_servers.load_setting();
-    table_saved_servers->setModel(&model_servers);
-    table_saved_servers->setItemDelegate(&delegate_servers);
-    table_saved_servers->resizeColumnsToContents();
+    input_sv_table->load();
+    input_sv_new->show_action_button(QIcon::fromTheme("list-add"), tr("Add"));
+    connect(input_sv_new,&InlineServerSetupWidget::action_button_clicked,[this]{
+        input_sv_table->append(input_sv_new->connection_details());
+        input_sv_new->clear();
+    });
 }
 
 void SettingsDialog::init_tab_console()
@@ -60,7 +62,7 @@ void SettingsDialog::init_tab_console()
 
 void SettingsDialog::accept()
 {
-    model_servers.save_settings();
+    input_sv_table->save();
 
     settings().console_foreground =  input_con_fg->color();
     settings().console_background = input_con_bg->color();
