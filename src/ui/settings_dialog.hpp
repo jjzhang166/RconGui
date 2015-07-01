@@ -25,6 +25,7 @@
 #define SETTINGS_DIALOG_HPP
 
 #include "ui_settings_dialog.h"
+#include "model/saved_servers_delegate.hpp"
 
 class SettingsDialog : public QDialog, public Ui_SettingsDialog
 {
@@ -37,7 +38,11 @@ public slots:
     void accept() override;
 
 private:
+    void init_tab_network();
     void init_tab_console();
+
+    SavedServersModel           model_servers;
+    SavedServersDelegate        delegate_servers;
 };
 
 #endif // SETTINGS_DIALOG_HPP

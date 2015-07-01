@@ -116,13 +116,9 @@ void ServerWidget::init_player_table()
             &model_player, &PlayerModel::set_players,
             Qt::QueuedConnection);
     auto header_view = table_players->horizontalHeader();
-    header_view->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(1, QHeaderView::Stretch);
-    header_view->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(5, QHeaderView::ResizeToContents);
-    header_view->setSectionResizeMode(6, QHeaderView::ResizeToContents);
+    for ( int i = 0; i < model_player.columnCount(); i++)
+        header_view->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(PlayerModel::Name, QHeaderView::Stretch);
     connect(&model_player, &PlayerModel::players_changed,
         [this](const std::vector<xonotic::Player>& players) {
             for ( unsigned i = 0; i < players.size(); i++ )

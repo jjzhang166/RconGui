@@ -31,7 +31,15 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 {
     setupUi(this);
 
+    init_tab_network();
     init_tab_console();
+}
+
+void SettingsDialog::init_tab_network()
+{
+    table_saved_servers->setModel(&model_servers);
+    table_saved_servers->setItemDelegate(&delegate_servers);
+    table_saved_servers->resizeColumnsToContents();
 }
 
 void SettingsDialog::init_tab_console()

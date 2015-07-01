@@ -49,6 +49,15 @@ public:
      */
     void populate(const xonotic::ConnectionDetails& xonotic);
 
+    /**
+     * \brief Sets up the items in a combo box to be used to get rcon_secure values
+     */
+    static void setup_secure_combo(QComboBox* box);
+
+    static QString secure_to_text(xonotic::ConnectionDetails::Secure secure);
+
+    static QIcon secure_to_icon(xonotic::ConnectionDetails::Secure secure);
+
 signals:
     void accepted();
     void rejected();
@@ -63,6 +72,9 @@ private:
      * \brief Loads the saved servers in the preset combo box
      */
     void update_presets();
+
+
+    static void secure_to_item(QComboBox* box, xonotic::ConnectionDetails::Secure secure);
 
 };
 

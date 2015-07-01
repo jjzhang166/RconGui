@@ -106,29 +106,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="input_secure">
-        <property name="toolTip">
-         <string>Rcon Secure Protocol</string>
-        </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rcon secure protocol, must match the value of the cvar &lt;span style=&quot; font-weight:600;&quot;&gt;rcon_secure&lt;/span&gt; in the Xonotic server.&lt;/p&gt;&lt;p&gt;&amp;quot;No&amp;quot; corresponds to &amp;quot;rcon_secure 0&amp;quot;, and it's the recommended option.&lt;/p&gt;&lt;p&gt;&amp;quot;Time Based&amp;quot; hashes the command based on the system time, it requires to have the system clock to be synchronized with the server clock.&lt;/p&gt;&lt;p&gt;&amp;quot;Challenge Based&amp;quot; asks the server for challenges, secure but not reliable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>No</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time Based</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Challenge Based</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="input_secure"/>
       </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="input_password">
