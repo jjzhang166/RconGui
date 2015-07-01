@@ -5,7 +5,7 @@
  *
  * \section License
  *
- * Copyright (C) 2015 Mattia Basaglia
+ * Copyright (C)  Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,39 +21,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef RCON_WINDOW_HPP
-#define RCON_WINDOW_HPP
+#ifndef SETTINGS_DIALOG_HPP
+#define SETTINGS_DIALOG_HPP
 
-#include <QMainWindow>
-#include "ui_rcon_window.h"
+#include "ui_settings_dialog.h"
 
-/**
- * \brief Main window
- */
-class RconWindow : public QMainWindow, private Ui::RconWindow
+class SettingsDialog : public QDialog, public Ui_SettingsDialog
 {
     Q_OBJECT
 
 public:
-    RconWindow(QWidget* parent = nullptr);
-
-signals:
-    /**
-     * \brief Emitted when settings have been changed and need to be reloaded
-     */
-    void settings_changed();
+    explicit SettingsDialog(QWidget* parent = nullptr);
 
 public slots:
-    /**
-     * \brief Shows the server creation dialog and creates a new tab
-     */
-    void new_tab();
-
-private slots:
-    void on_widget_server_setup_accepted();
+    void accept() override;
 
 private:
-    void create_tab(const xonotic::ConnectionDetails& xonotic);
+    void init_tab_console();
 };
 
-#endif // RCON_WINDOW_HPP
+#endif // SETTINGS_DIALOG_HPP

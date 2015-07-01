@@ -75,6 +75,8 @@ public slots:
     void rcon_command(const QString& command);
 
     bool xonotic_reconnect();
+    
+    void reload_settings();
 
 private slots:
     void on_button_setup_clicked();

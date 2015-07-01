@@ -27,9 +27,9 @@
 #include <QSettings>
 #include <QToolButton>
 
-
 #include "server_setup_dialog.hpp"
 #include "server_widget.hpp"
+#include "settings_dialog.hpp"
 
 RconWindow::RconWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -49,9 +49,9 @@ RconWindow::RconWindow(QWidget* parent)
     preferences->setToolTip(tr("Preferences"));
     preferences->setIcon(QIcon::fromTheme("configure"));
     preferences->setShortcut(QKeySequence::Preferences);
-    preferences->setEnabled(false);
-    connect(new_tab, &QToolButton::clicked, []{
-        /// \todo Show SettingsDialog
+    connect(preferences, &QToolButton::clicked, [this]{
+        if ( SettingsDialog().exec() )
+            emit settings_changed();
     });
     tabWidget->setCornerWidget(preferences, Qt::TopRightCorner);
 

@@ -52,7 +52,7 @@ set(CMAKE_AUTORCC ON)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-set(SOURCES src/xonotic/color_parser.cpp src/xonotic/qdarkplaces.cpp src/xonotic/darkplaces.cpp data/data.qrc src/model/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
+set(SOURCES src/ui/settings_dialog.cpp src/xonotic/color_parser.cpp src/xonotic/qdarkplaces.cpp src/xonotic/darkplaces.cpp data/data.qrc src/model/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
     src/main.cpp
     src/ui/server_setup_widget.cpp
     src/ui/rcon_window.cpp

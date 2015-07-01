@@ -52,6 +52,8 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     init_console();
 
     init_connection();
+
+    reload_settings();
 }
 
 void ServerWidget::init_status_table()
@@ -75,8 +77,6 @@ void ServerWidget::init_status_table()
     };
     connect(&log_parser, &xonotic::LogParser::server_property_changed,
             &model_server, &ServerModel::set_server_property);
-    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
-
 }
 
 void ServerWidget::init_cvar_table()
@@ -149,13 +149,7 @@ void ServerWidget::init_console()
     complete_cvar.setCompletionColumn(CvarModel::Name);
     complete_cvar.setCompletionRole(Qt::DisplayRole);
     input_console->setWordCompleterPrefix("$");
-    if ( settings().get("console/autocomplete", true) )
-        input_console->setWordCompleter(&complete_cvar);
-    input_console->setWordCompleterMinChars(settings().get("console/autocomplete/min_chars",1));
-    input_console->setWordCompleterMaxSuggestions(settings().get("console/autocomplete/max_suggestions",128));
-    input_console->setFont(settings().console_font);
     input_console->setHistory(settings().get_history(connection.details().name));
-
     clear_log();
 }
 
@@ -191,6 +185,8 @@ ServerWidget::~ServerWidget()
 void ServerWidget::clear_log()
 {
     output_console->clear();
+
+    /// \todo when it'll be a custom widget remove
     QTextFrameFormat fmt;
     fmt.setBackground(settings().console_background);
     output_console->document()->rootFrame()->setFrameFormat(fmt);
@@ -267,6 +263,27 @@ void ServerWidget::rcon_command(const QString& command)
 bool ServerWidget::xonotic_reconnect()
 {
     return connection.reconnect();
+}
+
+void ServerWidget::reload_settings()
+{
+    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
+
+    // Console
+    if ( settings().get("console/autocomplete", true) )
+        input_console->setWordCompleter(&complete_cvar);
+    else
+        input_console->setWordCompleter(nullptr);
+    input_console->setWordCompleterMinChars(settings().get("console/autocomplete/min_chars",1));
+    input_console->setWordCompleterMaxSuggestions(settings().get("console/autocomplete/max_suggestions",128));
+    input_console->setFont(settings().console_font);
+
+    /// \todo when it'll be a custom widget change accordingly
+    QTextFrameFormat fmt;
+    fmt.setBackground(settings().console_background);
+    output_console->document()->rootFrame()->setFrameFormat(fmt);
+    output_console->document()->setDefaultFont(settings().console_font);
+    output_console->setTextColor(settings().console_foreground);
 }
 
 void ServerWidget::on_button_setup_clicked()
