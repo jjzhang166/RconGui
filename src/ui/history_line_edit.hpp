@@ -70,6 +70,13 @@ public:
      */
     void setWordCompleterMinChars(int min_chars);
 
+    /**
+     * \brief Sets the maximum number of suggestions that the completer should show.
+     *
+     * If more than this many suggestions are found the completer isn't shown
+     */
+    void setWordCompleterMaxSuggestions(int max);
+
 public slots:
     /**
      * \brief Executes the current line
@@ -113,6 +120,7 @@ private:
     QCompleter* completer=nullptr;
     QString     completion_prefix;
     int         completion_minchars = 1;
+    int         completion_max = 0;
 };
 
 #endif // HISTORY_LINE_EDIT_HPP

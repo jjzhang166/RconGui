@@ -66,13 +66,14 @@ void HistoryLineEdit::keyPressEvent(QKeyEvent * ev)
     if (completer)
     {
         QString current = current_word();
-        if ( current.size() < completion_minchars )
+        completer->setCompletionPrefix(current);
+        if ( current.size() < completion_minchars ||
+            (completion_max > 0 && completer->completionCount() > completion_max) )
         {
             completer->popup()->hide();
         }
         else
         {
-            completer->setCompletionPrefix(current);
             int c = cursorPosition();
             setCursorPosition(word_start());
             QRect rect = cursorRect();
@@ -197,4 +198,9 @@ void HistoryLineEdit::setWordCompleterPrefix(const QString& prefix)
 void HistoryLineEdit::setWordCompleterMinChars(int min_chars)
 {
     completion_minchars = min_chars;
+}
+
+void HistoryLineEdit::setWordCompleterMaxSuggestions(int max)
+{
+    completion_max = max;
 }
