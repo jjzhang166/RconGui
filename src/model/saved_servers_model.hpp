@@ -24,8 +24,6 @@
 #ifndef SAVED_SERVERS_MODEL_HPP
 #define SAVED_SERVERS_MODEL_HPP
 
-#include <iterator>
-
 #include <QAbstractTableModel>
 #include <QSize>
 #include <QStyleOptionViewItem>
@@ -50,7 +48,7 @@ public:
 
     int rowCount(const QModelIndex & = {}) const override
     {
-        return settings().saved_servers.size();
+        return servers.size();
     }
 
     int columnCount(const QModelIndex & = {}) const override
@@ -60,17 +58,10 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override
     {
-        /// \todo Don't edit in-place as it should wait for the settings dialog
-        /// to be accepted before committing changes,
-        /// perhaps store the servers locally in a list and copy them over
-        /// once done.
-
-        if ( index.row() < 0 || index.row() >= settings().saved_servers.size() )
+        if ( index.row() < 0 || index.row() >= servers.size() )
             return {};
 
-        auto it = settings().saved_servers.begin();
-        std::advance(it, index.row());
-        const auto& server = *it;
+        const auto& server = servers[index.row()];
         if ( role == Qt::DisplayRole || role == Qt::EditRole )
         {
             switch(index.column())
@@ -140,14 +131,10 @@ public:
 
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override
     {
-        if ( role != Qt::EditRole || index.row() < 0 ||
-                index.row() >= settings().saved_servers.size() )
-            return false;
+        if ( index.row() < 0 || index.row() >= servers.size() )
+            return {};
 
-        auto it = settings().saved_servers.begin();
-        std::advance(it, index.row());
-        auto& server = *it;
-
+        auto& server = servers[index.row()];
         if ( index.column() == Name && value.canConvert<QString>() )
         {
             QString name = value.toString();
@@ -193,6 +180,28 @@ public:
         return false;
     }
 
+    /**
+     * \brief Loads the servers from settings
+     */
+    void load_setting()
+    {
+        beginResetModel();
+        servers = settings().saved_servers.values();
+        endResetModel();
+    }
+
+    /**
+     * \brief Saves the servers to the settings
+     */
+    void save_settings()
+    {
+        settings().saved_servers.clear();
+        for ( const auto& sv : servers )
+            settings().saved_servers.insert(QString::fromStdString(sv.name), sv);
+    }
+
+private:
+    QList<xonotic::ConnectionDetails> servers;
 };
 
 #endif // SAVED_SERVERS_MODEL_HPP

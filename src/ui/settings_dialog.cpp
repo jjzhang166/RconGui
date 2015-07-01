@@ -37,6 +37,7 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 
 void SettingsDialog::init_tab_network()
 {
+    model_servers.load_setting();
     table_saved_servers->setModel(&model_servers);
     table_saved_servers->setItemDelegate(&delegate_servers);
     table_saved_servers->resizeColumnsToContents();
@@ -59,6 +60,8 @@ void SettingsDialog::init_tab_console()
 
 void SettingsDialog::accept()
 {
+    model_servers.save_settings();
+
     settings().console_foreground =  input_con_fg->color();
     settings().console_background = input_con_bg->color();
     settings().console_brightness_min = input_con_bright_min->value();
