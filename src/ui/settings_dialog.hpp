@@ -25,6 +25,8 @@
 #define SETTINGS_DIALOG_HPP
 
 #include "ui_settings_dialog.h"
+#include "model/extra_row_proxy_model.hpp"
+#include "model/quick_commands_model.hpp"
 
 class SettingsDialog : public QDialog, public Ui_SettingsDialog
 {
@@ -38,7 +40,12 @@ public slots:
 
 private:
     void init_tab_network();
+    void init_tab_commands();
     void init_tab_console();
+
+
+    QuickCommandsModel model_quick_commands;
+    ExtraRowProxyModel proxy_quick_commands;
 };
 
 #endif // SETTINGS_DIALOG_HPP

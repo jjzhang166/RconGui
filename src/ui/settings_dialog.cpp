@@ -32,17 +32,36 @@ SettingsDialog::SettingsDialog(QWidget* parent):
     setupUi(this);
 
     init_tab_network();
+    init_tab_commands();
     init_tab_console();
 }
 
 void SettingsDialog::init_tab_network()
 {
-    input_sv_table->load();
+    table_sv->load();
     input_sv_new->show_action_button(QIcon::fromTheme("list-add"), tr("Add"));
     connect(input_sv_new,&InlineServerSetupWidget::action_button_clicked,[this]{
-        input_sv_table->append(input_sv_new->connection_details());
+        table_sv->append(input_sv_new->connection_details());
         input_sv_new->clear();
     });
+}
+
+void SettingsDialog::init_tab_commands()
+{
+    model_quick_commands.load();
+    proxy_quick_commands.setSourceModel(&model_quick_commands);
+    table_cmd_cmd->setModel(&proxy_quick_commands);
+    if ( bool(settings().quick_commands_expansion) )
+    {
+        input_cmd_cmd_cvar->setChecked(true);
+        input_cmd_cmd_nocvar->setCurrentIndex(
+            int(settings().quick_commands_expansion)-1
+        );
+    }
+    else
+    {
+        input_cmd_cmd_cvar->setChecked(false);
+    }
 }
 
 void SettingsDialog::init_tab_console()
@@ -62,7 +81,13 @@ void SettingsDialog::init_tab_console()
 
 void SettingsDialog::accept()
 {
-    input_sv_table->save();
+    table_sv->save();
+
+    model_quick_commands.save();
+    if ( input_cmd_cmd_cvar->isChecked() )
+        settings().quick_commands_expansion = CvarExpansion(input_cmd_cmd_nocvar->currentIndex()+1);
+    else
+        settings().quick_commands_expansion = CvarExpansion::NotExpanded;
 
     settings().console_foreground =  input_con_fg->color();
     settings().console_background = input_con_bg->color();

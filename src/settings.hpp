@@ -30,6 +30,7 @@
 #include <QFont>
 
 #include "xonotic/connection_details.hpp"
+#include "xonotic/cvar_expansion.hpp"
 #include "model/player_action.hpp"
 
 /**
@@ -105,11 +106,18 @@ public:
     QFont  console_font{"monospace", 10};       ///< Console text font
     int    console_max_history=128;             ///< Number of items in the console history
 
-    QList<PlayerAction> player_actions = {
+    QList<PlayerAction> player_actions = {      ///< Buttons shown in the player table
         {"Kick", "kick # $entity",   "im-kick-user"},
         {"Ban",  "kickban #$entity", ":/icons/ban-hammer.svg"},
         {"Mute", "mute #$entity",    ":/icons/no-chat.svg"},
     };
+
+    std::vector<QPair<QString,QString>> quick_commands = {
+        {"Rescan",    "fs_rescan"},
+        {"Restart",   "restart"},
+        {"End Match", "endmatch"}
+    };
+    CvarExpansion quick_commands_expansion = CvarExpansion::NotExpanded;
 
 private:
     Settings();

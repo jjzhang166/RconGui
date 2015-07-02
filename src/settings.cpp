@@ -68,6 +68,26 @@ void Settings::load()
     settings.endGroup();
 
     settings.beginGroup("behaviour");
+    if ( settings.childGroups().contains("quick_commands") )
+    {
+        int sz = settings.beginReadArray("quick_commands");
+        quick_commands_expansion = cvar_expansion_from_string(
+            settings.value("cvar",
+                cvar_expansion_to_string(quick_commands_expansion)).toString());
+        quick_commands.clear();
+        quick_commands.reserve(sz);
+        for ( int i = 0; i < sz; i++ )
+        {
+            settings.setArrayIndex(i);
+            QString label = settings.value("label").toString();
+            QString command = settings.value("command").toString();
+            if ( label.isEmpty() )
+                label = command;
+            if ( !command.isEmpty() )
+                quick_commands.push_back({label, command});
+        }
+        settings.endArray();
+    }
     if ( settings.childGroups().contains("player") )
     {
         int sz = settings.beginReadArray("player");
@@ -113,13 +133,22 @@ void Settings::save()
     settings.endGroup();
 
     settings.beginGroup("behaviour");
+    settings.beginWriteArray("quick_commands");
+    settings.setValue("cvar",cvar_expansion_to_string(quick_commands_expansion));
+    for ( uint i = 0; i < quick_commands.size(); i++ )
+    {
+        settings.setArrayIndex(i);
+        settings.setValue("label",   quick_commands[i].first);
+        settings.setValue("command", quick_commands[i].second);
+    }
+    settings.endArray();
     settings.beginWriteArray("player");
     for ( int i = 0; i < player_actions.size(); i++ )
     {
         settings.setArrayIndex(i);
-        settings.setValue("label",player_actions[i].name());
+        settings.setValue("label",  player_actions[i].name());
         settings.setValue("command",player_actions[i].command());
-        settings.setValue("icon",player_actions[i].icon_name());
+        settings.setValue("icon",   player_actions[i].icon_name());
     }
     settings.endArray();
     settings.endGroup();
