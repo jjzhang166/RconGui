@@ -22,6 +22,7 @@
  *
  */
 #include <QtWidgets/QApplication>
+#include <QFontDatabase>
 #include "ui/rcon_window.hpp"
 
 int main(int argc, char** argv)
@@ -30,6 +31,8 @@ int main(int argc, char** argv)
     QApplication::setApplicationName("rcongui");
     QApplication::setApplicationDisplayName("Rcon Gui");
     QApplication::setOrganizationName("rcongui");
+
+    QFontDatabase::addApplicationFont(":/fonts/Xolonium-Regular.otf");
 
     RconWindow window;
     window.show();

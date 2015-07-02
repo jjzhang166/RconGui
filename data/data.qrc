@@ -4,4 +4,7 @@
         <file>ban-hammer.svg</file>
         <file>no-chat.svg</file>
     </qresource>
+    <qresource prefix="/fonts">
+        <file>Xolonium-Regular.otf</file>
+    </qresource>
 </RCC>

@@ -52,6 +52,10 @@ QVariant PlayerModel::data(const QModelIndex & index, int role) const
         if ( index.column() >= Entity && index.column() <= Time )
             return Qt::AlignCenter;
     }
+    else if ( role == Qt::FontRole && index.column() == Name )
+    {
+        return QFont("Xolonium");
+    }
 
     return {};
 }
