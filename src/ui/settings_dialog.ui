@@ -77,6 +77,17 @@
          </iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Interface</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-desktop-theme"/>
+        </property>
+        <property name="flags">
+         <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable</set>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
@@ -128,8 +139,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>633</width>
-              <height>446</height>
+              <width>276</width>
+              <height>226</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
