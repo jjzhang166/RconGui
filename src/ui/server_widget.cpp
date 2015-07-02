@@ -38,8 +38,10 @@
 ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     : QWidget(parent), connection(std::move(details))
 {
-    setupUi(this);
+    menu_quick_commands = new QMenu(tr("Quick Commands"), this);
+    menu_quick_commands->setObjectName("menu_quick_commands");
 
+    setupUi(this);
     button_refresh_status->setShortcut(QKeySequence::Refresh);
     button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
@@ -265,6 +267,14 @@ void ServerWidget::reload_settings()
 {
     cmd_status = settings().get("behaviour/cmd_status", cmd_status);
 
+    menu_quick_commands->clear();
+    for ( const auto& command : settings().quick_commands )
+    {
+        auto action = new QAction(command.first, this);
+        action->setData(command.second);
+        menu_quick_commands->addAction(action);
+    }
+
     // Console
     if ( settings().get("console/autocomplete", true) )
         input_console->setWordCompleter(&complete_cvar);
@@ -378,30 +388,23 @@ void ServerWidget::on_input_cvar_filter_section_currentIndexChanged(int index)
     proxy_cvar.setFilterKeyColumn(index);
 }
 
-void ServerWidget::on_input_console_lineExecuted(QString cmd)
+void ServerWidget::on_input_console_lineExecuted(const QString& cmd)
 {
-    if ( input_expand_cvars->isChecked() )
-    {
-        /// \todo Warn if the model doesn't have the given cvar?
-        ///       Can be checked by getting the cvar and checking if the name is empty
-        static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
-        int i = 0;
-        while ( i < cmd.size() )
-        {
-            i = regex_cvar_expansion.indexIn(cmd, i);
-            if ( i == -1 )
-                break;
-            /// \todo skip alias arguments
-            QString cvar = regex_cvar_expansion.cap(1);
-            if ( cvar.isEmpty() )
-                cvar = regex_cvar_expansion.cap(2);
-            QString value = model_cvar.cvar_value(cvar);
-            cmd.replace(i, regex_cvar_expansion.matchedLength(), value);
-            i += value.size();
-        }
-    }
+    /// \todo Setting for cvar expansion policy
+    run_command(cmd, input_console_cvars->isChecked() ?
+        CvarExpansion::ExpandOrWarn : CvarExpansion::ExpandOrWarn);
+}
 
-    rcon_command(cmd);
+void ServerWidget::on_menu_quick_commands_triggered(QAction * action)
+{
+    run_command(action->data().toString(), settings().quick_commands_expansion);
+}
+
+void ServerWidget::on_button_quick_commands_clicked()
+{
+    menu_quick_commands->popup(
+        button_quick_commands->mapToGlobal(
+        button_quick_commands->rect().bottomLeft()));
 }
 
 void ServerWidget::cvarlist_apply_filter()
@@ -459,3 +462,52 @@ void ServerWidget::ensure_has_cvars()
     if ( model_cvar.rowCount() < 256 )
         request_cvars();
 }
+
+void ServerWidget::run_command(QString cmd, CvarExpansion exp)
+{
+    if ( cmd.isEmpty() )
+        return;
+
+    if ( bool(exp) )
+    {
+        /// \todo Warn if the model doesn't have the given cvar?
+        ///       Can be checked by getting the cvar and checking if the name is empty
+        static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
+        int i = 0;
+        while ( i < cmd.size() )
+        {
+            i = regex_cvar_expansion.indexIn(cmd, i);
+            if ( i == -1 )
+                break;
+
+            QString cvar_name = regex_cvar_expansion.cap(1);
+            if ( cvar_name.isEmpty() )
+                cvar_name = regex_cvar_expansion.cap(2);
+            /// \todo skip alias arguments (ie "cvars" with a fully numeric name
+            /// \todo handle ${foo q} ${foo asis} ${foo ?} (?)
+
+            xonotic::Cvar cvar = model_cvar.cvar(cvar_name);
+            if ( cvar.name.empty() )
+            {
+                if ( exp == CvarExpansion::ExpandAlways )
+                {
+                    cmd.remove(i, regex_cvar_expansion.matchedLength());
+                    continue;
+                }
+                else if ( exp == CvarExpansion::ExpandOrWarn )
+                {
+                    QMessageBox::warning(this, tr("Could not expand a variable"),
+                        tr("The cvar %1 was not found and cannot be expanded"));
+                    return;
+                }
+
+            }
+            QString value = QString::fromStdString(cvar.value);
+            cmd.replace(i, regex_cvar_expansion.matchedLength(), value);
+            i += value.size();
+        }
+    }
+
+    rcon_command(cmd);
+}
+

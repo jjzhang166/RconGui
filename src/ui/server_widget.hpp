@@ -26,11 +26,13 @@
 
 #include <QSortFilterProxyModel>
 #include <QCompleter>
+#include <QMenu>
 
 #include "ui_server_widget.h"
 #include "xonotic/qdarkplaces.hpp"
 #include "xonotic/connection_details.hpp"
 #include "xonotic/log_parser.hpp"
+#include "xonotic/cvar_expansion.hpp"
 #include "model/server_model.hpp"
 #include "model/server_delegate.hpp"
 #include "model/cvar_model.hpp"
@@ -84,7 +86,9 @@ private slots:
     void on_action_save_log_triggered();
     void on_tabWidget_currentChanged(int tab);
     void on_input_cvar_filter_section_currentIndexChanged(int index);
-    void on_input_console_lineExecuted(QString cmd);
+    void on_input_console_lineExecuted(const QString& cmd);
+    void on_menu_quick_commands_triggered(QAction * action);
+    void on_button_quick_commands_clicked();
 
     /**
      * \brief Attaches log_dest_udp
@@ -173,6 +177,11 @@ private:
      */
     void ensure_has_cvars();
 
+    /**
+     * \brief Runs a command expanding the cvars
+     */
+    void run_command(QString cmd, CvarExpansion exp);
+
     /// Object handling the DP protocol
     xonotic::QDarkplaces        connection;
     /// Parses the log from the connection to populate the model
@@ -199,6 +208,8 @@ private:
     QStringList                 cmd_cvars  = {"cvarlist"};
     /// Whether log_dest_udp has been set and needs cleanup
     bool                        log_dest_set = false;
+    /// Menu shown to trigger quick commands
+    QMenu*                      menu_quick_commands = nullptr;
 
 };
 

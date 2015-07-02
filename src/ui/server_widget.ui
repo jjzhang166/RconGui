@@ -100,6 +100,16 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QPushButton" name="button_quick_commands">
+           <property name="text">
+            <string>&amp;Quick Commands</string>
+           </property>
+           <property name="icon">
+            <iconset theme="quickopen-function"/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -132,7 +142,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="input_expand_cvars">
+          <widget class="QPushButton" name="input_console_cvars">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Replaces occurrences of &lt;span style=&quot; font-style:italic;&quot;&gt;$cvar&lt;/span&gt; with the value found in the &lt;span style=&quot; font-weight:600;&quot;&gt;Cvars&lt;/span&gt; tab&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -140,7 +150,9 @@
             <string>E&amp;xpand Cvars</string>
            </property>
            <property name="icon">
-            <iconset theme="edit-find-replace"/>
+            <iconset theme="edit-find-replace">
+             <normaloff/>
+            </iconset>
            </property>
            <property name="checkable">
             <bool>true</bool>
