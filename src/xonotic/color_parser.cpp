@@ -22,13 +22,47 @@
  *
  */
 #include "color_parser.hpp"
-
+#include <vector>
 #include <QTextDocumentFragment>
+
+/**
+ * \brief Maps conchars to UTF8
+ *
+ * \see https://gitlab.com/xonotic/xonotic-data.pk3dir/blob/master/gfx/conchars.tga
+ */
+static const std::vector<std::string> qfont_table = {
+    "",   " ",  "—",  " ",  "_",  "#",  "†",  "•",  "F",  "T",  " ",  "■",  "•",  "▶",  "❇",  "❈", //  0
+    "❰",  "❱",  "👽", "😃", "😞",  "😵", "😕", "😄",  "«",  "»",  "•",  "‾",  "❇",  "-",  "—",  "-", //  1
+    " ",  "!",  "\"", "#",  "$",  "%",  "&",  "\"", "(",  ")",  "*",  "+",  ",",  "-",  ".",  "/", //  2
+    "0",  "1",  "2",  "3",  "4",  "5",  "6",  "7", "8",  "9",   ":",  ";",  "<",  "=",  ">",  "?", //  3
+    "@",  "A",  "B",  "C",  "D",  "E",  "F",  "G", "H",  "I",   "J",  "K",  "L",  "M",  "N",  "O", //  4
+    "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W", "X",  "Y",   "Z",  "[",  "\\", "]",  "^",  "_", //  5
+    "'",  "a",  "b",  "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",  "o", //  6
+    "p",  "q",  "r",  "s",  "t",  "u",  "v",  "w",  "x",  "y",  "z",  "{",  "|",  "}",  "~",  "◀", //  7
+    "=",  "=",  "=",  "•",  "¡",  "[o]","[u]","[i]","[c]","©",  "®",  "■",  "¿",  "▶",  "❇",  "❈", //  8
+    "❲",  "❳",  "👽", "😃", "😞",  "😵", "😕", "😄", "«",  "»",   "❇",  "X",  "❈",  "-",  "—",  "-", //  9
+    " ",  "!",  "\"", "#",  "$",  "%",  "&",  "\"", "(",  ")",  "*",  "+",  ",",  "-",  ".",  "/", // 10
+    "0",  "1",  "2",  "3",  "4",  "5",  "6",  "7", "8",  "9",   ":",  ";",  "<",  "=",  ">",  "?", // 11
+    "@",  "A",  "B",  "C",  "D",  "E",  "F",  "G", "H",  "I",   "J",  "K",  "L",  "M",  "N",  "O", // 12
+    "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W", "X",  "Y",   "Z",  "[",  "\\", "]",  "^",  "_", // 13
+    "'",  "A",  "B",  "C",  "D",  "E",  "F",  "G", "H",  "I",   "J",  "K",  "L",  "M",  "N",  "O", // 14
+    "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W", "X",  "Y",   "Z",  "{",  "|",  "}",  "~",  "◀"  // 15
+};
+
 
 namespace xonotic {
 
 QRegExp AbstractColorParser::regex_xoncolor{"^\\^([0-9]|x[0-9a-fA-F]{3})"};
 
+QString AbstractColorParser::qfont_to_string(uint8_t index)
+{
+    return QString::fromUtf8(qfont_table[index].data(), qfont_table[index].size());
+}
+
+void AbstractColorParser::on_qfont(uint8_t index)
+{
+    return on_append_string(qfont_to_string(index));
+}
 
 QColor AbstractColorParser::to_color(const QString& color)
 {
@@ -143,7 +177,12 @@ void AbstractColorParser::push_char(const QChar& c)
         push_start();
         start_index++;
     }
-    /// \todo Optional QFont parsing
+    else if ( c.unicode() >= 0xE000 && c.unicode() <= 0xE0FF )
+    {
+        push_string();
+        on_qfont(c.unicode() & 0xFF);
+        start_index++;
+    }
 }
 
 void AbstractColorParser::push_color(const QColor& color)

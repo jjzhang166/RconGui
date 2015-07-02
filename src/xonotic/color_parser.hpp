@@ -58,6 +58,11 @@ public:
      */
     QColor bounded_color(const QColor& color);
 
+    /**
+     * \brief Converts a qfont index to a string
+     */
+    static QString qfont_to_string(uint8_t index);
+
 protected:
     /**
      * \brief Parses \c string
@@ -90,6 +95,11 @@ protected:
      * \brief Changes the color for subsequent calls to \c on_append_string()
      */
     virtual void on_change_color(const QColor& color) = 0;
+
+    /**
+     * \brief Shows a qfont character
+     */
+    virtual void on_qfont(uint8_t index);
 
 private:
     /**
