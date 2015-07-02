@@ -38,7 +38,8 @@ QVariant PlayerModel::data(const QModelIndex & index, int role) const
         switch(index.column())
         {
             case Ip:    return QString::fromStdString(player.ip);
-            case Name:  return QString::fromStdString(player.name);
+            case Name:  return color_parser.convert_fragment(
+                                    QString::fromStdString(player.name));
             case Entity:return QString::fromStdString(player.no);
             case Ping:  return QString::fromStdString(player.ping);
             case Pl:    return QString::fromStdString(player.pl);

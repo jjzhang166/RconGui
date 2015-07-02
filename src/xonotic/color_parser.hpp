@@ -194,5 +194,40 @@ private:
 
 };
 
+/**
+ * \brief Parses a xonotic-colored string to a plain string with no formatting
+ */
+class ColorParserPlainText : public AbstractColorParser
+{
+public:
+    using AbstractColorParser::AbstractColorParser;
+
+    /**
+     * \brief Turns some text into html
+     */
+    QString convert(const QString& text);
+
+    /**
+     * \brief Turns a small fragment into html,
+     *        without adding a new line at the end
+     */
+    QString convert_fragment(const QString& text);
+
+    /**
+     * \brief Turns some text into html
+     */
+    QString convert(const QStringList& lines);
+
+protected:
+    void on_start(const QColor& color) override;
+    void on_end() override;
+    void on_append_string(const QString& string) override;
+    void on_new_line() override;
+    void on_change_color(const QColor& color) override;
+
+private:
+    QString output;
+
+};
 } // namespace xonotic
 #endif // XONOTIC_COLOR_PARSER_HPP

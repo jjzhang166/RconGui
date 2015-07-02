@@ -29,6 +29,7 @@
 #include <QAbstractTableModel>
 
 #include "xonotic/player.hpp"
+#include "xonotic/color_parser.hpp"
 
 /**
  * \brief Model for the player status
@@ -94,6 +95,7 @@ signals:
 
 private:
     std::vector<xonotic::Player> players; ///< list of players
+    mutable xonotic::ColorParserPlainText color_parser;
 
 };
 

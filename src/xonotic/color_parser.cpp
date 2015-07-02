@@ -110,6 +110,8 @@ void AbstractColorParser::parse(const QString& string)
     }
 
     push_end();
+
+    work_string.clear();
 }
 
 void AbstractColorParser::push_start()
@@ -217,6 +219,54 @@ void ColorParserTextCursor::convert(const QStringList& lines, QTextCursor* out)
         on_new_line();
     }
     after_parse();
+}
+
+void ColorParserPlainText::on_start(const QColor& color)
+{
+}
+
+void ColorParserPlainText::on_end()
+{
+}
+
+void ColorParserPlainText::on_append_string(const QString& string)
+{
+    output += string;
+}
+
+void ColorParserPlainText::on_new_line()
+{
+    output += "\n";
+}
+
+void ColorParserPlainText::on_change_color(const QColor& color)
+{
+}
+
+QString ColorParserPlainText::convert_fragment(const QString& text)
+{
+    output.clear();
+    parse(text);
+    return output;
+}
+
+QString ColorParserPlainText::convert(const QString& text)
+{
+    output.clear();
+    parse(text);
+    on_new_line();
+    return output;
+}
+
+QString ColorParserPlainText::convert(const QStringList& lines)
+{
+    output.clear();
+    for ( const auto& line : lines )
+    {
+        parse(line);
+        on_new_line();
+    }
+    return output;
 }
 
 } // namespace xonotic
