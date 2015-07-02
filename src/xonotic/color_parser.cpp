@@ -27,9 +27,27 @@
 
 namespace xonotic {
 
-QRegExp ColorParser::regex_xoncolor{"^\\^([0-9]|x[0-9a-fA-F]{3})"};
+QRegExp AbstractColorParser::regex_xoncolor{"^\\^([0-9]|x[0-9a-fA-F]{3})"};
 
-QColor ColorParser::match_to_color(const QString& s)
+
+QColor AbstractColorParser::to_color(const QString& color)
+{
+    if ( !color.isEmpty() && regex_xoncolor.exactMatch(color) )
+        return match_to_color(regex_xoncolor.cap(1));
+    return default_color;
+
+}
+
+QColor AbstractColorParser::bounded_color(const QColor& color)
+{
+    return QColor::fromHsl(
+        color.hslHue(),
+        color.hslSaturation(),
+        qBound(min_brightness, color.lightness(), max_brightness)
+    );
+}
+
+QColor AbstractColorParser::match_to_color(const QString& s)
 {
     if ( s.size() == 4 )
     {
@@ -60,112 +78,7 @@ QColor ColorParser::match_to_color(const QString& s)
     return default_color;
 }
 
-void ColorParser::push_start()
-{
-    auto f = output->charFormat();
-    f.setForeground(default_color);
-    output->setCharFormat(f);
-}
-
-void ColorParser::push_end()
-{
-    push_string();
-}
-
-void ColorParser::push_line()
-{
-    output->insertBlock();
-}
-
-void ColorParser::push_color(const QColor& color)
-{
-    push_string();
-    auto f = output->charFormat();
-    f.setForeground(bounded_color(color));
-    output->setCharFormat(f);
-}
-
-void ColorParser::push_char(const QChar& c)
-{
-    if ( c == '\n' )
-    {
-        push_end();
-        push_line();
-        push_start();
-        start_index++;
-    }
-    /// \todo Optional QFont parsing
-}
-
-void ColorParser::push_string()
-{
-    if ( start_index >= end_index || start_index >= work_string.size() )
-        return;
-
-    output->insertText(work_string.mid(start_index, end_index-start_index));
-    start_index = end_index;
-}
-
-QColor ColorParser::to_color(const QString& color)
-{
-    if ( !color.isEmpty() && regex_xoncolor.exactMatch(color) )
-        return match_to_color(regex_xoncolor.cap(1));
-    return default_color;
-
-}
-
-QColor ColorParser::bounded_color(const QColor& color)
-{
-    return QColor::fromHsl(
-        color.hslHue(),
-        color.hslSaturation(),
-        qBound(min_brightness, color.lightness(), max_brightness)
-    );
-}
-
-
-bool ColorParser::before_parse(QTextCursor* out)
-{
-    if ( !out )
-        return false;
-    output = out;
-    output->beginEditBlock();
-    return true;
-}
-
-void ColorParser::after_parse()
-{
-    output->endEditBlock();
-    output = nullptr;
-}
-
-void ColorParser::convert_fragment(const QString& text, QTextCursor* out)
-{
-    if ( !before_parse(out) ) return;
-    parse(text);
-    after_parse();
-}
-
-void ColorParser::convert(const QString& text, QTextCursor* out)
-{
-    if ( !before_parse(out) ) return;
-    parse(text);
-    push_line();
-    after_parse();
-}
-
-void ColorParser::convert(const QStringList& lines, QTextCursor* out)
-{
-    if ( !before_parse(out) ) return;
-    for ( const auto& line : lines )
-    {
-        parse(line);
-        push_line();
-    }
-    after_parse();
-}
-
-void ColorParser::parse(const QString& string)
+void AbstractColorParser::parse(const QString& string)
 {
     work_string = string;
     start_index = end_index = 0;
@@ -197,6 +110,113 @@ void ColorParser::parse(const QString& string)
     }
 
     push_end();
+}
+
+void AbstractColorParser::push_start()
+{
+    on_start(default_color);
+}
+
+void AbstractColorParser::push_end()
+{
+    push_string();
+    on_end();
+}
+
+void AbstractColorParser::push_string()
+{
+    if ( start_index >= end_index || start_index >= work_string.size() )
+        return;
+    on_append_string(work_string.mid(start_index, end_index-start_index));
+    start_index = end_index;
+}
+
+
+void AbstractColorParser::push_char(const QChar& c)
+{
+    if ( c == '\n' )
+    {
+        push_end();
+        on_new_line();
+        push_start();
+        start_index++;
+    }
+    /// \todo Optional QFont parsing
+}
+
+void AbstractColorParser::push_color(const QColor& color)
+{
+    push_string();
+    on_change_color(color);
+}
+
+void ColorParserTextCursor::on_start(const QColor& color)
+{
+    auto f = output->charFormat();
+    f.setForeground(color);
+    output->setCharFormat(f);
+}
+
+void ColorParserTextCursor::on_end()
+{
+}
+
+void ColorParserTextCursor::on_append_string(const QString& string)
+{
+    output->insertText(string);
+}
+
+void ColorParserTextCursor::on_new_line()
+{
+    output->insertBlock();
+}
+
+void ColorParserTextCursor::on_change_color(const QColor& color)
+{
+    auto f = output->charFormat();
+    f.setForeground(bounded_color(color));
+    output->setCharFormat(f);
+}
+
+bool ColorParserTextCursor::before_parse(QTextCursor* out)
+{
+    if ( !out )
+        return false;
+    output = out;
+    output->beginEditBlock();
+    return true;
+}
+
+void ColorParserTextCursor::after_parse()
+{
+    output->endEditBlock();
+    output = nullptr;
+}
+
+void ColorParserTextCursor::convert_fragment(const QString& text, QTextCursor* out)
+{
+    if ( !before_parse(out) ) return;
+    parse(text);
+    after_parse();
+}
+
+void ColorParserTextCursor::convert(const QString& text, QTextCursor* out)
+{
+    if ( !before_parse(out) ) return;
+    parse(text);
+    on_new_line();
+    after_parse();
+}
+
+void ColorParserTextCursor::convert(const QStringList& lines, QTextCursor* out)
+{
+    if ( !before_parse(out) ) return;
+    for ( const auto& line : lines )
+    {
+        parse(line);
+        on_new_line();
+    }
+    after_parse();
 }
 
 } // namespace xonotic

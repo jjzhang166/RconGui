@@ -30,23 +30,22 @@
 #include <QTextCursor>
 
 namespace xonotic {
+
 /**
- * \brief Parses a xonotic-colored and formats a QTextDocument accordingly
+ * \brief Parses a xonotic-colored string and provide hooks to generate output
  */
-class ColorParser
+class AbstractColorParser
 {
 public:
+    AbstractColorParser() = default;
 
-    ColorParser() = default;
-
-    explicit ColorParser(QColor default_color,     ///< Default text color
+    explicit AbstractColorParser(QColor default_color,///< Default text color
                          int    min_brightness=0,  ///< Minimum color brightness
                          int    max_brightness=255)///< Maximum color brightness
         : default_color (std::move(default_color)),
           min_brightness(min_brightness),
           max_brightness(max_brightness)
         {}
-
 
     /**
      * \brief Turns a string like ^2 or ^x123 into a QColor
@@ -59,21 +58,38 @@ public:
      */
     QColor bounded_color(const QColor& color);
 
+protected:
     /**
-     * \brief Turns some text into html
+     * \brief Parses \c string
      */
-    void convert(const QString& text, QTextCursor *out);
+    void parse(const QString& string);
 
     /**
-     * \brief Turns a small fragment into html,
-     *        without adding a new line at the end
+     * \brief Begins a new fragment with the given color
      */
-    void convert_fragment(const QString& text, QTextCursor *out);
+    virtual void on_start(const QColor& color) = 0;
+    /**
+     * \brief Ends a fragment, should clean up what \c on_start() does
+     */
+    virtual void on_end() = 0;
 
     /**
-     * \brief Turns some text into html
+     * \brief Appends a string with the current color
      */
-    void convert(const QStringList& lines, QTextCursor *out);
+    virtual void on_append_string(const QString& string) = 0;
+
+    /**
+     * \brief Adds a new line to the output
+     *
+     * Note that \c on_end() is called before this and \c on_start()
+     * is called afterwards
+     */
+    virtual void on_new_line() = 0;
+
+    /**
+     * \brief Changes the color for subsequent calls to \c on_append_string()
+     */
+    virtual void on_change_color(const QColor& color) = 0;
 
 private:
     /**
@@ -96,28 +112,22 @@ private:
     }
 
     /**
-     * \brief Sets up the object for parse()
-     * \returns Whether it can proceed with the parsing
+     * \brief Pushes the default color
      */
-    bool before_parse(QTextCursor *output);
+    void push_start();
 
     /**
-     * \brief Parses \c string appending the result to \c output
+     * \brief Cleans up \c push_start (calls push_string())
      */
-    void parse(const QString& string);
+    void push_end();
 
     /**
-     * \brief Cleans up before_parse()
-     */
-    void after_parse();
-
-    /**
-     * \brief Pushes the \c work_string substring [\c start_index, \c end_index) to \c output
+     * \brief Pushes the \c work_string substring [\c start_index, \c end_index) to the output
      */
     void push_string();
 
     /**
-     * \brief pushes special characters to \c output, does nothing on normal characters
+     * \brief Pushes characters to the output
      */
     void push_char(const QChar& c);
 
@@ -126,25 +136,8 @@ private:
      */
     void push_color(const QColor& color);
 
-    /**
-     * \brief Pushes a new line to \c output (calls push_string())
-     */
-    void push_line();
-
-    /**
-     * \brief Pushes the default color to \c output
-     */
-    void push_start();
-
-
-    /**
-     * \brief Cleans up \c push_start (calls push_string())
-     */
-    void push_end();
-
-
+private:
     QString     work_string;    ///< String currently being parsed
-    QTextCursor *output=nullptr;
     int         start_index=0;  ///< Starting index for a new substring in \c work_string
     int         end_index=0;    ///< Ending index for a new substring in \c work_string
     QColor      default_color=Qt::gray; ///< Default text color
@@ -152,6 +145,52 @@ private:
     int         max_brightness=255;     ///< Maximum color brightness
 
     static QRegExp regex_xoncolor;      ///< Regex matching color codes
+};
+
+/**
+ * \brief Parses a xonotic-colored string and formats a QTextDocument accordingly
+ */
+class ColorParserTextCursor : public AbstractColorParser
+{
+public:
+    using AbstractColorParser::AbstractColorParser;
+
+    /**
+     * \brief Turns some text into html
+     */
+    void convert(const QString& text, QTextCursor *out);
+
+    /**
+     * \brief Turns a small fragment into html,
+     *        without adding a new line at the end
+     */
+    void convert_fragment(const QString& text, QTextCursor *out);
+
+    /**
+     * \brief Turns some text into html
+     */
+    void convert(const QStringList& lines, QTextCursor *out);
+
+protected:
+    void on_start(const QColor& color) override;
+    void on_end() override;
+    void on_append_string(const QString& string) override;
+    void on_new_line() override;
+    void on_change_color(const QColor& color) override;
+
+private:
+    /**
+     * \brief Sets up the object for parse()
+     * \returns Whether it can proceed with the parsing
+     */
+    bool before_parse(QTextCursor *output);
+
+    /**
+     * \brief Cleans up before_parse()
+     */
+    void after_parse();
+
+    QTextCursor *output=nullptr;
 
 };
 

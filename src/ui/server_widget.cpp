@@ -227,7 +227,7 @@ void ServerWidget::xonotic_log_end()
     {
         QTextCursor cursor(output_console->document());
         cursor.movePosition(QTextCursor::End);
-        xonotic::ColorParser(
+        xonotic::ColorParserTextCursor(
             settings().console_foreground,
             settings().console_brightness_min,
             settings().console_brightness_max
