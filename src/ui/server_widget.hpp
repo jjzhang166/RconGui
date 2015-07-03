@@ -84,6 +84,7 @@ public slots:
 private slots:
     void on_button_setup_clicked();
     void on_output_console_customContextMenuRequested(const QPoint &pos);
+    void on_table_cvars_customContextMenuRequested(const QPoint &pos);
     void on_action_save_log_triggered();
     void on_tabWidget_currentChanged(int tab);
     void on_input_cvar_filter_section_currentIndexChanged(int index);

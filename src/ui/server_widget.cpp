@@ -30,6 +30,7 @@
 #include <QTextObject>
 #include <QTime>
 #include <QToolButton>
+#include <QWhatsThis>
 
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
@@ -332,6 +333,44 @@ void ServerWidget::on_output_console_customContextMenuRequested(const QPoint &po
     menu->addAction(action_parse_colors);
 
     menu->exec(output_console->mapToGlobal(pos));
+}
+
+void ServerWidget::on_table_cvars_customContextMenuRequested(const QPoint& pos)
+{
+    auto index = proxy_cvar.mapToSource(table_cvars->indexAt(pos));
+
+    QMenu menu;
+
+    QAction action_cvar_desc(QIcon::fromTheme("help-contextual"), tr("&Description"), this);
+    connect(&action_cvar_desc, &QAction::triggered, [this, index]{
+        QWhatsThis::showText(QCursor::pos(),
+                             index.data(Qt::WhatsThisRole).toString(),
+                             this);
+    });
+    menu.addAction(&action_cvar_desc);
+
+    menu.addSeparator();
+
+    QAction action_cvar_unset(QIcon::fromTheme("list-remove"), tr("&Unset"), this);
+    connect(&action_cvar_unset, &QAction::triggered, [this, index]{
+        rcon_command("unset "+index.data(Qt::UserRole).toString());
+        model_cvar.removeRows(index.row(), 1);
+    });
+    menu.addAction(&action_cvar_unset);
+
+    QAction action_cvar_reset(QIcon::fromTheme("edit-clear"), tr("&Reset to Default"), this);
+    connect(&action_cvar_reset, &QAction::triggered, [this, index]{
+        xonotic::Cvar cvar = model_cvar.cvar_at(index.row());
+        QString def = cvar.default_value;
+        if ( def.isEmpty() )
+            def = "\"\"";
+        rcon_command("set "+cvar.name+" "+def);
+        cvar.value = cvar.default_value;
+        model_cvar.set_cvar(cvar);
+    });
+    menu.addAction(&action_cvar_reset);
+
+    menu.exec(table_cvars->mapToGlobal(pos));
 }
 
 void ServerWidget::attach_log()

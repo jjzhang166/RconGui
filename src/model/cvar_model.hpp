@@ -113,12 +113,41 @@ public:
         return {};
     }
 
+    bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex())
+    {
+        if ( row < 0 || row >= cvars.size() || count <= 0 || count >= cvars.size()-row )
+            return false;
+
+        auto begin = cvars.begin();
+        std::advance(begin, row);
+
+        beginRemoveRows(parent, row, row+count-1);
+        // no range erase...
+        for ( int i = 0; i < count; i++ )
+            begin = cvars.erase(begin);
+        endRemoveRows();
+
+        return true;
+    }
+
     /**
      * \brief Get a cvar
      */
     xonotic::Cvar cvar(const QString& name) const
     {
         return cvars[name];
+    }
+
+    /**
+     * \brief Get a cvar
+     */
+    xonotic::Cvar cvar_at(int row) const
+    {
+        if ( row < 0 || row >= cvars.size() )
+            return {};
+        auto it = cvars.begin();
+        std::advance(it, row);
+        return *it;
     }
 
     /**
@@ -132,7 +161,7 @@ public:
 
 public slots:
     /**
-     * \brief Sets a server property
+     * \brief Sets a cvars
      */
     void set_cvar(const xonotic::Cvar& cvar)
     {
