@@ -71,12 +71,18 @@ add_executable(${EXECUTABLE} ${SOURCES})
 
 # Libraries
 
+# Thread
+option(LINK_PTHREADS OFF)
+if (CMAKE_COMPILER_IS_GNUCXX OR LINK_PTHREADS)
+    target_link_libraries(${EXECUTABLE} -pthread)
+endif()
+
 # Qt
 target_link_libraries(${EXECUTABLE} Qt5::Widgets)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Boost
-find_package (Boost COMPONENTS system thread REQUIRED)
+find_package (Boost COMPONENTS system REQUIRED)
 target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
 include_directories(${Boost_INCLUDE_DIRS})
 
