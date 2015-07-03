@@ -66,23 +66,23 @@ public:
         {
             switch(index.column())
             {
-                case Name       : return QString::fromStdString(cvar.name);
-                case Value      : return QString::fromStdString(cvar.value);
-                case Default    : return QString::fromStdString(cvar.default_value);
-                case Description: return QString::fromStdString(cvar.description);
+                case Name       : return cvar.name;
+                case Value      : return cvar.value;
+                case Default    : return cvar.default_value;
+                case Description: return cvar.description;
             }
         }
         else if ( role == Qt::ToolTipRole || role == Qt::WhatsThisRole )
         {
-            return QString::fromStdString(cvar.description);
+            return cvar.description;
         }
         else if ( role == Qt::EditRole && index.column() == Value )
         {
-            return QString::fromStdString(cvar.value);
+            return cvar.value;
         }
         else if ( role == Qt::UserRole && index.column() == Value )
         {
-            return QString::fromStdString(cvar.name);
+            return cvar.name;
         }
 
         return {};
@@ -126,7 +126,7 @@ public:
      */
     QString cvar_value(const QString& name) const
     {
-        return QString::fromStdString(cvars[name].value);
+        return cvars[name].value;
     }
 
 
@@ -136,37 +136,12 @@ public slots:
      */
     void set_cvar(const xonotic::Cvar& cvar)
     {
-        if ( cvar.name.empty() )
+        if ( cvar.name.isEmpty() )
             return;
 
         if ( !no_update ) beginResetModel();
-        cvars[QString::fromStdString(cvar.name)] = cvar;
+        cvars[cvar.name] = cvar;
         if ( !no_update ) endResetModel();
-
-        /*QString name = QString::fromStdString(cvar.name);
-        auto it = cvars.lowerBound(name);
-
-        if ( it != cvars.end() && it.key() == name )
-        {
-            *it = cvar;
-            if ( !no_update )
-            {
-                int row = std::distance(cvars.begin(), it);
-                if ( row != -1 )
-                    emit dataChanged(index(row,0), index(row, columnCount()-1));
-            }
-        }
-        else
-        {
-            if ( !no_update )
-            {
-                int row = std::distance(cvars.begin(), it);
-                beginInsertRows({},row,row);
-            }
-            cvars.insert(it, name, cvar);
-            if ( !no_update )
-                endInsertRows();
-        }*/
     }
 
     /**

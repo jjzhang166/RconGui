@@ -21,27 +21,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef XONOTIC_CVAR_HPP
-#define XONOTIC_CVAR_HPP
+#ifndef REGEX_HPP
+#define REGEX_HPP
 
-#include <QString>
-#include <QMetaType>
+#include <QRegularExpression>
 
-namespace xonotic {
-/**
- * \brief Xonotic console variable info
- *
- * Contains raw data as read from the log line
- */
-struct Cvar
+namespace regex {
+
+using Regex = QRegularExpression;
+using Match = QRegularExpressionMatch;
+
+inline Regex optimized(const QString& pattern)
 {
-    QString name;
-    QString value;
-    QString default_value;
-    QString description;
-};
+    return Regex(pattern, Regex::OptimizeOnFirstUsageOption);
+}
 
-} // namespace xonotic
+inline bool match(const QString& str, const Regex& exp, Match& match)
+{
+    match = exp.match(str);
+    return match.hasMatch();
+}
 
-Q_DECLARE_METATYPE(xonotic::Cvar)
-#endif // XONOTIC_CVAR_HPP
+inline bool match(const QString& str, const Regex& exp)
+{
+    Match regex_match;
+    return match(str, exp, regex_match);
+}
+
+} // namespace regex
+
+#endif // REGEX_HPP

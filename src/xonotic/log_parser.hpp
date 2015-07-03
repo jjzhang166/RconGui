@@ -24,8 +24,6 @@
 #ifndef XONOTIC_LOG_PARSER_HPP
 #define XONOTIC_LOG_PARSER_HPP
 
-#include <regex>
-#include <map>
 #include <QString>
 #include <QObject>
 
@@ -45,7 +43,7 @@ public:
     /**
      * \brief Parse a xonotic log line
      */
-    void parse(const std::string& line);
+    void parse(const QString& line);
 
     /**
      * \brief Returns the vector of parsed players
@@ -90,12 +88,12 @@ private:
     /**
      * \brief Parses a player line
      */
-    void parse_player(const std::string& line);
+    void parse_player(const QString& line);
 
     /**
      * \brief Parses a server status line
      */
-    void parse_status(const std::string& line);
+    void parse_status(const QString& line);
 };
 
 } // namespace xonotic

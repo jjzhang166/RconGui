@@ -37,14 +37,13 @@ QVariant PlayerModel::data(const QModelIndex & index, int role) const
     {
         switch(index.column())
         {
-            case Ip:    return QString::fromStdString(player.ip);
-            case Name:  return color_parser.convert_fragment(
-                                    QString::fromStdString(player.name));
-            case Entity:return QString::fromStdString(player.no);
-            case Ping:  return QString::fromStdString(player.ping);
-            case Pl:    return QString::fromStdString(player.pl);
-            case Score: return QString::fromStdString(player.frags);
-            case Time:  return QString::fromStdString(player.time);
+            case Ip:    return player.ip;
+            case Name:  return color_parser.convert_fragment(player.name);
+            case Entity:return player.no;
+            case Ping:  return player.ping;
+            case Pl:    return player.pl;
+            case Score: return player.frags;
+            case Time:  return player.time;
         }
     }
     else if ( role == Qt::TextAlignmentRole )

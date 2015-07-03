@@ -58,9 +58,9 @@ public:
     {
         auto cmd = command_;
         return cmd
-            .replace("$entity", QString::fromStdString(player.no))
-            .replace("$ip",     QString::fromStdString(player.ip))
-            .replace("$name",   QString::fromStdString(player.name))
+            .replace("$entity", player.no)
+            .replace("$ip",     player.ip)
+            .replace("$name",   player.name)
         ;
     }
 

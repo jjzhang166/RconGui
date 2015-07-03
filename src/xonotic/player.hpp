@@ -24,7 +24,7 @@
 #ifndef XONOTIC_PLAYER_HPP
 #define XONOTIC_PLAYER_HPP
 
-#include <string>
+#include <QString>
 
 namespace xonotic {
 
@@ -35,13 +35,13 @@ namespace xonotic {
  */
 struct Player
 {
-    std::string ip;
-    std::string pl;
-    std::string ping;
-    std::string time;
-    std::string frags;
-    std::string no;
-    std::string name;
+    QString ip;
+    QString pl;
+    QString ping;
+    QString time;
+    QString frags;
+    QString no;
+    QString name;
 };
 
 } // namespace xonotic

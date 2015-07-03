@@ -88,7 +88,7 @@ void ServerWidget::init_cvar_table()
         /// \todo Maybe option to choose set or seta
         rcon_command("set "+name+' '+value);
         auto cvar = model_cvar.cvar(name);
-        cvar.value = value.toStdString();
+        cvar.value = value;
         model_cvar.set_cvar(cvar);
     };
     table_cvars->setModel(&proxy_cvar);
@@ -244,7 +244,7 @@ void ServerWidget::xonotic_log_end()
 void ServerWidget::xonotic_log(const QString& log)
 {
     set_network_status(tr("Connected"));
-    log_parser.parse(log.toStdString());
+    log_parser.parse(log);
     log_buffer.push_back(log);
 }
 
@@ -487,7 +487,7 @@ void ServerWidget::run_command(QString cmd, CvarExpansion exp)
             /// \todo handle ${foo q} ${foo asis} ${foo ?} (?)
 
             xonotic::Cvar cvar = model_cvar.cvar(cvar_name);
-            if ( cvar.name.empty() )
+            if ( cvar.name.isEmpty() )
             {
                 if ( exp == CvarExpansion::ExpandAlways )
                 {
@@ -502,9 +502,8 @@ void ServerWidget::run_command(QString cmd, CvarExpansion exp)
                 }
 
             }
-            QString value = QString::fromStdString(cvar.value);
-            cmd.replace(i, regex_cvar_expansion.matchedLength(), value);
-            i += value.size();
+            cmd.replace(i, regex_cvar_expansion.matchedLength(), cvar.value);
+            i += cvar.value.size();
         }
     }
 

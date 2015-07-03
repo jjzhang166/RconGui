@@ -23,33 +23,30 @@
  */
 #include "log_parser.hpp"
 
-/**
- * \brief Regex options
- */
-static const auto reo = std::regex::ECMAScript|std::regex::optimize;
+#include "regex.hpp"
 
 namespace xonotic {
 
-void LogParser::parse(const std::string& line)
+void LogParser::parse(const QString& line)
 {
     if ( listening == DEFAULT )
     {
-        static std::regex regex_status_begin("host:\\s+(.+)",reo);
-        static std::regex regex_cvar(
-            R"regex((?:cvar \^3|")?([^"^]+)(?:"|\^7)? is "([^"]*)" \["([^"]*)"\]\s*(.*))regex",reo);
-        static std::regex regex_cvarlist_end(
-            R"regex(\d+ cvar(?:\(s\))|(?: beginning with .*))regex",reo);
+        static regex::Regex regex_status_begin = regex::optimized("^host:\\s+(.+)$");
+        static regex::Regex regex_cvar = regex::optimized(
+            R"regex(^(?:cvar \^3|")?([^"^ ]+)(?:"|\^7)? is "([^"]*)" \["([^"]*)"\]\s*(.*)$)regex");
+        static regex::Regex regex_cvarlist_end = regex::optimized(
+            R"regex(^\d+ cvar(?:\(s\))|(?: beginning with .*)$)regex");
 
-        std::smatch match;
-        if ( std::regex_match(line, match, regex_cvar) )
+        regex::Match match;
+        if ( regex::match(line, regex_cvar, match) )
         {
             // only cvarlist and apropos show the description
-            if ( !cvarlist && match[4].length() )
+            if ( !cvarlist && match.capturedLength(4) )
             {
                 cvarlist = true;
                 emit cvarlist_begin();
             }
-            emit cvar({match[1], match[2], match[3], match[4]});
+            emit cvar({match.captured(1), match.captured(2), match.captured(3), match.captured(4)});
             return;
         }
         else if ( cvarlist )
@@ -58,10 +55,10 @@ void LogParser::parse(const std::string& line)
             emit cvarlist_end();
         }
 
-        if ( std::regex_match(line, match, regex_status_begin) )
+        if ( regex::match(line, regex_status_begin, match) )
         {
             listening = STATUS;
-            emit server_property_changed("host", QString::fromStdString(match[1]));
+            emit server_property_changed("host", match.captured(1));
         }
 
     }
@@ -75,31 +72,26 @@ void LogParser::parse(const std::string& line)
     }
 }
 
-void LogParser::parse_status(const std::string& line)
+void LogParser::parse_status(const QString& line)
 {
-    static std::regex regex_players(
-        R"(players:\s+((\d+) active \(\d+ max\)))",
-        std::regex::ECMAScript|std::regex::optimize
-    );
-    static std::regex regex_property("([a-z]+):\\s+(.*)",reo);
-    static std::regex regex_player_header(
-        "\\^[0-9]IP\\s+%pl\\s+ping\\s+time\\s+frags\\s+no\\s+name",
-        reo
-    );
+    static regex::Regex regex_players = regex::optimized(
+        R"(^players:\s+((\d+) active \(\d+ max\))$)");
+    static regex::Regex regex_property = regex::optimized("^([a-z]+):\\s+(.*)$");
+    static regex::Regex regex_player_header = regex::optimized(
+        "^\\^[0-9]IP\\s+%pl\\s+ping\\s+time\\s+frags\\s+no\\s+name$");
 
-    std::smatch match;
-    if ( std::regex_match(line, match, regex_players) )
+    regex::Match match;
+    if ( regex::match(line, regex_players, match) )
     {
-        players_active = std::stoul(match[2]);
+        players_active = match.capturedRef(2).toUInt();
         players_.reserve(players_active);
-        server_property_changed("players", QString::fromStdString(match[1]));
+        server_property_changed("players", match.captured(1));
     }
-    else if ( std::regex_match(line, match, regex_property) )
+    else if ( regex::match(line, regex_property, match) )
     {
-        server_property_changed(QString::fromStdString(match[1]),
-                                QString::fromStdString(match[2]));
+        server_property_changed(match.captured(1), match.captured(2));
     }
-    else if ( std::regex_match(line, match, regex_player_header) )
+    else if ( regex::match(line, regex_player_header) )
     {
         players_.clear();
         if ( players_active == 0 )
@@ -112,31 +104,30 @@ void LogParser::parse_status(const std::string& line)
             listening = STATUS_PLAYERS;
         }
     }
-    else if ( !line.empty() )
+    else if ( !line.isEmpty() )
     {
         listening = DEFAULT;
     }
 }
 
-void LogParser::parse_player(const std::string& line)
+void LogParser::parse_player(const QString& line)
 {
-    static std::regex regex_player(
+    static regex::Regex regex_player = regex::optimized(
         // rowcol IP      %pl     ping    time   frags     no           name
-        R"(\^[37](\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+#([0-9]+)\s+\^7(.*))",
-        reo
+        R"(^\^[37](\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+#([0-9]+)\s+\^7(.*)$)"
     );
 
-    std::smatch match;
-    if ( std::regex_match(line, match, regex_player) )
+    regex::Match match;
+    if ( regex::match(line, regex_player, match) )
     {
         players_.emplace_back();
-        players_.back().ip    = match[1];
-        players_.back().pl    = match[2];
-        players_.back().ping  = match[3];
-        players_.back().time  = match[4];
-        players_.back().frags = match[5];
-        players_.back().no    = match[6];
-        players_.back().name  = match[7];
+        players_.back().ip    = match.captured(1);
+        players_.back().pl    = match.captured(2);
+        players_.back().ping  = match.captured(3);
+        players_.back().time  = match.captured(4);
+        players_.back().frags = match.captured(5);
+        players_.back().no    = match.captured(6);
+        players_.back().name  = match.captured(7);
         if ( players_active == players_.size() )
         {
             listening = DEFAULT;
