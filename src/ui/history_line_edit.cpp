@@ -68,20 +68,41 @@ void HistoryLineEdit::keyPressEvent(QKeyEvent * ev)
         QString current = current_word();
         completer->setCompletionPrefix(current);
         if ( current.size() < completion_minchars ||
+            completer->completionCount() == 0 ||
             (completion_max > 0 && completer->completionCount() > completion_max) )
         {
             completer->popup()->hide();
         }
         else
         {
+            // Get the selection status
+            int sel = selectionStart();
+            int sellength = selectedText().size();
+            // Get the current cursor position
             int c = cursorPosition();
+            // Get the start of the current word
             setCursorPosition(word_start());
+            // Get the cursor rectangle at the beginning of the current word
             QRect rect = cursorRect();
+            // Restore cursor position (clears the selection)
             setCursorPosition(c);
+            // If we had a selection
+            if ( sel != -1 )
+            {
+                // If the selection started at the cursor,
+                // it needs to start at the far end and go back
+                // (otherwise it moves the cursor at the end)
+                if ( sel == c )
+                    setSelection(sel+sellength, -sellength);
+                else
+                    setSelection(sel, sellength);
+            }
+            // Set the rectangle to the appropriate width
             rect.setWidth(
                 completer->popup()->sizeHintForColumn(0)
                 + completer->popup()->verticalScrollBar()->sizeHint().width()
             );
+            // Display the completer under the rectangle
             completer->complete(rect);
         }
     }
