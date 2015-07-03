@@ -33,7 +33,11 @@ using Match = QRegularExpressionMatch;
 
 inline Regex optimized(const QString& pattern)
 {
+#if QT_VERSION >= 0x050400
     return Regex(pattern, Regex::OptimizeOnFirstUsageOption);
+#else
+    return Regex(pattern);
+#endif
 }
 
 inline bool match(const QString& str, const Regex& exp, Match& match)
