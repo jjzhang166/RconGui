@@ -49,10 +49,6 @@ public:
      */
     void populate(const xonotic::ConnectionDetails& xonotic);
 
-signals:
-    void accepted();
-    void rejected();
-
 private slots:
     void on_button_save_clicked();
     void on_button_delete_clicked();

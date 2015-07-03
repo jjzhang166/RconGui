@@ -14,23 +14,28 @@
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <widget class="ServerSetupWidget" name="widget" native="true"/>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>366</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -49,34 +54,34 @@
  <resources/>
  <connections>
   <connection>
-   <sender>widget</sender>
+   <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>ServerSetupDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>176</y>
+     <x>419</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
-     <x>684</x>
-     <y>205</y>
+     <x>399</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>widget</sender>
+   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>ServerSetupDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>309</x>
-     <y>268</y>
+     <x>503</x>
+     <y>410</y>
     </hint>
     <hint type="destinationlabel">
-     <x>674</x>
-     <y>321</y>
+     <x>504</x>
+     <y>485</y>
     </hint>
    </hints>
   </connection>

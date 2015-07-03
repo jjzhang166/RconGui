@@ -50,7 +50,7 @@ public slots:
     void new_tab();
 
 private slots:
-    void on_widget_server_setup_accepted();
+    void on_button_connect_clicked();
 
 private:
     void create_tab(const xonotic::ConnectionDetails& xonotic);

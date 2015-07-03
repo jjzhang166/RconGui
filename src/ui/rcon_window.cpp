@@ -84,7 +84,7 @@ void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
     stacked_widget->setCurrentIndex(1);
 }
 
-void RconWindow::on_widget_server_setup_accepted()
+void RconWindow::on_button_connect_clicked()
 {
     create_tab(widget_server_setup->connection_details());
 }

@@ -29,8 +29,6 @@ ServerSetupWidget::ServerSetupWidget(QWidget* parent)
 {
     setupUi(this);
     button_save->setShortcut(QKeySequence::Save);
-    connect(button_box, &QDialogButtonBox::accepted, this, &ServerSetupWidget::accepted);
-    connect(button_box, &QDialogButtonBox::rejected, this, &ServerSetupWidget::rejected);
     update_presets();
 }
 
