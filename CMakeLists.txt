@@ -46,14 +46,15 @@ else()
 endif()
 
 # Enable extra Qt tools
+find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTORCC OFF)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("${CMAKE_SOURCE_DIR}/src/ui")
 
-set(SOURCES src/ui/server_setup_table.cpp src/ui/inline_server_setup_widget.cpp src/ui/settings_dialog.cpp src/xonotic/color_parser.cpp src/xonotic/qdarkplaces.cpp src/xonotic/darkplaces.cpp data/data.qrc src/model/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
+set(SOURCES src/ui/server_setup_table.cpp src/ui/inline_server_setup_widget.cpp src/ui/settings_dialog.cpp src/xonotic/color_parser.cpp src/xonotic/qdarkplaces.cpp src/xonotic/darkplaces.cpp src/model/player_model.cpp src/ui/server_setup_dialog.cpp src/xonotic/log_parser.cpp
     src/main.cpp
     src/ui/server_setup_widget.cpp
     src/ui/rcon_window.cpp
@@ -62,16 +63,16 @@ set(SOURCES src/ui/server_setup_table.cpp src/ui/inline_server_setup_widget.cpp 
     src/settings.cpp
 )
 
+file(GLOB_RECURSE UIFILES src/ui/*.ui)
+qt5_wrap_ui(SOURCES ${UIFILES})
+qt5_add_resources(SOURCES data/data.qrc)
 
 add_executable(${EXECUTABLE} ${SOURCES})
 
 # Libraries
 
 # Qt
-find_package(Qt5Widgets REQUIRED)
 target_link_libraries(${EXECUTABLE} Qt5::Widgets)
-# find_package(Qt4 REQUIRED)
-# target_link_libraries(${EXECUTABLE} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Boost
