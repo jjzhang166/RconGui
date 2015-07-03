@@ -30,6 +30,8 @@
 #include "ui/icon_edit.hpp"
 #include "player_action_model.hpp"
 
+#include <QDebug>
+
 /**
  * \brief Shows an icon edit for the icon
  */
@@ -51,7 +53,12 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const override
     {
         if ( index.column() != PlayerActionModel::Icon )
-            return QStyledItemDelegate::setEditorData(editor, index);
+        {
+            QStyledItemDelegate::setEditorData(editor, index);
+            auto foo = static_cast<QLineEdit*>(editor);
+            qDebug() << foo->text();
+            return;
+        }
 
         auto icon_edit = static_cast<IconEdit*>(editor);
         icon_edit->setText(index.data().toString());

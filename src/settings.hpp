@@ -111,6 +111,7 @@ public:
         {"Ban",  "kickban #$player.entity", ":/icons/ban-hammer.svg"},
         {"Mute", "mute #$player.entity",    ":/icons/no-chat.svg"},
     };
+    CvarExpansion player_actions_expansion = CvarExpansion::NotExpanded;
 
     std::vector<QPair<QString,QString>> quick_commands = {
         {"Rescan",    "fs_rescan"},

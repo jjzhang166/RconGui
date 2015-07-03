@@ -27,6 +27,7 @@
 #include <QSortFilterProxyModel>
 #include <QCompleter>
 #include <QMenu>
+#include <QTimer>
 
 #include "ui_server_widget.h"
 #include "xonotic/qdarkplaces.hpp"
@@ -215,6 +216,8 @@ private:
     bool                        log_dest_set = false;
     /// Menu shown to trigger quick commands
     QMenu*                      menu_quick_commands = nullptr;
+    /// Timer which requests status after a short while
+    QTimer                      delayed_status;
 
 };
 

@@ -47,6 +47,7 @@ private:
     QuickCommandsModel   model_quick_commands;
     ExtraRowProxyModel   proxy_quick_commands;
     PlayerActionModel    model_player_actions;
+    ExtraRowProxyModel   proxy_player_actions;
     PlayerActionDelegate delegate_player_actions;
 };
 

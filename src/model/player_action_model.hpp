@@ -58,7 +58,7 @@ public:
             return {};
 
         const auto& action = player_actions[index.row()];
-        if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+        if ( role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::EditRole )
         {
             switch(index.column())
             {
@@ -128,6 +128,15 @@ public:
         }
 
         return false;
+    }
+
+    bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) override
+    {
+        beginInsertRows(parent, row, row+count-1);
+        for ( int i = 0; i < count; i++ )
+            player_actions.insert(row, PlayerAction("",""));
+        endInsertRows();
+        return true;
     }
 
     Qt::ItemFlags flags(const QModelIndex& index) const override

@@ -46,6 +46,10 @@ ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     button_refresh_status->setShortcut(QKeySequence::Refresh);
     button_refresh_cvars->setShortcut(QKeySequence::Refresh);
 
+    delayed_status.setInterval(150); /// \todo read from settings?
+    delayed_status.setSingleShot(true);
+    connect(&delayed_status, &QTimer::timeout, this, &ServerWidget::request_status);
+
     init_status_table();
 
     init_cvar_table();
@@ -139,6 +143,7 @@ void ServerWidget::update_player_actions()
         auto index = model_player.index(i, PlayerModel::Actions);
         table_players->setIndexWidget(index, buttons);
     }
+    table_players->resizeColumnToContents(PlayerModel::Actions);
 }
 
 void ServerWidget::init_console()
@@ -397,9 +402,8 @@ void ServerWidget::on_input_cvar_filter_section_currentIndexChanged(int index)
 
 void ServerWidget::on_input_console_lineExecuted(const QString& cmd)
 {
-    /// \todo Setting for cvar expansion policy
     run_command(cmd, input_console_cvars->isChecked() ?
-        CvarExpansion::ExpandOrWarn : CvarExpansion::ExpandOrWarn);
+        CvarExpansion::ExpandOrWarn : CvarExpansion::NotExpanded);
 }
 
 void ServerWidget::on_menu_quick_commands_triggered(QAction * action)
@@ -456,8 +460,8 @@ QAbstractButton* ServerWidget::create_button(const PlayerAction& action,
     auto cmd = action.command(player);
     button->setToolTip(action.name().isEmpty() ? cmd : action.name());
     connect(button, &QPushButton::clicked, [this, cmd]{
-        rcon_command(cmd);
-        request_status();
+        run_command(cmd, settings().player_actions_expansion);
+        delayed_status.start();
     });
     return button;
 }
@@ -498,19 +502,18 @@ void ServerWidget::run_command(QString cmd, CvarExpansion exp)
             xonotic::Cvar cvar = model_cvar.cvar(cvar_name);
             if ( cvar.name.isEmpty() )
             {
-                if ( exp == CvarExpansion::ExpandAlways )
-                {
-                    cmd.remove(i, match.capturedLength());
-                    continue;
-                }
-                else if ( exp == CvarExpansion::ExpandOrWarn )
+                if ( exp == CvarExpansion::ExpandOrWarn )
                 {
                     QMessageBox::warning(this, tr("Could not expand a variable"),
                         tr("The cvar <b>%1</b> was not found and cannot be expanded")
                             .arg(cvar_name));
                     return;
                 }
-
+                else if ( exp == CvarExpansion::ExpandIfValue )
+                {
+                    i++;
+                    continue;
+                }
             }
             cmd.replace(i, match.capturedLength(), cvar.value);
             i += cvar.value.size();

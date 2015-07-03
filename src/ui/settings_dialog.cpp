@@ -64,12 +64,24 @@ void SettingsDialog::init_tab_commands()
     }
 
     model_player_actions.set_actions(settings().player_actions);
-    table_cmd_usr->setModel(&model_player_actions);
+    proxy_player_actions.setSourceModel(&model_player_actions);
+    table_cmd_usr->setModel(&proxy_player_actions);
     table_cmd_usr->setItemDelegate(&delegate_player_actions);
     auto header_view = table_cmd_usr->horizontalHeader();
     header_view->setSectionResizeMode(PlayerActionModel::Name,    QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(PlayerActionModel::Command, QHeaderView::Stretch);
     header_view->setSectionResizeMode(PlayerActionModel::Icon,    QHeaderView::ResizeToContents);
+    if ( bool(settings().player_actions_expansion) )
+    {
+        input_cmd_usr_cvar->setChecked(true);
+        input_cmd_usr_nocvar->setCurrentIndex(
+            int(settings().player_actions_expansion)-1
+        );
+    }
+    else
+    {
+        input_cmd_usr_cvar->setChecked(false);
+    }
 }
 
 void SettingsDialog::init_tab_console()
@@ -98,6 +110,10 @@ void SettingsDialog::accept()
         settings().quick_commands_expansion = CvarExpansion::NotExpanded;
 
     settings().player_actions = model_player_actions.actions();
+    if ( input_cmd_usr_cvar->isChecked() )
+        settings().player_actions_expansion = CvarExpansion(input_cmd_usr_nocvar->currentIndex()+1);
+    else
+        settings().player_actions_expansion = CvarExpansion::NotExpanded;
 
     settings().console_foreground =  input_con_fg->color();
     settings().console_background = input_con_bg->color();

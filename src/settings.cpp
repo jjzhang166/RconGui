@@ -91,6 +91,9 @@ void Settings::load()
     if ( settings.childGroups().contains("player") )
     {
         int sz = settings.beginReadArray("player");
+        player_actions_expansion = cvar_expansion_from_string(
+            settings.value("cvar",
+                cvar_expansion_to_string(player_actions_expansion)).toString());
         player_actions.clear();
         player_actions.reserve(sz);
         for ( int i = 0; i < sz; i++ )
@@ -134,6 +137,7 @@ void Settings::save()
 
     settings.beginGroup("behaviour");
     settings.beginWriteArray("quick_commands");
+    settings.remove("");
     settings.setValue("cvar",cvar_expansion_to_string(quick_commands_expansion));
     for ( uint i = 0; i < quick_commands.size(); i++ )
     {
@@ -143,6 +147,8 @@ void Settings::save()
     }
     settings.endArray();
     settings.beginWriteArray("player");
+    settings.remove("");
+    settings.setValue("cvar",cvar_expansion_to_string(player_actions_expansion));
     for ( int i = 0; i < player_actions.size(); i++ )
     {
         settings.setArrayIndex(i);
