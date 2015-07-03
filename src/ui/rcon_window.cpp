@@ -80,6 +80,7 @@ void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
     connect(tab, &ServerWidget::name_changed,[this,tab](const QString& string){
         tabWidget->setTabText(tabWidget->indexOf(tab), string);
     });
+    connect(this, &RconWindow::settings_changed, tab, &ServerWidget::reload_settings);
     tabWidget->setCurrentIndex(tabindex);
     stacked_widget->setCurrentIndex(1);
 }

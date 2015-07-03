@@ -52,7 +52,7 @@ public:
 
     int rowCount(const QModelIndex & = {}) const override
     {
-        return players.size();
+        return players_.size();
     }
 
     int columnCount(const QModelIndex & = {}) const override
@@ -64,6 +64,14 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
+    /**
+     * \brief Sets the players
+     */
+    const std::vector<xonotic::Player>& players() const
+    {
+        return players_;
+    }
+
 public slots:
     /**
      * \brief Sets the players
@@ -71,20 +79,20 @@ public slots:
     void set_players(const std::vector<xonotic::Player>& player_list)
     {
         beginResetModel();
-        players = player_list;
+        players_ = player_list;
         endResetModel();
-        emit players_changed(players);
+        emit players_changed(players_);
     }
 
     /**
-     * \brief Removes all stored cvars
+     * \brief Removes all stored players
      */
     void clear()
     {
         beginResetModel();
-        players.clear();
+        players_.clear();
         endResetModel();
-        emit players_changed(players);
+        emit players_changed(players_);
     }
 
 signals:
@@ -94,7 +102,7 @@ signals:
     void players_changed(const std::vector<xonotic::Player>& players);
 
 private:
-    std::vector<xonotic::Player> players; ///< list of players
+    std::vector<xonotic::Player> players_; ///< list of players
     mutable xonotic::ColorParserPlainText color_parser;
 
 };

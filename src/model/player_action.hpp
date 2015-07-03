@@ -46,9 +46,25 @@ public:
     QString name() const { return name_; }
 
     /**
+     * \bries Sets the action name
+     */
+    void set_name(const QString& name)
+    {
+        name_ = name;
+    }
+
+    /**
      * \brief Command template
      */
     QString command() const { return command_; }
+
+    /**
+     * \bries Sets the action command
+     */
+    void set_command(const QString& command)
+    {
+        command_ = command;
+    }
 
     /**
      * \brief Expanded command
@@ -79,6 +95,14 @@ public:
         if ( !icon_.contains("/") )
             return QIcon::fromTheme(icon_);
         return QIcon(icon_);
+    }
+
+    /**
+     * \bries Sets the name of the icon
+     */
+    void set_icon(const QString& icon)
+    {
+        icon_ = icon;
     }
 
 private:

@@ -62,6 +62,14 @@ void SettingsDialog::init_tab_commands()
     {
         input_cmd_cmd_cvar->setChecked(false);
     }
+
+    model_player_actions.set_actions(settings().player_actions);
+    table_cmd_usr->setModel(&model_player_actions);
+    table_cmd_usr->setItemDelegate(&delegate_player_actions);
+    auto header_view = table_cmd_usr->horizontalHeader();
+    header_view->setSectionResizeMode(PlayerActionModel::Name,    QHeaderView::ResizeToContents);
+    header_view->setSectionResizeMode(PlayerActionModel::Command, QHeaderView::Stretch);
+    header_view->setSectionResizeMode(PlayerActionModel::Icon,    QHeaderView::ResizeToContents);
 }
 
 void SettingsDialog::init_tab_console()
@@ -88,6 +96,8 @@ void SettingsDialog::accept()
         settings().quick_commands_expansion = CvarExpansion(input_cmd_cmd_nocvar->currentIndex()+1);
     else
         settings().quick_commands_expansion = CvarExpansion::NotExpanded;
+
+    settings().player_actions = model_player_actions.actions();
 
     settings().console_foreground =  input_con_fg->color();
     settings().console_background = input_con_bg->color();

@@ -27,6 +27,7 @@
 #include "ui_settings_dialog.h"
 #include "model/extra_row_proxy_model.hpp"
 #include "model/quick_commands_model.hpp"
+#include "model/player_action_delegate.hpp"
 
 class SettingsDialog : public QDialog, public Ui_SettingsDialog
 {
@@ -43,9 +44,10 @@ private:
     void init_tab_commands();
     void init_tab_console();
 
-
-    QuickCommandsModel model_quick_commands;
-    ExtraRowProxyModel proxy_quick_commands;
+    QuickCommandsModel   model_quick_commands;
+    ExtraRowProxyModel   proxy_quick_commands;
+    PlayerActionModel    model_player_actions;
+    PlayerActionDelegate delegate_player_actions;
 };
 
 #endif // SETTINGS_DIALOG_HPP

@@ -124,6 +124,11 @@ private slots:
      */
     void cvarlist_apply_filter();
 
+    /**
+     * \brief Updates the action buttons on the player list
+     */
+    void update_player_actions();
+
     void xonotic_disconnected();
     void xonotic_connected();
     void xonotic_log_end();

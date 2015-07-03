@@ -123,18 +123,22 @@ void ServerWidget::init_player_table()
         header_view->setSectionResizeMode(i, QHeaderView::ResizeToContents);
     header_view->setSectionResizeMode(PlayerModel::Name, QHeaderView::Stretch);
     connect(&model_player, &PlayerModel::players_changed,
-        [this](const std::vector<xonotic::Player>& players) {
-            for ( unsigned i = 0; i < players.size(); i++ )
-            {
-                QDialogButtonBox *buttons = new QDialogButtonBox();
-                for ( const auto& action : settings().player_actions )
-                    buttons->addButton(create_button(action,players[i]),
-                                       QDialogButtonBox::ActionRole);
-                auto index = model_player.index(i, PlayerModel::Actions);
-                table_players->setIndexWidget(index, buttons);
-            }
-        });
+            this, &ServerWidget::update_player_actions);
 
+}
+
+void ServerWidget::update_player_actions()
+{
+    const auto& players = model_player.players();
+    for ( unsigned i = 0; i < players.size(); i++ )
+    {
+        QDialogButtonBox *buttons = new QDialogButtonBox();
+        for ( const auto& action : settings().player_actions )
+            buttons->addButton(create_button(action,players[i]),
+                                QDialogButtonBox::ActionRole);
+        auto index = model_player.index(i, PlayerModel::Actions);
+        table_players->setIndexWidget(index, buttons);
+    }
 }
 
 void ServerWidget::init_console()
@@ -275,6 +279,8 @@ void ServerWidget::reload_settings()
         action->setData(command.second);
         menu_quick_commands->addAction(action);
     }
+
+    update_player_actions();
 
     // Console
     if ( settings().get("console/autocomplete", true) )

@@ -29,10 +29,10 @@
 
 QVariant PlayerModel::data(const QModelIndex & index, int role) const
 {
-    if ( index.row() < 0 || index.row() >= int(players.size()) )
+    if ( index.row() < 0 || index.row() >= int(players_.size()) )
         return {};
 
-    const auto& player = players[index.row()];
+    const auto& player = players_[index.row()];
     if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
         switch(index.column())

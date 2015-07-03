@@ -82,7 +82,9 @@
          <string>Interface</string>
         </property>
         <property name="icon">
-         <iconset theme="preferences-desktop-theme"/>
+         <iconset theme="preferences-desktop-theme">
+          <normaloff/>
+         </iconset>
         </property>
         <property name="flags">
          <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -139,8 +141,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>276</width>
-              <height>226</height>
+              <width>713</width>
+              <height>448</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -210,24 +212,15 @@
                 </layout>
                </widget>
                <widget class="QWidget" name="tabWidgetPage2">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
                 <attribute name="title">
                  <string>User Actions</string>
                 </attribute>
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
-                  <widget class="QTableView" name="table_cmd_usr"/>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="input_cmd_usr_properties">
-                   <property name="text">
-                    <string>Expand user properties</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
+                  <widget class="QTableView" name="table_cmd_usr">
+                   <attribute name="verticalHeaderVisible">
+                    <bool>false</bool>
+                   </attribute>
                   </widget>
                  </item>
                  <item>
@@ -603,6 +596,22 @@
     <hint type="destinationlabel">
      <x>535</x>
      <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_cmd_usr_cvar</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>input_cmd_usr_nocvar</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>527</x>
+     <y>428</y>
     </hint>
    </hints>
   </connection>
