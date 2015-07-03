@@ -34,6 +34,7 @@
 #include "server_setup_dialog.hpp"
 #include "settings.hpp"
 #include "xonotic/color_parser.hpp"
+#include "regex.hpp"
 
 ServerWidget::ServerWidget(xonotic::ConnectionDetails details, QWidget* parent)
     : QWidget(parent), connection(std::move(details))
@@ -470,19 +471,21 @@ void ServerWidget::run_command(QString cmd, CvarExpansion exp)
 
     if ( bool(exp) )
     {
-        /// \todo Warn if the model doesn't have the given cvar?
-        ///       Can be checked by getting the cvar and checking if the name is empty
-        static QRegExp regex_cvar_expansion(R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
+        static regex::Regex regex_cvar_expansion = regex::optimized(
+            R"regex(\$(?:([^" $]+))|(?:\$\{([^" $]+)\s*\}))regex");
         int i = 0;
+        regex::Match match;
         while ( i < cmd.size() )
         {
-            i = regex_cvar_expansion.indexIn(cmd, i);
-            if ( i == -1 )
+            match = regex_cvar_expansion.match(cmd, i);
+            if ( !match.hasMatch() )
                 break;
 
-            QString cvar_name = regex_cvar_expansion.cap(1);
+            i = match.capturedStart();
+
+            QString cvar_name = match.captured(1);
             if ( cvar_name.isEmpty() )
-                cvar_name = regex_cvar_expansion.cap(2);
+                cvar_name = match.captured(2);
             /// \todo skip alias arguments (ie "cvars" with a fully numeric name
             /// \todo handle ${foo q} ${foo asis} ${foo ?} (?)
 
@@ -491,18 +494,19 @@ void ServerWidget::run_command(QString cmd, CvarExpansion exp)
             {
                 if ( exp == CvarExpansion::ExpandAlways )
                 {
-                    cmd.remove(i, regex_cvar_expansion.matchedLength());
+                    cmd.remove(i, match.capturedLength());
                     continue;
                 }
                 else if ( exp == CvarExpansion::ExpandOrWarn )
                 {
                     QMessageBox::warning(this, tr("Could not expand a variable"),
-                        tr("The cvar %1 was not found and cannot be expanded"));
+                        tr("The cvar <b>%1</b> was not found and cannot be expanded")
+                            .arg(cvar_name));
                     return;
                 }
 
             }
-            cmd.replace(i, regex_cvar_expansion.matchedLength(), cvar.value);
+            cmd.replace(i, match.capturedLength(), cvar.value);
             i += cvar.value.size();
         }
     }
