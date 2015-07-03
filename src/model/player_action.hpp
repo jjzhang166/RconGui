@@ -58,9 +58,9 @@ public:
     {
         auto cmd = command_;
         return cmd
-            .replace("$entity", player.no)
-            .replace("$ip",     player.ip)
-            .replace("$name",   player.name)
+            .replace("$player.entity", player.no)
+            .replace("$player.ip",     player.ip)
+            .replace("$player.name",   player.name)
         ;
     }
 

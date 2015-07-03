@@ -107,9 +107,9 @@ public:
     int    console_max_history=128;             ///< Number of items in the console history
 
     QList<PlayerAction> player_actions = {      ///< Buttons shown in the player table
-        {"Kick", "kick # $entity",   "im-kick-user"},
-        {"Ban",  "kickban #$entity", ":/icons/ban-hammer.svg"},
-        {"Mute", "mute #$entity",    ":/icons/no-chat.svg"},
+        {"Kick", "kick # $player.entity",   "im-kick-user"},
+        {"Ban",  "kickban #$player.entity", ":/icons/ban-hammer.svg"},
+        {"Mute", "mute #$player.entity",    ":/icons/no-chat.svg"},
     };
 
     std::vector<QPair<QString,QString>> quick_commands = {
