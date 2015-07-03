@@ -52,7 +52,7 @@ static const std::vector<std::string> qfont_table = {
 
 namespace xonotic {
 
-QRegExp AbstractColorParser::regex_xoncolor{"^\\^([0-9]|x[0-9a-fA-F]{3})"};
+regex::Regex AbstractColorParser::regex_xoncolor = regex::optimized("\\^([0-9]|x[0-9a-fA-F]{3})");
 
 QString AbstractColorParser::qfont_to_string(uint8_t index)
 {
@@ -66,8 +66,9 @@ void AbstractColorParser::on_qfont(uint8_t index)
 
 QColor AbstractColorParser::to_color(const QString& color)
 {
-    if ( !color.isEmpty() && regex_xoncolor.exactMatch(color) )
-        return match_to_color(regex_xoncolor.cap(1));
+    regex::Match match;
+    if ( !color.isEmpty() && regex::match(color, regex_xoncolor, match) )
+        return match_to_color(match.capturedRef(1));
     return default_color;
 
 }
@@ -81,21 +82,21 @@ QColor AbstractColorParser::bounded_color(const QColor& color)
     );
 }
 
-QColor AbstractColorParser::match_to_color(const QString& s)
+QColor AbstractColorParser::match_to_color(const QStringRef& s)
 {
     if ( s.size() == 4 )
     {
         return QColor(
-            hex_to_int(s[1].unicode())*255/15,
-            hex_to_int(s[2].unicode())*255/15,
-            hex_to_int(s[3].unicode())*255/15
+            hex_to_int(s.at(1).unicode())*255/15,
+            hex_to_int(s.at(2).unicode())*255/15,
+            hex_to_int(s.at(3).unicode())*255/15
         );
     }
 
     if ( s.size() != 1 )
         return default_color;
 
-    switch ( s[0].unicode() )
+    switch ( s.at(0).unicode() )
     {
         case '0': return Qt::black;
         case '1': return Qt::red;
@@ -112,6 +113,31 @@ QColor AbstractColorParser::match_to_color(const QString& s)
     return default_color;
 }
 
+void AbstractColorParser::handle_caret()
+{
+    if ( work_string[end_index+1] == '^' )
+    {
+        push_string();
+        end_index++;
+        start_index = end_index;
+        return;
+    }
+
+    regex::Match match = regex_xoncolor.match(work_string, end_index,
+        regex::Regex::NormalMatch, regex::Regex::AnchoredMatchOption);
+    if ( match.hasMatch() )
+    {
+        push_color(match_to_color(match.capturedRef(1)));
+        end_index += match.capturedLength();
+        start_index = end_index;
+    }
+    else
+    {
+        end_index++;
+    }
+
+}
+
 void AbstractColorParser::parse(const QString& string)
 {
     work_string = string;
@@ -119,28 +145,18 @@ void AbstractColorParser::parse(const QString& string)
 
     push_start();
 
-    for ( end_index = 0; end_index < work_string.size(); end_index++ )
+
+    for ( end_index = 0; end_index < work_string.size(); )
     {
         if ( work_string[end_index] == '^' && end_index < work_string.size()-1 )
         {
-            if ( work_string[end_index+1] == '^' )
-            {
-                push_string();
-                end_index++;
-                start_index = end_index;
-            }
-            else if ( regex_xoncolor.indexIn(work_string, end_index, QRegExp::CaretAtOffset) != -1 )
-            {
-                push_color(match_to_color(regex_xoncolor.cap(1)));
-                end_index += regex_xoncolor.matchedLength();
-                start_index = end_index;
-            }
-            else
-            {
-                end_index++;
-            }
+            handle_caret();
         }
-        push_char(work_string[end_index]);
+        else
+        {
+            push_char(work_string[end_index]);
+            end_index++;
+        }
     }
 
     push_end();
@@ -168,7 +184,7 @@ void AbstractColorParser::push_string()
 }
 
 
-void AbstractColorParser::push_char(const QChar& c)
+void AbstractColorParser::push_char(const QCharRef& c)
 {
     if ( c == '\n' )
     {

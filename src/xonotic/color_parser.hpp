@@ -25,9 +25,9 @@
 #define XONOTIC_COLOR_PARSER_HPP
 
 #include <QString>
-#include <QRegExp>
 #include <QColor>
 #include <QTextCursor>
+#include "regex.hpp"
 
 namespace xonotic {
 
@@ -105,7 +105,7 @@ private:
     /**
      * \brief Color from regex match
      */
-    QColor match_to_color(const QString& s);
+    QColor match_to_color(const QStringRef& s);
 
     /**
      * \brief Hex character to integer
@@ -139,12 +139,17 @@ private:
     /**
      * \brief Pushes characters to the output
      */
-    void push_char(const QChar& c);
+    void push_char(const QCharRef& c);
 
     /**
      * \brief Pushes a color to \c output (calls push_string())
      */
     void push_color(const QColor& color);
+
+    /**
+     * \brief Handles a ^ code
+     */
+    void handle_caret();
 
 private:
     QString     work_string;    ///< String currently being parsed
@@ -154,7 +159,7 @@ private:
     int         min_brightness=0;       ///< Minimum color brightness
     int         max_brightness=255;     ///< Maximum color brightness
 
-    static QRegExp regex_xoncolor;      ///< Regex matching color codes
+    static regex::Regex regex_xoncolor;      ///< Regex matching color codes
 };
 
 /**
