@@ -30,19 +30,20 @@
 #include "server_setup_dialog.hpp"
 #include "server_widget.hpp"
 #include "settings_dialog.hpp"
+#include "ui/server_setup_widget.hpp"
 
 RconWindow::RconWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setupUi(this);
 
-    auto new_tab = new QToolButton();
-    new_tab->setText(tr("New Tab"));
-    new_tab->setToolTip(tr("Create a new tab"));
-    new_tab->setIcon(QIcon::fromTheme("tab-new"));
-    new_tab->setShortcut(QKeySequence::New);
-    connect(new_tab, &QToolButton::clicked, this, &RconWindow::new_tab);
-    tabWidget->setCornerWidget(new_tab, Qt::TopLeftCorner);
+    auto button_new_tab = new QToolButton();
+    button_new_tab->setText(tr("New Tab"));
+    button_new_tab->setToolTip(tr("Create a new tab"));
+    button_new_tab->setIcon(QIcon::fromTheme("tab-new"));
+    button_new_tab->setShortcut(QKeySequence::New);
+    connect(button_new_tab, &QToolButton::clicked, this, &RconWindow::new_tab);
+    tabWidget->setCornerWidget(button_new_tab, Qt::TopLeftCorner);
 
     auto preferences = new QToolButton();
     preferences->setText(tr("Preferences"));
@@ -58,18 +59,31 @@ RconWindow::RconWindow(QWidget* parent)
     connect(tabWidget,&QTabWidget::tabCloseRequested, [this](int index){
         delete tabWidget->widget(index);
         if ( tabWidget->count() == 0 )
-            stacked_widget->setCurrentIndex(0);
+            new_tab();
     });
     connect(tabWidget, &QTabWidget::currentChanged, [this](int index){
         setWindowTitle(tabWidget->tabText(index));
     });
+    new_tab();
 }
 
 void RconWindow::new_tab()
 {
-    ServerSetupDialog dlg(this);
-    if ( dlg.exec() )
-        create_tab(dlg.connection_details());
+    auto tab = new QWidget();
+    auto layout = new QVBoxLayout(tab);
+    auto createwidget = new ServerSetupWidget(this);
+    layout->addWidget(createwidget);
+    auto buttonbox = new QDialogButtonBox(this);
+    auto button_connect = new QPushButton(QIcon::fromTheme("network-connect"), tr("Connect"));
+    buttonbox->addButton(button_connect,QDialogButtonBox::AcceptRole);
+    layout->addWidget(buttonbox);
+    connect(button_connect, &QPushButton::clicked, [this, tab, createwidget]{
+        create_tab(createwidget->connection_details());
+        tab->deleteLater();
+    });
+
+    int tabindex = tabWidget->addTab(tab, tr("Connect to Server"));
+    tabWidget->setCurrentIndex(tabindex);
 }
 
 void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
@@ -82,10 +96,4 @@ void RconWindow::create_tab(const xonotic::ConnectionDetails& xonotic)
     });
     connect(this, &RconWindow::settings_changed, tab, &ServerWidget::reload_settings);
     tabWidget->setCurrentIndex(tabindex);
-    stacked_widget->setCurrentIndex(1);
-}
-
-void RconWindow::on_button_connect_clicked()
-{
-    create_tab(widget_server_setup->connection_details());
 }

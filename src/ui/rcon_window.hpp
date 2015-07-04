@@ -26,6 +26,7 @@
 
 #include <QMainWindow>
 #include "ui_rcon_window.h"
+#include "xonotic/connection_details.hpp"
 
 /**
  * \brief Main window
@@ -48,9 +49,6 @@ public slots:
      * \brief Shows the server creation dialog and creates a new tab
      */
     void new_tab();
-
-private slots:
-    void on_button_connect_clicked();
 
 private:
     void create_tab(const xonotic::ConnectionDetails& xonotic);
