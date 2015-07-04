@@ -123,6 +123,12 @@ public:
     };
     CvarExpansion quick_commands_expansion = CvarExpansion::NotExpanded;
 
+
+    /// Commands used to request status
+    QStringList                 cmd_status = {"status 1", "g_maplist"};
+    /// Commands used to request cvars
+    QStringList                 cmd_cvarlist = {"cvarlist"};
+
 private:
     Settings();
 

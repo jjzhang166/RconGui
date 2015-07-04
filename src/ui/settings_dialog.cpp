@@ -32,7 +32,9 @@ SettingsDialog::SettingsDialog(QWidget* parent):
     setupUi(this);
 
     init_tab_network();
-    init_tab_commands();
+    init_tab_quick_commands();
+    init_tab_player_actions();
+    init_tab_internal_commands();
     init_tab_console();
 }
 
@@ -46,7 +48,7 @@ void SettingsDialog::init_tab_network()
     });
 }
 
-void SettingsDialog::init_tab_commands()
+void SettingsDialog::init_tab_quick_commands()
 {
     model_quick_commands.load();
     proxy_quick_commands.setSourceModel(&model_quick_commands);
@@ -63,7 +65,10 @@ void SettingsDialog::init_tab_commands()
     {
         input_cmd_cmd_cvar->setChecked(false);
     }
+}
 
+void SettingsDialog::init_tab_player_actions()
+{
     model_player_actions.set_actions(settings().player_actions);
     proxy_player_actions.setSourceModel(&model_player_actions);
     proxy_player_actions.set_placeholder(tr("New Action"));
@@ -86,6 +91,14 @@ void SettingsDialog::init_tab_commands()
     }
 }
 
+void SettingsDialog::init_tab_internal_commands()
+{
+    input_cmd_status->setPlainText(settings().cmd_status.join('\n'));
+    input_cmd_cvarlist->setPlainText(settings().cmd_cvarlist.join('\n'));
+    input_con_attach->setText(settings().console_attach_command);
+    input_con_detach->setText(settings().console_detach_command);
+}
+
 void SettingsDialog::init_tab_console()
 {
     input_con_fg->setColor(settings().console_foreground);
@@ -100,9 +113,6 @@ void SettingsDialog::init_tab_console()
     input_con_complete->setChecked(settings().get("console/autocomplete", true));
     input_con_complete_minchars->setValue(settings().get("console/autocomplete/min_chars",1));
     input_con_complete_max->setValue(settings().get("console/autocomplete/max_suggestions",128));
-
-    input_con_attach->setText(settings().console_attach_command);
-    input_con_detach->setText(settings().console_detach_command);
 
     connect(button_con_font,&QPushButton::clicked,[this]{
         QFontDialog dialog(input_con_font->currentFont(), this);
@@ -140,6 +150,8 @@ void SettingsDialog::accept()
     settings().put("console/autocomplete/min_chars", input_con_complete_minchars->value());
     settings().put("console/autocomplete/max_suggestions", input_con_complete_max->value());
 
+    settings().cmd_status = input_cmd_status->toPlainText().split('\n',QString::SkipEmptyParts);
+    settings().cmd_cvarlist = input_cmd_cvarlist->toPlainText().split('\n',QString::SkipEmptyParts);
     settings().console_attach_command = input_con_attach->text();
     settings().console_detach_command = input_con_detach->text();
 

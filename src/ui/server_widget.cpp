@@ -114,7 +114,6 @@ void ServerWidget::init_cvar_table()
     for ( int i = 0; i < model_cvar.columnCount(); i++ )
         input_cvar_filter_section->addItem(
             model_cvar.headerData(i,Qt::Horizontal).toString());
-    cmd_cvars = settings().get("behaviour/cmd_cvars", cmd_cvars);
 }
 
 void ServerWidget::init_player_table()
@@ -276,8 +275,6 @@ bool ServerWidget::xonotic_reconnect()
 
 void ServerWidget::reload_settings()
 {
-    cmd_status = settings().get("behaviour/cmd_status", cmd_status);
-
     menu_quick_commands->clear();
     for ( const auto& command : settings().quick_commands )
     {
@@ -484,14 +481,14 @@ void ServerWidget::set_network_status(const QString& msg)
 
 void ServerWidget::request_status()
 {
-    for ( const auto& cmd : cmd_status )
+    for ( const auto& cmd : settings().cmd_status )
         rcon_command(cmd);
     label_refresh_status->setText(QTime::currentTime().toString("hh:mm:ss"));
 }
 
 void ServerWidget::request_cvars()
 {
-    for ( const auto& cmd : cmd_cvars )
+    for ( const auto& cmd : settings().cmd_cvarlist )
         rcon_command(cmd);
     label_refresh_cvar->setText(QTime::currentTime().toString("hh:mm:ss"));
 }

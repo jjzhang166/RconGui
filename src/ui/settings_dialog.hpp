@@ -41,7 +41,9 @@ public slots:
 
 private:
     void init_tab_network();
-    void init_tab_commands();
+    void init_tab_quick_commands();
+    void init_tab_player_actions();
+    void init_tab_internal_commands();
     void init_tab_console();
 
     QuickCommandsModel   model_quick_commands;

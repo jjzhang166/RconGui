@@ -209,10 +209,6 @@ private:
     CvarDelegate                delegate_cvar;
     /// Connected player model
     PlayerModel                 model_player;
-    /// Commands used to request status
-    QStringList                 cmd_status = {"status 1", "g_maplist"};
-    /// Commands used to request cvars
-    QStringList                 cmd_cvars  = {"cvarlist"};
     /// Whether log_dest_udp has been set and needs cleanup
     bool                        log_dest_set = false;
     /// Menu shown to trigger quick commands

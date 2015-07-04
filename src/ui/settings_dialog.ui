@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>864</width>
     <height>600</height>
    </rect>
   </property>
@@ -77,19 +77,6 @@
          </iconset>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string>Interface</string>
-        </property>
-        <property name="icon">
-         <iconset theme="preferences-desktop-theme">
-          <normaloff/>
-         </iconset>
-        </property>
-        <property name="flags">
-         <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable</set>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
@@ -141,8 +128,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>632</width>
-              <height>542</height>
+              <width>699</width>
+              <height>535</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -265,6 +252,77 @@
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="tab">
+                <attribute name="title">
+                 <string>Connection</string>
+                </attribute>
+                <layout class="QFormLayout" name="formLayout_4">
+                 <item row="0" column="1">
+                  <widget class="QPlainTextEdit" name="input_cmd_status">
+                   <property name="toolTip">
+                    <string>Commands to run when refreshing the status
+A command per line</string>
+                   </property>
+                   <property name="whatsThis">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When clicking &lt;span style=&quot; font-weight:600;&quot;&gt;Refresh&lt;/span&gt; in the status tab these commands are sent to the server.&lt;/p&gt;&lt;p&gt;The status table parses the output &lt;span style=&quot; font-weight:600;&quot;&gt;status&lt;/span&gt; to get server information.&lt;br/&gt;If the commands show the value of &lt;span style=&quot; font-weight:600;&quot;&gt;g_maplist&lt;/span&gt;, it will show a dropdown for map selection.&lt;br/&gt;The player list gathers its information from &lt;span style=&quot; font-weight:600;&quot;&gt;status 1&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;The cvar list parses the output of &lt;span style=&quot; font-weight:600;&quot;&gt;apropos&lt;/span&gt; and &lt;span style=&quot; font-weight:600;&quot;&gt;cvarlist&lt;/span&gt; to find the cvars to update. &lt;br/&gt;If you add here the commands for the cvar list, they will be available from the start.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_12">
+                   <property name="text">
+                    <string>Attach console to server log:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="input_con_attach">
+                   <property name="toolTip">
+                    <string>&lt;p&gt;Command for attaching to the server log.&lt;br/&gt;&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.&lt;/p&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>Detach console from server log:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="input_con_detach">
+                   <property name="toolTip">
+                    <string>&lt;p&gt;Command for detaching from the server log.&lt;br/&gt;&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.&lt;/p&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_14">
+                   <property name="text">
+                    <string>Request status:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_15">
+                   <property name="text">
+                    <string>Update cvar list:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPlainTextEdit" name="input_cmd_cvarlist">
+                   <property name="toolTip">
+                    <string>Commands to run when refreshing the cvar list
+A command per line</string>
+                   </property>
+                   <property name="whatsThis">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When clicking &lt;span style=&quot; font-weight:600;&quot;&gt;Refresh&lt;/span&gt; in the cvar list these commands are sent to the server.&lt;br/&gt;The cvar list parses the output of &lt;span style=&quot; font-weight:600;&quot;&gt;apropos&lt;/span&gt; and &lt;span style=&quot; font-weight:600;&quot;&gt;cvarlist&lt;/span&gt; to find the cvars to update.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -575,45 +633,6 @@ A value of 0 means no limits.</string>
               </property>
               <property name="maximum">
                <number>256</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_3">
-           <property name="title">
-            <string>Commands</string>
-           </property>
-           <layout class="QFormLayout" name="formLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>Attach to server log:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="input_con_attach">
-              <property name="toolTip">
-               <string>Command for attaching to the server log.
-&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="input_con_detach">
-              <property name="toolTip">
-               <string>Command for detaching from the server log.
-&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_13">
-              <property name="text">
-               <string>Detach from server log:</string>
               </property>
              </widget>
             </item>

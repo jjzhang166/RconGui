@@ -74,6 +74,8 @@ void Settings::load()
     settings.endGroup();
 
     settings.beginGroup("behaviour");
+    cmd_status = settings.value("cmd_status", cmd_status).toStringList();
+    cmd_cvarlist = settings.value("cmd_cvarlist", cmd_cvarlist).toStringList();
     if ( settings.childGroups().contains("quick_commands") )
     {
         int sz = settings.beginReadArray("quick_commands");
@@ -145,6 +147,8 @@ void Settings::save()
     settings.endGroup();
 
     settings.beginGroup("behaviour");
+    settings.setValue("cmd_status", cmd_status);
+    settings.setValue("cmd_cvarlist", cmd_cvarlist);
     settings.beginWriteArray("quick_commands");
     settings.remove("");
     settings.setValue("cvar",cvar_expansion_to_string(quick_commands_expansion));
