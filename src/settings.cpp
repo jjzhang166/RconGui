@@ -69,6 +69,8 @@ void Settings::load()
                 cvar_expansion_to_string(console_expansion)).toString());
     if ( console_expansion == CvarExpansion::NotExpanded )
         console_expansion = CvarExpansion::ExpandOrWarn;
+    console_attach_command = settings.value("attach_log",console_attach_command).toString();
+    console_detach_command = settings.value("detach_log",console_detach_command).toString();
     settings.endGroup();
 
     settings.beginGroup("behaviour");
@@ -138,6 +140,8 @@ void Settings::save()
     settings.setValue("font",console_font.toString());
     settings.setValue("history",console_max_history);
     settings.setValue("cvar",cvar_expansion_to_string(console_expansion));
+    settings.setValue("attach_log",console_attach_command);
+    settings.setValue("detach_log",console_detach_command);
     settings.endGroup();
 
     settings.beginGroup("behaviour");

@@ -101,6 +101,9 @@ void SettingsDialog::init_tab_console()
     input_con_complete_minchars->setValue(settings().get("console/autocomplete/min_chars",1));
     input_con_complete_max->setValue(settings().get("console/autocomplete/max_suggestions",128));
 
+    input_con_attach->setText(settings().console_attach_command);
+    input_con_detach->setText(settings().console_detach_command);
+
     connect(button_con_font,&QPushButton::clicked,[this]{
         QFontDialog dialog(input_con_font->currentFont(), this);
         if ( dialog.exec() )
@@ -136,6 +139,9 @@ void SettingsDialog::accept()
     settings().put("console/autocomplete", input_con_complete->isChecked());
     settings().put("console/autocomplete/min_chars", input_con_complete_minchars->value());
     settings().put("console/autocomplete/max_suggestions", input_con_complete_max->value());
+
+    settings().console_attach_command = input_con_attach->text();
+    settings().console_detach_command = input_con_detach->text();
 
     settings().save();
 

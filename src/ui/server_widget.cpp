@@ -377,7 +377,9 @@ void ServerWidget::attach_log()
 {
     if ( connection.xonotic_connected() )
     {
-        connection.rcon_command("log_dest_udp "+connection.local_endpoint().name());
+        QString cmd = settings().console_attach_command;
+        QString ip = QString::fromStdString(connection.local_endpoint().name());
+        rcon_command(cmd.replace("$ip",ip));
         log_dest_set = true;
     }
 }
@@ -386,7 +388,9 @@ void ServerWidget::detach_log()
 {
     if ( log_dest_set )
     {
-        connection.rcon_command("log_dest_udp \"\"");
+        QString cmd = settings().console_detach_command;
+        QString ip = QString::fromStdString(connection.local_endpoint().name());
+        rcon_command(cmd.replace("$ip",ip));
         log_dest_set = false;
     }
 }

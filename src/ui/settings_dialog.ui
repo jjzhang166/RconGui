@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>881</width>
-    <height>514</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -141,8 +141,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>713</width>
-              <height>456</height>
+              <width>632</width>
+              <height>542</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -287,7 +287,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>&amp;Default Text Color:</string>
+               <string>Default Text Color:</string>
               </property>
              </widget>
             </item>
@@ -341,7 +341,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>&amp;Text brightness boundaries:</string>
+               <string>Text brightness boundaries:</string>
               </property>
              </widget>
             </item>
@@ -453,7 +453,7 @@ Useful to keep the text readable on a bright background.</string>
             <item row="0" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>Number of commands to store in histor&amp;y:</string>
+               <string>Number of commands to store in history:</string>
               </property>
              </widget>
             </item>
@@ -531,7 +531,7 @@ This number represents the maximum number of entries that should be stored in th
             <item row="0" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Minimal word &amp;length to complete:</string>
+               <string>Minimal word length to complete:</string>
               </property>
              </widget>
             </item>
@@ -557,7 +557,7 @@ This number represents the maximum number of entries that should be stored in th
             <item row="1" column="0">
              <widget class="QLabel" name="label_8">
               <property name="text">
-               <string>Ma&amp;ximum number of completions to show:</string>
+               <string>Maximum number of completions to show:</string>
               </property>
              </widget>
             </item>
@@ -575,6 +575,45 @@ A value of 0 means no limits.</string>
               </property>
               <property name="maximum">
                <number>256</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="title">
+            <string>Commands</string>
+           </property>
+           <layout class="QFormLayout" name="formLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Attach to server log:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="input_con_attach">
+              <property name="toolTip">
+               <string>Command for attaching to the server log.
+&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="input_con_detach">
+              <property name="toolTip">
+               <string>Command for detaching from the server log.
+&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>Detach from server log:</string>
               </property>
              </widget>
             </item>

@@ -106,6 +106,8 @@ public:
     QFont  console_font{"monospace", 10};       ///< Console text font
     int    console_max_history=128;             ///< Number of items in the console history
     CvarExpansion console_expansion = CvarExpansion::ExpandOrWarn;
+    QString console_attach_command = "qc_cmd_sv addtolist log_dest_udp $ip";
+    QString console_detach_command = "qc_cmd_sv removefromlist log_dest_udp $ip";
 
     QList<PlayerAction> player_actions = {      ///< Buttons shown in the player table
         {"Kick", "kick # $player.entity",   "im-kick-user"},
