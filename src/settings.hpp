@@ -105,6 +105,7 @@ public:
     int    console_brightness_min{80};          ///< Minimum brightness for console colors
     QFont  console_font{"monospace", 10};       ///< Console text font
     int    console_max_history=128;             ///< Number of items in the console history
+    CvarExpansion console_expansion = CvarExpansion::ExpandOrWarn;
 
     QList<PlayerAction> player_actions = {      ///< Buttons shown in the player table
         {"Kick", "kick # $player.entity",   "im-kick-user"},

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>881</width>
-    <height>506</height>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -142,7 +142,7 @@
               <x>0</x>
               <y>0</y>
               <width>713</width>
-              <height>448</height>
+              <height>456</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -178,7 +178,7 @@
                    <item>
                     <widget class="QLabel" name="label_9">
                      <property name="text">
-                      <string>If the cvar is not found</string>
+                      <string>If &amp;the cvar is not found</string>
                      </property>
                     </widget>
                    </item>
@@ -279,152 +279,248 @@
        <widget class="QWidget" name="tab_console">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Default Text Color:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Background Color:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Text brightness boundaries:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_6">
-             <item>
-              <widget class="QSpinBox" name="input_con_bright_min">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Minimum</string>
-               </property>
-               <property name="maximum">
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_7">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Style</string>
+           </property>
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>&amp;Default Text Color:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="Color_Selector" name="input_con_fg">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Color for the console text</string>
+              </property>
+              <property name="color">
+               <color>
+                <red>192</red>
+                <green>192</green>
+                <blue>192</blue>
+               </color>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Background Color:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="Color_Selector" name="input_con_bg">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Background color for the console</string>
+              </property>
+              <property name="color">
+               <color>
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
+               </color>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>&amp;Text brightness boundaries:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QSpinBox" name="input_con_bright_min">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Minimum mrightness</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Minimum brightness for colored text.
+If some text would result with a lower brightness, it will be displayed with a slightly brighter color.
+Useful to keep the text readable on a dark background.</string>
+                </property>
+                <property name="maximum">
+                 <number>255</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="input_con_bright_max">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Maximum brightness</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Maximum brightness for colored text.
+If some text would result with a higher brightness, it will be displayed with a slightly darker color.
+Useful to keep the text readable on a bright background.</string>
+                </property>
+                <property name="maximum">
+                 <number>255</number>
+                </property>
+                <property name="value">
+                 <number>255</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Text Font:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QFontComboBox" name="input_con_font">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Font family name for the console text</string>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="button_con_font">
+                <property name="toolTip">
+                 <string>Shows an advanced color dialog</string>
+                </property>
+                <property name="text">
+                 <string>Font...</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="preferences-desktop-font"/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Input</string>
+           </property>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Number of commands to store in histor&amp;y:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="input_con_histsize">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Maximum number of commands stored in the console input history</string>
+              </property>
+              <property name="whatsThis">
+               <string>When commands are entered in the console tab, they will be remembered on a per-server basis.
+The command history can be accessed for quick execution of common commands with the up/down arrow keys when the console input area is focused.
+This number represents the maximum number of entries that should be stored in the console history.</string>
+              </property>
+              <property name="maximum">
+               <number>1024</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>When a value is not found for cvar expansion:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="input_con_nocvar">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>What to do when cvar expansion is enabled but the cvar value isn't know</string>
+              </property>
+              <item>
                <property name="text">
-                <string>-</string>
+                <string>Warn Me</string>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="input_con_bright_max">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+              </item>
+              <item>
+               <property name="text">
+                <string>Don't Expand</string>
                </property>
-               <property name="toolTip">
-                <string>Maximum</string>
+              </item>
+              <item>
+               <property name="text">
+                <string>Expand Empty</string>
                </property>
-               <property name="maximum">
-                <number>255</number>
-               </property>
-               <property name="value">
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Text Font:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QFontComboBox" name="input_con_font">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Number of commands to store in history:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QSpinBox" name="input_con_histsize">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximum">
-              <number>1024</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="Color_Selector" name="input_con_bg">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="color">
-              <color>
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
-              </color>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="Color_Selector" name="input_con_fg">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="color">
-              <color>
-               <red>192</red>
-               <green>192</green>
-               <blue>192</blue>
-              </color>
-             </property>
-            </widget>
-           </item>
-          </layout>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
           <widget class="QGroupBox" name="input_con_complete">
+           <property name="toolTip">
+            <string>Enables automatic suggestion of cvar names in the console input</string>
+           </property>
            <property name="title">
             <string>A&amp;utocomplete Cvars</string>
            </property>
@@ -435,7 +531,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Minimal word length to complete:</string>
+               <string>Minimal word &amp;length to complete:</string>
               </property>
              </widget>
             </item>
@@ -446,6 +542,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Show the completion suggestions only when the current word is at least this many characters long</string>
               </property>
               <property name="minimum">
                <number>1</number>
@@ -458,7 +557,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_8">
               <property name="text">
-               <string>Maximum number of completions to show:</string>
+               <string>Ma&amp;ximum number of completions to show:</string>
               </property>
              </widget>
             </item>
@@ -469,6 +568,10 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>If there are more than this many suggestions, it won't show the autocompletion options.
+A value of 0 means no limits.</string>
               </property>
               <property name="maximum">
                <number>256</number>
@@ -486,7 +589,7 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>0</height>
             </size>
            </property>
           </spacer>

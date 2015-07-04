@@ -442,7 +442,8 @@ void ServerWidget::on_input_cvar_filter_section_currentIndexChanged(int index)
 void ServerWidget::on_input_console_lineExecuted(const QString& cmd)
 {
     run_command(cmd, input_console_cvars->isChecked() ?
-        CvarExpansion::ExpandOrWarn : CvarExpansion::NotExpanded);
+        settings().console_expansion :
+        CvarExpansion::NotExpanded);
 }
 
 void ServerWidget::on_menu_quick_commands_triggered(QAction * action)

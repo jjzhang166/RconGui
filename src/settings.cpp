@@ -65,6 +65,10 @@ void Settings::load()
     console_brightness_min = qBound(0,settings.value("brightness_min",console_brightness_min).toInt(),255);
     console_font.fromString(settings.value("font",console_font.toString()).toString());
     console_max_history = settings.value("history",console_max_history).toInt();
+    console_expansion = cvar_expansion_from_string(settings.value("cvar",
+                cvar_expansion_to_string(console_expansion)).toString());
+    if ( console_expansion == CvarExpansion::NotExpanded )
+        console_expansion = CvarExpansion::ExpandOrWarn;
     settings.endGroup();
 
     settings.beginGroup("behaviour");
@@ -133,6 +137,7 @@ void Settings::save()
     settings.setValue("brightness_min",console_brightness_min);
     settings.setValue("font",console_font.toString());
     settings.setValue("history",console_max_history);
+    settings.setValue("cvar",cvar_expansion_to_string(console_expansion));
     settings.endGroup();
 
     settings.beginGroup("behaviour");

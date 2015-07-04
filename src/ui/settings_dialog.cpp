@@ -24,7 +24,7 @@
 
 #include "settings_dialog.hpp"
 #include "settings.hpp"
-
+#include <QFontDialog>
 
 SettingsDialog::SettingsDialog(QWidget* parent):
     QDialog(parent)
@@ -94,11 +94,18 @@ void SettingsDialog::init_tab_console()
     input_con_bright_max->setValue(settings().console_brightness_max);
     input_con_font->setCurrentFont(settings().console_font);
     input_con_histsize->setValue(settings().console_max_history);
+    input_con_nocvar->setCurrentIndex(int(settings().console_expansion)-1);
 
     /// \todo Having actual members in settings will ensure defaults are the same everywhere
     input_con_complete->setChecked(settings().get("console/autocomplete", true));
     input_con_complete_minchars->setValue(settings().get("console/autocomplete/min_chars",1));
     input_con_complete_max->setValue(settings().get("console/autocomplete/max_suggestions",128));
+
+    connect(button_con_font,&QPushButton::clicked,[this]{
+        QFontDialog dialog(input_con_font->currentFont(), this);
+        if ( dialog.exec() )
+            input_con_font->setCurrentFont(dialog.currentFont());
+    });
 }
 
 void SettingsDialog::accept()
@@ -121,9 +128,9 @@ void SettingsDialog::accept()
     settings().console_background = input_con_bg->color();
     settings().console_brightness_min = input_con_bright_min->value();
     settings().console_brightness_max = input_con_bright_max->value();
-    /// \todo size et all? (QFontDialog)
     settings().console_font = input_con_font->currentFont();
     settings().console_max_history = input_con_histsize->value();
+    settings().console_expansion = CvarExpansion(input_con_nocvar->currentIndex()+1);
 
     /// \todo Having actual members in settings will ensure defaults are the same everywhere
     settings().put("console/autocomplete", input_con_complete->isChecked());
