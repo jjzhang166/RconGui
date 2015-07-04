@@ -128,8 +128,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>699</width>
-              <height>535</height>
+              <width>696</width>
+              <height>542</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -205,6 +205,16 @@
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
                   <widget class="QTableView" name="table_cmd_usr">
+                   <property name="whatsThis">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;List of user actions.&lt;/p&gt;&lt;p&gt;These actions are shown as buttons in the player list and can perform commands for each player.&lt;/p&gt;
+&lt;p&gt;The following expansions are available in the command:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt style=&quot;font-weight:bold;&quot;&gt;$player.entity&lt;/dt&gt;&lt;dd&gt;Entity number for the player (excluding the leading #)&lt;/dd&gt;
+&lt;dt style=&quot;font-weight:bold;&quot;&gt;$player.ip&lt;/td&gt;&lt;dd&gt;Player IP address and port number&lt;/dd&gt;
+&lt;dt style=&quot;font-weight:bold;&quot;&gt;$player.name&lt;/dt&gt;&lt;dd&gt;Player name&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
                    <attribute name="verticalHeaderVisible">
                     <bool>false</bool>
                    </attribute>
