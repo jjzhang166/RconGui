@@ -50,6 +50,7 @@ void SettingsDialog::init_tab_commands()
 {
     model_quick_commands.load();
     proxy_quick_commands.setSourceModel(&model_quick_commands);
+    proxy_quick_commands.set_placeholder(tr("New Command"));
     table_cmd_cmd->setModel(&proxy_quick_commands);
     if ( bool(settings().quick_commands_expansion) )
     {
@@ -65,6 +66,7 @@ void SettingsDialog::init_tab_commands()
 
     model_player_actions.set_actions(settings().player_actions);
     proxy_player_actions.setSourceModel(&model_player_actions);
+    proxy_player_actions.set_placeholder(tr("New Action"));
     table_cmd_usr->setModel(&proxy_player_actions);
     table_cmd_usr->setItemDelegate(&delegate_player_actions);
     auto header_view = table_cmd_usr->horizontalHeader();

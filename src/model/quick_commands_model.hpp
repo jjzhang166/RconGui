@@ -132,7 +132,7 @@ public:
     bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) override
     {
         beginInsertRows(parent, row, row+count-1);
-        cmdlist.insert(cmdlist.begin()+row, count, {});
+        cmdlist.insert(cmdlist.begin()+row, count, {tr("New Command"), ""});
         endInsertRows();
         return true;
     }

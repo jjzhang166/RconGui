@@ -25,6 +25,8 @@
 #define EXTRA_ROW_PROXY_MODEL_HPP
 
 #include <QAbstractTableModel>
+#include <QApplication>
+#include <QPalette>
 
 /**
  * \brief Adds an extra editable row at the end of the model to easily insert new rows
@@ -34,7 +36,6 @@ class ExtraRowProxyModel : public QAbstractTableModel
 {
 public:
     using QAbstractTableModel::QAbstractTableModel;
-
 
     void setSourceModel(QAbstractTableModel* source)
     {
@@ -90,8 +91,20 @@ public:
     {
         if ( is_extra_index(index) )
         {
-            if (role == Qt::DisplayRole || role == Qt::EditRole)
+            if ( role == Qt::EditRole )
                 return QString();
+            if ( role == Qt::DisplayRole )
+            {
+                if ( index.column() < int(placeholders.size()) )
+                    return QString(placeholders[index.column()]);
+                return QString();
+            }
+            if ( role == Qt::TextColorRole )
+            {
+                QColor col = QApplication::palette().text().color();
+                col.setAlpha(128);
+                return col;
+            }
             return {};
         }
         return source->data(index, role);
@@ -124,6 +137,26 @@ public:
         return source->setData(mapToSource(index), value, role);
     }
 
+    /**
+     * \brief Sets the placeholder text for the new element row
+     * \param text      Placeholder text
+     * \param column    Column to apply the placeholder to,
+     *                  if less than 0, it's applied to all column
+     */
+    void set_placeholder(const QString& text, int column=-1)
+    {
+        if ( column >= 0 && column < columnCount() )
+        {
+            if ( int(placeholders.size()) <= column )
+                placeholders.resize(column+1);
+            placeholders[column] = text;
+        }
+        else
+        {
+            placeholders.assign(columnCount(), text);
+        }
+    }
+
 private:
     bool is_extra_index(const QModelIndex& index) const
     {
@@ -137,6 +170,7 @@ private:
         }
 
     QAbstractTableModel* source = nullptr;
+    std::vector<QString> placeholders;
 };
 
 #endif // EXTRA_ROW_PROXY_MODEL_HPP

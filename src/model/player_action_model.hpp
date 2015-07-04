@@ -134,7 +134,7 @@ public:
     {
         beginInsertRows(parent, row, row+count-1);
         for ( int i = 0; i < count; i++ )
-            player_actions.insert(row, PlayerAction("",""));
+            player_actions.insert(row, PlayerAction(tr("New Action"),""));
         endInsertRows();
         return true;
     }
