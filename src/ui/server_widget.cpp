@@ -76,7 +76,8 @@ void ServerWidget::init_status_table()
         return model_cvar.cvar_value("g_maplist");
     };
     delegate_server.chmap = [this](const QString& map) {
-        rcon_command("chmap "+map); /// \todo Read command from settings
+        QString cmd = settings().cmd_chmap;
+        rcon_command(cmd.replace("$map",map));
         model_server.set_server_property("map", map);
     };
     delegate_server.set_hostname = [this](const QString& name) {

@@ -128,6 +128,8 @@ public:
     QStringList                 cmd_status = {"status 1", "g_maplist"};
     /// Commands used to request cvars
     QStringList                 cmd_cvarlist = {"cvarlist"};
+    /// Command used to change the map
+    QString                     cmd_chmap = "chmap $map";
 
 private:
     Settings();

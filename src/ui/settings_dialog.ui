@@ -128,8 +128,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>696</width>
-              <height>542</height>
+              <width>288</width>
+              <height>324</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -281,28 +281,28 @@ A command per line</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
+                 <item row="3" column="0">
                   <widget class="QLabel" name="label_12">
                    <property name="text">
                     <string>Attach console to server log:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="3" column="1">
                   <widget class="QLineEdit" name="input_con_attach">
                    <property name="toolTip">
                     <string>&lt;p&gt;Command for attaching to the server log.&lt;br/&gt;&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.&lt;/p&gt;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
+                 <item row="4" column="0">
                   <widget class="QLabel" name="label_13">
                    <property name="text">
                     <string>Detach console from server log:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
+                 <item row="4" column="1">
                   <widget class="QLineEdit" name="input_con_detach">
                    <property name="toolTip">
                     <string>&lt;p&gt;Command for detaching from the server log.&lt;br/&gt;&lt;b&gt;$ip&lt;/b&gt; expands to the local socket address and port.&lt;/p&gt;</string>
@@ -331,6 +331,20 @@ A command per line</string>
                    </property>
                    <property name="whatsThis">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When clicking &lt;span style=&quot; font-weight:600;&quot;&gt;Refresh&lt;/span&gt; in the cvar list these commands are sent to the server.&lt;br/&gt;The cvar list parses the output of &lt;span style=&quot; font-weight:600;&quot;&gt;apropos&lt;/span&gt; and &lt;span style=&quot; font-weight:600;&quot;&gt;cvarlist&lt;/span&gt; to find the cvars to update.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_16">
+                   <property name="text">
+                    <string>Change map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="input_cmd_chmap">
+                   <property name="toolTip">
+                    <string>&lt;p&gt;Command for changing to the current map.&lt;br/&gt;&lt;b&gt;$map&lt;/b&gt; expands to the name of the selected map.&lt;/p&gt;</string>
                    </property>
                   </widget>
                  </item>

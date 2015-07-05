@@ -95,6 +95,7 @@ void SettingsDialog::init_tab_internal_commands()
 {
     input_cmd_status->setPlainText(settings().cmd_status.join('\n'));
     input_cmd_cvarlist->setPlainText(settings().cmd_cvarlist.join('\n'));
+    input_cmd_chmap->setText(settings().cmd_chmap);
     input_con_attach->setText(settings().console_attach_command);
     input_con_detach->setText(settings().console_detach_command);
 }
@@ -152,6 +153,7 @@ void SettingsDialog::accept()
 
     settings().cmd_status = input_cmd_status->toPlainText().split('\n',QString::SkipEmptyParts);
     settings().cmd_cvarlist = input_cmd_cvarlist->toPlainText().split('\n',QString::SkipEmptyParts);
+    settings().cmd_chmap = input_cmd_chmap->text();
     settings().console_attach_command = input_con_attach->text();
     settings().console_detach_command = input_con_detach->text();
 
